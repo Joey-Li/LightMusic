@@ -29,7 +29,7 @@ public class KgMusicInfoReq {
     }
 
     // 歌曲信息 API (酷狗)
-//    private final String SONG_DETAIL_KG_API = "https://www.kugou.com/yy/index.php?r=play/getdata&album_audio_id=%s";
+    private final String SONG_DETAIL_KG_API = "/v3/album_audio/audio";
     private final String SONG_DETAIL_KG_API_V2 = "/v2/get_res_privilege/lite";
 
     /**
@@ -37,28 +37,36 @@ public class KgMusicInfoReq {
      */
     public void fillMusicInfo(NetMusicInfo musicInfo) {
         String hash = musicInfo.getHash();
-//            String songBody = HttpRequest.get(String.format(SONG_DETAIL_KG_API, id))
-//                    .cookie(SdkCommon.KG_COOKIE)
-//                    .executeAsync()
-//                    .body();
-//            JSONObject data = JSONObject.parseObject(songBody).getJSONObject("data");
-//            if (JsonUtil.notEmpty(data)) {
-//                // 时长是毫秒，转为秒
-//                if (!musicInfo.hasDuration()) musicInfo.setDuration(data.getDouble("timelength") / 1000);
-//                if (!musicInfo.hasArtist()) musicInfo.setArtist(SdkUtil.parseArtist(data));
-//                if (!musicInfo.hasArtistId()) musicInfo.setArtistId(SdkUtil.parseArtistId(data));
-//                if (!musicInfo.hasAlbumName()) musicInfo.setAlbumName(data.getString("album_name"));
-//                if (!musicInfo.hasAlbumId()) musicInfo.setAlbumId(data.getString("album_id"));
-//                if (!musicInfo.hasAlbumImage()) {
-//                    GlobalExecutors.imageExecutor.execute(() -> {
-//                        BufferedImage albumImage = SdkUtil.getImageFromUrl(data.getString("img"));
-//                        FileUtil.mkDir(SimplePath.IMG_CACHE_PATH);
-//                        ImageUtil.toFile(albumImage, SimplePath.IMG_CACHE_PATH + musicInfo.toAlbumImageFileName());
-//                        musicInfo.callback();
-//                    });
-//                }
-////                if (!musicInfo.hasLrc()) musicInfo.setLrc(data.getString("lyrics"));
-//            } else {
+//        Map<KugouReqOptEnum, Object> options = KugouReqOptsBuilder.androidPost(SONG_DETAIL_KG_API);
+//        String dat = String.format("{\"area_code\":\"1\",\"show_privilege\":1,\"show_album_info\":\"1\",\"is_publish\":\"\",\"appid\":%s,\"clientver\":%s," +
+//                        "\"mid\":\"%s\",\"dfid\":\"%s\",\"clienttime\":%s,\"key\":\"%s\",\"fields\":\"album_info,author_name,audio_info,ori_audio_name,base,songname,classification\"," +
+//                        "\"data\":[\"%s\"]}",
+//                KugouReqBuilder.appid, KugouReqBuilder.clientver, KugouReqBuilder.mid, KugouReqBuilder.dfid, System.currentTimeMillis() / 1000,
+//                KugouReqBuilder.androidSignKey, hash);
+//        String songBody = SdkCommon.kgRequest(null, dat, options)
+//                .header(Header.USER_AGENT, "Android712-AndroidPhone-11451-376-0-FeeCacheUpdate-wifi")
+//                .header("KG-THash", "13a3164")
+//                .header("KG-RC", "1")
+//                .header("KG-Fake", "0")
+//                .header("KG-RF", "00869891")
+//                .header("x-router", "kmr.service.kugou.com")
+//                .executeAsStr();
+//        JSONObject songData = JSONObject.parseObject(songBody).getJSONArray("data").getJSONObject(0);
+//        JSONObject info = songData.getJSONObject("info");
+//        // 时长是毫秒，转为秒
+//        if (!musicInfo.hasDuration()) musicInfo.setDuration(info.getDouble("duration") / 1000);
+//        if (!musicInfo.hasArtist()) musicInfo.setArtist(songData.getString("singername"));
+////                if (!musicInfo.hasArtistId()) musicInfo.setArtistId(SdkUtil.parseArtistId(data));
+//        if (!musicInfo.hasAlbumName()) musicInfo.setAlbumName(songData.getString("albumname"));
+//        if (!musicInfo.hasAlbumId()) musicInfo.setAlbumId(songData.getString("recommend_album_id"));
+//        if (!musicInfo.hasAlbumImage()) {
+//            GlobalExecutors.imageExecutor.execute(() -> {
+//                BufferedImage albumImage = SdkUtil.getImageFromUrl(info.getString("image").replace("/{size}", ""));
+//                FileUtil.mkDir(SimplePath.IMG_CACHE_PATH);
+//                ImageUtil.toFile(albumImage, SimplePath.IMG_CACHE_PATH + musicInfo.toAlbumImageFileName());
+//                musicInfo.callback();
+//            });
+//        }
         // 歌曲信息接口有时返回为空，直接用 V2 版本接口，不过由于部分信息不完整，作为备选
         Map<KugouReqOptEnum, Object> options = KugouReqOptsBuilder.androidPost(SONG_DETAIL_KG_API_V2);
         String dat = String.format("{\"appid\":%s,\"area_code\":1,\"behavior\":\"play\",\"clientver\":%s,\"need_hash_offset\":1,\"relate\":1," +
@@ -84,7 +92,6 @@ public class KgMusicInfoReq {
                 musicInfo.callback();
             });
         }
-//            }
     }
 
     /**

@@ -28,39 +28,56 @@ public class MusicUrlReq {
     /**
      * 补充 NetMusicInfo 的 url
      */
-    public void fillMusicUrl(NetMusicInfo musicInfo) {
-        // 歌曲信息是完整的且音质与设置的音质相同
-        if (musicInfo.isIntegrated() && musicInfo.isQualityMatch()) return;
-        // 若无链接，直接换源
-        String url = fetchMusicUrl(musicInfo);
-        if (StringUtil.notEmpty(url)) musicInfo.setUrl(url);
-        else fillAvailableMusicUrl(musicInfo);
-        String realUrl = musicInfo.getUrl();
-        // 未找到任何链接，跳出
-        if (StringUtil.isEmpty(realUrl)) return;
-        if (realUrl.contains(".mp3") || realUrl.contains(".wav")) musicInfo.setFormat(Format.MP3);
-        else if (realUrl.contains(".flac")) musicInfo.setFormat(Format.FLAC);
-        else if (realUrl.contains(".m4a")) musicInfo.setFormat(Format.M4A);
-        // 更新音质
-        musicInfo.setQuality(AudioQuality.quality);
+    public void fillMusicUrl(NetMusicInfo musicInfo, boolean forDownload) {
+        if (forDownload) {
+            // 歌曲信息是完整的且音质与设置的音质相同
+            if (musicInfo.hasDownUrl() && musicInfo.isDownQualityMatch()) return;
+            // 若无链接，直接换源
+            String url = fetchMusicUrl(musicInfo, true);
+            if (StringUtil.notEmpty(url)) musicInfo.setDownUrl(url);
+            else fillAvailableMusicUrl(musicInfo, true);
+            String realUrl = musicInfo.getDownUrl();
+            // 未找到任何链接，跳出
+            if (StringUtil.isEmpty(realUrl)) return;
+            if (realUrl.contains(".mp3") || realUrl.contains(".wav")) musicInfo.setDownFormat(Format.MP3);
+            else if (realUrl.contains(".flac")) musicInfo.setDownFormat(Format.FLAC);
+            else if (realUrl.contains(".m4a")) musicInfo.setDownFormat(Format.M4A);
+            // 更新音质
+            musicInfo.setDownQuality(AudioQuality.downQuality);
+        } else {
+            // 歌曲信息是完整的且音质与设置的音质相同
+            if (musicInfo.isIntegrated() && musicInfo.isPlayQualityMatch()) return;
+            // 若无链接，直接换源
+            String url = fetchMusicUrl(musicInfo, false);
+            if (StringUtil.notEmpty(url)) musicInfo.setPlayUrl(url);
+            else fillAvailableMusicUrl(musicInfo, false);
+            String realUrl = musicInfo.getPlayUrl();
+            // 未找到任何链接，跳出
+            if (StringUtil.isEmpty(realUrl)) return;
+            if (realUrl.contains(".mp3") || realUrl.contains(".wav")) musicInfo.setPlayFormat(Format.MP3);
+            else if (realUrl.contains(".flac")) musicInfo.setPlayFormat(Format.FLAC);
+            else if (realUrl.contains(".m4a")) musicInfo.setPlayFormat(Format.M4A);
+            // 更新音质
+            musicInfo.setPlayQuality(AudioQuality.playQuality);
+        }
     }
 
     /**
      * 根据歌曲 id 获取歌曲地址
      */
-    public String fetchMusicUrl(NetMusicInfo musicInfo) {
+    public String fetchMusicUrl(NetMusicInfo musicInfo, boolean forDownload) {
         int source = musicInfo.getSource();
         switch (source) {
             case NetResourceSource.NC:
-                return NcMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
+                return NcMusicUrlReq.getInstance().fetchMusicUrl(musicInfo, forDownload);
             case NetResourceSource.KG:
-                return KgMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
+                return KgMusicUrlReq.getInstance().fetchMusicUrl(musicInfo, forDownload);
             case NetResourceSource.QQ:
-                return QqMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
+                return QqMusicUrlReq.getInstance().fetchMusicUrl(musicInfo, forDownload);
             case NetResourceSource.KW:
-                return KwMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
+                return KwMusicUrlReq.getInstance().fetchMusicUrl(musicInfo, forDownload);
             case NetResourceSource.MG:
-                return MgMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
+                return MgMusicUrlReq.getInstance().fetchMusicUrl(musicInfo, forDownload);
             case NetResourceSource.QI:
                 return QiMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
             case NetResourceSource.HF:
@@ -68,11 +85,11 @@ public class MusicUrlReq {
             case NetResourceSource.GG:
                 return GgMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
             case NetResourceSource.FS:
-                return FsMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
+                return FsMusicUrlReq.getInstance().fetchMusicUrl(musicInfo, forDownload);
             case NetResourceSource.XM:
                 return XmMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
             case NetResourceSource.ME:
-                return MeMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
+                return MeMusicUrlReq.getInstance().fetchMusicUrl(musicInfo, forDownload);
             case NetResourceSource.BI:
                 return BiMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
             case NetResourceSource.FA:
@@ -80,7 +97,7 @@ public class MusicUrlReq {
             case NetResourceSource.LZ:
                 return LzMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
             case NetResourceSource.QS:
-                return QsMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
+                return QsMusicUrlReq.getInstance().fetchMusicUrl(musicInfo, forDownload);
             default:
                 return "";
         }
@@ -92,7 +109,7 @@ public class MusicUrlReq {
      * @param musicInfo
      * @return
      */
-    public void fillAvailableMusicUrl(NetMusicInfo musicInfo) {
+    public void fillAvailableMusicUrl(NetMusicInfo musicInfo, boolean forDownload) {
         CommonResult<NetMusicInfo> result = MusicSearchReq.getInstance().searchMusic(NetResourceSource.ALL, 0, I18n.getText("defaultTag"), musicInfo.toKeywords(), 1, 20);
         List<NetMusicInfo> data = result.data;
         List<MusicCandidate> candidates = new LinkedList<>();
@@ -116,9 +133,10 @@ public class MusicUrlReq {
         candidates.sort((c1, c2) -> Double.compare(c2.weight, c1.weight));
         for (MusicCandidate candidate : candidates) {
             NetMusicInfo info = candidate.musicInfo;
-            String url = fetchMusicUrl(info);
+            String url = fetchMusicUrl(info, forDownload);
             if (StringUtil.isEmpty(url)) continue;
-            musicInfo.setUrl(url);
+            if (forDownload) musicInfo.setDownUrl(url);
+            else musicInfo.setPlayUrl(url);
             if (!musicInfo.hasDuration()) musicInfo.setDuration(info.getDuration());
             return;
         }

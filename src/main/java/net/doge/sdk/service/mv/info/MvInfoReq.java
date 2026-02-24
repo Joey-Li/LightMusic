@@ -34,18 +34,26 @@ public class MvInfoReq {
     /**
      * 根据 MV id 补全 MV 信息(只包含 url)
      */
-    public void fillMvInfo(NetMvInfo mvInfo) {
-        // 信息完整直接跳过
-        if (mvInfo.isIntegrated() && mvInfo.isQualityMatch()) return;
-
-        String url = MvUrlReq.getInstance().fetchMvUrl(mvInfo);
-        mvInfo.setUrl(url);
-
-        if (url.contains(".mp4")) mvInfo.setFormat(Format.MP4);
-        else if (url.contains(".flv")) mvInfo.setFormat(Format.FLV);
-
-        // 更新画质
-        mvInfo.setQuality(VideoQuality.quality);
+    public void fillMvInfo(NetMvInfo mvInfo, boolean forDownload) {
+        if (forDownload) {
+            // 信息完整直接跳过
+            if (mvInfo.hasDownUrl() && mvInfo.isDownQualityMatch()) return;
+            String url = MvUrlReq.getInstance().fetchMvUrl(mvInfo, true);
+            mvInfo.setDownUrl(url);
+            if (url.contains(".mp4")) mvInfo.setDownFormat(Format.MP4);
+            else if (url.contains(".flv")) mvInfo.setDownFormat(Format.FLV);
+            // 更新画质
+            mvInfo.setDownQuality(VideoQuality.downQuality);
+        } else {
+            // 信息完整直接跳过
+            if (mvInfo.isIntegrated() && mvInfo.isPlayQualityMatch()) return;
+            String url = MvUrlReq.getInstance().fetchMvUrl(mvInfo, false);
+            mvInfo.setPlayUrl(url);
+            if (url.contains(".mp4")) mvInfo.setPlayFormat(Format.MP4);
+            else if (url.contains(".flv")) mvInfo.setPlayFormat(Format.FLV);
+            // 更新画质
+            mvInfo.setPlayQuality(VideoQuality.playQuality);
+        }
     }
 
     /**

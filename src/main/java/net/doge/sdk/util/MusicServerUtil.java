@@ -195,8 +195,8 @@ public class MusicServerUtil {
     /**
      * 补充 NetMusicInfo 的 url
      */
-    public static void fillMusicUrl(NetMusicInfo musicInfo) {
-        MusicUrlReq.getInstance().fillMusicUrl(musicInfo);
+    public static void fillMusicUrl(NetMusicInfo musicInfo, boolean forDownload) {
+        MusicUrlReq.getInstance().fillMusicUrl(musicInfo, forDownload);
     }
 
     /**
@@ -461,8 +461,8 @@ public class MusicServerUtil {
     /**
      * 根据 MV id 补全 MV 信息(只包含 url)
      */
-    public static void fillMvInfo(NetMvInfo mvInfo) {
-        MvInfoReq.getInstance().fillMvInfo(mvInfo);
+    public static void fillMvInfo(NetMvInfo mvInfo, boolean forDownload) {
+        MvInfoReq.getInstance().fillMvInfo(mvInfo, forDownload);
     }
 
     /**

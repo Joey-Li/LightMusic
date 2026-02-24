@@ -24,14 +24,14 @@ public class FsMvUrlReq {
     /**
      * 根据 MV id 获取 MV 视频链接
      */
-    public String fetchMvUrl(NetMvInfo mvInfo) {
+    public String fetchMvUrl(NetMvInfo mvInfo, boolean forDownload) {
         String id = mvInfo.getId();
         String mvBody = HttpRequest.get(String.format(MV_URL_FS_API, id))
                 .executeAsStr();
         JSONArray urlArray = JSONObject.parseObject(mvBody).getJSONArray("data");
         String quality;
         String[] qs = {"超清", "高清", "标清"};
-        switch (VideoQuality.quality) {
+        switch (forDownload ? VideoQuality.downQuality : VideoQuality.playQuality) {
             case VideoQuality.UHD:
             case VideoQuality.FHD:
             case VideoQuality.HD:

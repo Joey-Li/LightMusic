@@ -36,12 +36,12 @@ public class NcMvUrlReq {
     /**
      * 根据 MV id 获取 MV 视频链接
      */
-    public String fetchMvUrl(NetMvInfo mvInfo) {
+    public String fetchMvUrl(NetMvInfo mvInfo, boolean forDownload) {
         String id = mvInfo.getId();
         boolean isVideo = mvInfo.isVideo();
         boolean isMlog = mvInfo.isMlog();
         String quality;
-        switch (VideoQuality.quality) {
+        switch (forDownload ? VideoQuality.downQuality : VideoQuality.playQuality) {
             case VideoQuality.UHD:
             case VideoQuality.FHD:
                 quality = "1080";

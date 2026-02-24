@@ -97,6 +97,10 @@ public class ConfigConstants {
     public static final String BLUR_TYPE = "blurType";
     // 是否自动下载歌词
     public static final String AUTO_DOWNLOAD_LYRIC = "autoDownloadLyric";
+    // 下载音质
+    public static final String AUDIO_DOWN_QUALITY = "audioDownQuality";
+    // 下载画质
+    public static final String VIDEO_DOWN_QUALITY = "videoDownQuality";
     // 是否使用逐字时间轴
     public static final String VERBATIM_TIMELINE = "verbatimTimeline";
     // 歌词偏移
@@ -118,10 +122,10 @@ public class ConfigConstants {
     public static final String DESKTOP_LYRIC_OPACITY = "desktopLyricOpacity";
     // 桌面歌词字体大小
     public static final String DESKTOP_LYRIC_FONT_SIZE = "desktopLyricFontSize";
-    // 音质
-    public static final String AUDIO_QUALITY = "audioQuality";
-    // 画质
-    public static final String VIDEO_QUALITY = "videoQuality";
+    // 播放音质
+    public static final String AUDIO_PLAY_QUALITY = "audioPlayQuality";
+    // 播放画质
+    public static final String VIDEO_PLAY_QUALITY = "videoPlayQuality";
     // 快进/快退时间
     public static final String FOB_TIME = "fobTime";
     // 视频快进/快退时间

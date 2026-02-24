@@ -23,17 +23,18 @@ public class YyMvUrlReq {
     /**
      * 根据 MV id 获取 MV 视频链接
      */
-    public String fetchMvUrl(NetMvInfo mvInfo) {
+    public String fetchMvUrl(NetMvInfo mvInfo, boolean forDownload) {
         String id = mvInfo.getId();
         String mvBody = HttpRequest.get(String.format(MV_URL_YY_API, id))
                 .executeAsStr();
         JSONObject data = JSONObject.parseObject(mvBody).getJSONObject("data");
         JSONArray urlArray = data.getJSONObject("fullClip").getJSONArray("urls");
+        int quality = forDownload ? VideoQuality.downQuality : VideoQuality.playQuality;
         for (int i = 0, s = urlArray.size(); i < s; i++) {
             JSONObject urlJson = urlArray.getJSONObject(i);
             int streamType = urlJson.getIntValue("streamType");
-            if (VideoQuality.quality >= VideoQuality.FHD && streamType <= 1
-                    || VideoQuality.quality < VideoQuality.FHD && streamType > 1)
+            if (quality >= VideoQuality.FHD && streamType <= 1
+                    || quality < VideoQuality.FHD && streamType > 1)
                 return urlJson.getString("url");
         }
         return "";

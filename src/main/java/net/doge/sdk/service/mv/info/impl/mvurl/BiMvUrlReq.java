@@ -27,7 +27,7 @@ public class BiMvUrlReq {
     /**
      * 根据 MV id 获取 MV 视频链接
      */
-    public String fetchMvUrl(NetMvInfo mvInfo) {
+    public String fetchMvUrl(NetMvInfo mvInfo, boolean forDownload) {
         String id = mvInfo.getId();
         String bvId = mvInfo.getBvId();
         // 先通过 bvid 获取 cid
@@ -39,7 +39,7 @@ public class BiMvUrlReq {
         }
 
         String quality;
-        switch (VideoQuality.quality) {
+        switch (forDownload ? VideoQuality.downQuality : VideoQuality.playQuality) {
             case VideoQuality.UHD:
             case VideoQuality.FHD:
                 quality = "116";

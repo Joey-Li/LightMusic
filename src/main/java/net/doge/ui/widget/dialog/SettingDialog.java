@@ -129,6 +129,12 @@ public class SettingDialog extends AbstractTitledDialog {
     private CustomCheckBox autoDownloadLyricCheckBox = new CustomCheckBox(I18n.getText("autoDownloadLyric"));
     private CustomPanel verbatimTimelinePanel = new CustomPanel();
     private CustomCheckBox verbatimTimelineCheckBox = new CustomCheckBox(I18n.getText("verbatimTimeline"));
+    private CustomPanel audioDownQualityPanel = new CustomPanel();
+    private CustomLabel audioDownQualityLabel = new CustomLabel(I18n.getText("audioDownQuality"));
+    private CustomComboBox<String> audioDownQualityComboBox = new CustomComboBox<>();
+    private CustomPanel videoDownQualityPanel = new CustomPanel();
+    private CustomLabel videoDownQualityLabel = new CustomLabel(I18n.getText("videoDownQuality"));
+    private CustomComboBox<String> videoDownQualityComboBox = new CustomComboBox<>();
     private CustomPanel musicDownPanel = new CustomPanel();
     private CustomLabel musicDownLabel = new CustomLabel(I18n.getText("musicDown"));
     private CustomTextField musicDownPathTextField = new CustomTextField(20);
@@ -149,12 +155,12 @@ public class SettingDialog extends AbstractTitledDialog {
     private CustomLabel maxCacheSizeLabel = new CustomLabel(String.format(I18n.getText("maxCacheSize"), maxCacheSizeLimit));
     private CustomTextField maxCacheSizeTextField = new CustomTextField(10);
 
-    private CustomPanel audioQualityPanel = new CustomPanel();
-    private CustomLabel audioQualityLabel = new CustomLabel(I18n.getText("audioQuality"));
-    private CustomComboBox<String> audioQualityComboBox = new CustomComboBox<>();
-    private CustomPanel videoQualityPanel = new CustomPanel();
-    private CustomLabel videoQualityLabel = new CustomLabel(I18n.getText("videoQuality"));
-    private CustomComboBox<String> videoQualityComboBox = new CustomComboBox<>();
+    private CustomPanel audioPlayQualityPanel = new CustomPanel();
+    private CustomLabel audioPlayQualityLabel = new CustomLabel(I18n.getText("audioPlayQuality"));
+    private CustomComboBox<String> audioPlayQualityComboBox = new CustomComboBox<>();
+    private CustomPanel videoPlayQualityPanel = new CustomPanel();
+    private CustomLabel videoPlayQualityLabel = new CustomLabel(I18n.getText("videoPlayQuality"));
+    private CustomComboBox<String> videoPlayQualityComboBox = new CustomComboBox<>();
     private CustomPanel fobPanel = new CustomPanel();
     private CustomLabel fobLabel = new CustomLabel(I18n.getText("fob"));
     private CustomComboBox<String> fobComboBox = new CustomComboBox<>();
@@ -299,6 +305,8 @@ public class SettingDialog extends AbstractTitledDialog {
         darkerFactorPanel.setLayout(fl);
         autoDownloadLyricPanel.setLayout(fl);
         verbatimTimelinePanel.setLayout(fl);
+        audioDownQualityPanel.setLayout(fl);
+        videoDownQualityPanel.setLayout(fl);
         musicDownPanel.setLayout(fl);
         mvDownPanel.setLayout(fl);
         cachePanel.setLayout(fl);
@@ -306,8 +314,8 @@ public class SettingDialog extends AbstractTitledDialog {
         maxHistoryCountPanel.setLayout(fl);
         maxSearchHistoryCountPanel.setLayout(fl);
         maxConcurrentTaskCountPanel.setLayout(fl);
-        audioQualityPanel.setLayout(fl);
-        videoQualityPanel.setLayout(fl);
+        audioPlayQualityPanel.setLayout(fl);
+        videoPlayQualityPanel.setLayout(fl);
         fobPanel.setLayout(fl);
         balancePanel.setLayout(fl);
         backupPanel.setLayout(fl);
@@ -334,6 +342,8 @@ public class SettingDialog extends AbstractTitledDialog {
         darkerFactorPanel.setMaximumSize(d);
         autoDownloadLyricPanel.setMaximumSize(d);
         verbatimTimelinePanel.setMaximumSize(d);
+        audioDownQualityPanel.setMaximumSize(d);
+        videoDownQualityPanel.setMaximumSize(d);
         musicDownPanel.setMaximumSize(d);
         mvDownPanel.setMaximumSize(d);
         cachePanel.setMaximumSize(d);
@@ -341,8 +351,8 @@ public class SettingDialog extends AbstractTitledDialog {
         maxHistoryCountPanel.setMaximumSize(d);
         maxSearchHistoryCountPanel.setMaximumSize(d);
         maxConcurrentTaskCountPanel.setMaximumSize(d);
-        audioQualityPanel.setMaximumSize(d);
-        videoQualityPanel.setMaximumSize(d);
+        audioPlayQualityPanel.setMaximumSize(d);
+        videoPlayQualityPanel.setMaximumSize(d);
         fobPanel.setMaximumSize(d);
         balancePanel.setMaximumSize(d);
         backupPanel.setMaximumSize(d);
@@ -371,6 +381,8 @@ public class SettingDialog extends AbstractTitledDialog {
         darkerFactorLabel.setForeground(textColor);
         autoDownloadLyricCheckBox.setForeground(textColor);
         verbatimTimelineCheckBox.setForeground(textColor);
+        audioDownQualityLabel.setForeground(textColor);
+        videoDownQualityLabel.setForeground(textColor);
         musicDownLabel.setForeground(textColor);
         mvDownLabel.setForeground(textColor);
         cacheLabel.setForeground(textColor);
@@ -382,8 +394,8 @@ public class SettingDialog extends AbstractTitledDialog {
         fontLabel.setForeground(textColor);
         closeOptionLabel.setForeground(textColor);
         windowSizeLabel.setForeground(textColor);
-        audioQualityLabel.setForeground(textColor);
-        videoQualityLabel.setForeground(textColor);
+        audioPlayQualityLabel.setForeground(textColor);
+        videoPlayQualityLabel.setForeground(textColor);
         fobLabel.setForeground(textColor);
         balanceLabel.setForeground(textColor);
         backupLabel.setForeground(textColor);
@@ -548,12 +560,14 @@ public class SettingDialog extends AbstractTitledDialog {
         lyricAlignmentComboBox.setUI(new StringComboBoxUI(lyricAlignmentComboBox, f));
         gsFactorComboBox.setUI(new StringComboBoxUI(gsFactorComboBox, f));
         darkerFactorComboBox.setUI(new StringComboBoxUI(darkerFactorComboBox, f));
+        audioDownQualityComboBox.setUI(new StringComboBoxUI(audioDownQualityComboBox, f));
+        videoDownQualityComboBox.setUI(new StringComboBoxUI(videoDownQualityComboBox, f));
         langComboBox.setUI(new StringComboBoxUI(langComboBox, f));
         fontComboBox.setUI(new StringComboBoxUI(fontComboBox, f));
         closeOptionComboBox.setUI(new StringComboBoxUI(closeOptionComboBox, f));
         windowSizeComboBox.setUI(new StringComboBoxUI(windowSizeComboBox, f));
-        audioQualityComboBox.setUI(new StringComboBoxUI(audioQualityComboBox, f));
-        videoQualityComboBox.setUI(new StringComboBoxUI(videoQualityComboBox, f));
+        audioPlayQualityComboBox.setUI(new StringComboBoxUI(audioPlayQualityComboBox, f));
+        videoPlayQualityComboBox.setUI(new StringComboBoxUI(videoPlayQualityComboBox, f));
         fobComboBox.setUI(new StringComboBoxUI(fobComboBox, f));
         balanceComboBox.setUI(new StringComboBoxUI(balanceComboBox, f));
 
@@ -682,6 +696,14 @@ public class SettingDialog extends AbstractTitledDialog {
 
         verbatimTimelinePanel.add(verbatimTimelineCheckBox);
 
+        for (String name : AudioQuality.NAMES) audioDownQualityComboBox.addItem(name);
+        audioDownQualityPanel.add(audioDownQualityLabel);
+        audioDownQualityPanel.add(audioDownQualityComboBox);
+
+        for (String name : VideoQuality.NAMES) videoDownQualityComboBox.addItem(name);
+        videoDownQualityPanel.add(videoDownQualityLabel);
+        videoDownQualityPanel.add(videoDownQualityComboBox);
+
         musicDownPanel.add(musicDownLabel);
         musicDownPanel.add(musicDownPathTextField);
         musicDownPanel.add(changeMusicDownPathButton);
@@ -725,13 +747,13 @@ public class SettingDialog extends AbstractTitledDialog {
         windowSizePanel.add(windowSizeLabel);
         windowSizePanel.add(windowSizeComboBox);
 
-        for (String name : AudioQuality.NAMES) audioQualityComboBox.addItem(name);
-        audioQualityPanel.add(audioQualityLabel);
-        audioQualityPanel.add(audioQualityComboBox);
+        for (String name : AudioQuality.NAMES) audioPlayQualityComboBox.addItem(name);
+        audioPlayQualityPanel.add(audioPlayQualityLabel);
+        audioPlayQualityPanel.add(audioPlayQualityComboBox);
 
-        for (String name : VideoQuality.NAMES) videoQualityComboBox.addItem(name);
-        videoQualityPanel.add(videoQualityLabel);
-        videoQualityPanel.add(videoQualityComboBox);
+        for (String name : VideoQuality.NAMES) videoPlayQualityComboBox.addItem(name);
+        videoPlayQualityPanel.add(videoPlayQualityLabel);
+        videoPlayQualityPanel.add(videoPlayQualityComboBox);
 
         for (int i = 5; i <= 60; i += 5) {
             String item = i + I18n.getText("seconds");
@@ -795,6 +817,10 @@ public class SettingDialog extends AbstractTitledDialog {
         downloadAndCacheContentBox.add(CustomBox.createVerticalStrut(vGap));
         downloadAndCacheContentBox.add(verbatimTimelinePanel);
         downloadAndCacheContentBox.add(CustomBox.createVerticalStrut(vGap));
+        downloadAndCacheContentBox.add(audioDownQualityPanel);
+        downloadAndCacheContentBox.add(CustomBox.createVerticalStrut(vGap));
+        downloadAndCacheContentBox.add(videoDownQualityPanel);
+        downloadAndCacheContentBox.add(CustomBox.createVerticalStrut(vGap));
         downloadAndCacheContentBox.add(musicDownPanel);
         downloadAndCacheContentBox.add(CustomBox.createVerticalStrut(vGap));
         downloadAndCacheContentBox.add(mvDownPanel);
@@ -806,9 +832,9 @@ public class SettingDialog extends AbstractTitledDialog {
         downloadAndCacheContentBox.add(maxConcurrentTaskCountPanel);
         downloadAndCacheContentBox.add(CustomBox.createVerticalGlue());
 
-        playbackContentBox.add(audioQualityPanel);
+        playbackContentBox.add(audioPlayQualityPanel);
         playbackContentBox.add(CustomBox.createVerticalStrut(vGap));
-        playbackContentBox.add(videoQualityPanel);
+        playbackContentBox.add(videoPlayQualityPanel);
         playbackContentBox.add(CustomBox.createVerticalStrut(vGap));
         playbackContentBox.add(fobPanel);
         playbackContentBox.add(CustomBox.createVerticalStrut(vGap));
@@ -867,6 +893,8 @@ public class SettingDialog extends AbstractTitledDialog {
         darkerFactorComboBox.setSelectedIndex(BlurConstants.darkerFactorIndex);
         autoDownloadLyricCheckBox.setSelected(f.autoDownloadLyric);
         verbatimTimelineCheckBox.setSelected(f.verbatimTimeline);
+        audioDownQualityComboBox.setSelectedIndex(AudioQuality.downQuality);
+        videoDownQualityComboBox.setSelectedIndex(VideoQuality.downQuality);
         musicDownPathTextField.setText(new File(SimplePath.DOWNLOAD_MUSIC_PATH).getAbsolutePath());
         mvDownPathTextField.setText(new File(SimplePath.DOWNLOAD_MV_PATH).getAbsolutePath());
         cachePathTextField.setText(new File(SimplePath.CACHE_PATH).getAbsolutePath());
@@ -878,8 +906,8 @@ public class SettingDialog extends AbstractTitledDialog {
         fontComboBox.setSelectedIndex(Fonts.currFont);
         closeOptionComboBox.setSelectedIndex(f.currCloseWindowOption);
         windowSizeComboBox.setSelectedIndex(f.windowSize);
-        audioQualityComboBox.setSelectedIndex(AudioQuality.quality);
-        videoQualityComboBox.setSelectedIndex(VideoQuality.quality);
+        audioPlayQualityComboBox.setSelectedIndex(AudioQuality.playQuality);
+        videoPlayQualityComboBox.setSelectedIndex(VideoQuality.playQuality);
         balanceComboBox.setSelectedIndex(Double.valueOf(f.currBalance).intValue() + 1);
 
         enableKeyCheckBox.setSelected(f.keyEnabled);
@@ -936,6 +964,9 @@ public class SettingDialog extends AbstractTitledDialog {
         f.autoDownloadLyric = autoDownloadLyricCheckBox.isSelected();
 
         f.verbatimTimeline = verbatimTimelineCheckBox.isSelected();
+
+        AudioQuality.downQuality = audioDownQualityComboBox.getSelectedIndex();
+        VideoQuality.downQuality = videoDownQualityComboBox.getSelectedIndex();
 
         SimplePath.DOWNLOAD_MUSIC_PATH = musicDir.getAbsolutePath() + File.separator;
         SimplePath.DOWNLOAD_MV_PATH = mvDir.getAbsolutePath() + File.separator;
@@ -1008,8 +1039,8 @@ public class SettingDialog extends AbstractTitledDialog {
         f.x = f.y = 0x3f3f3f3f;
         if (f.windowState != WindowState.MAXIMIZED) f.setSize(f.windowWidth, f.windowHeight);
 
-        AudioQuality.quality = audioQualityComboBox.getSelectedIndex();
-        VideoQuality.quality = videoQualityComboBox.getSelectedIndex();
+        AudioQuality.playQuality = audioPlayQualityComboBox.getSelectedIndex();
+        VideoQuality.playQuality = videoPlayQualityComboBox.getSelectedIndex();
         f.forwardOrBackwardTime = Integer.parseInt(((String) fobComboBox.getSelectedItem()).replace(I18n.getText("seconds"), ""));
         f.currBalance = balanceComboBox.getSelectedIndex() - 1;
         f.player.setBalance(f.currBalance);

@@ -22,11 +22,12 @@ public class MeMusicUrlReq {
     /**
      * 根据歌曲 id 获取歌曲地址
      */
-    public String fetchMusicUrl(NetMusicInfo musicInfo) {
+    public String fetchMusicUrl(NetMusicInfo musicInfo, boolean forDownload) {
         String id = musicInfo.getId();
         String songBody = HttpRequest.get(String.format(SONG_DETAIL_ME_API, id))
                 .executeAsStr();
         JSONObject data = JSONObject.parseObject(songBody).getJSONObject("info").getJSONObject("sound");
-        return data.getString(AudioQuality.quality == AudioQuality.STANDARD ? "soundurl_128" : "soundurl");
+        int quality = forDownload ? AudioQuality.downQuality : AudioQuality.playQuality;
+        return data.getString(quality == AudioQuality.STANDARD ? "soundurl_128" : "soundurl");
     }
 }

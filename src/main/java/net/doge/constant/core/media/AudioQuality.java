@@ -26,7 +26,8 @@ public class AudioQuality {
     public static final String[] KEYS = {"standard", "high", "super", "lossless", "hires", "atmosphere", "master"};
 
     // 当前音质
-    public static int quality = SUPER;
+    public static int playQuality = SUPER;
+    public static int downQuality = SUPER;
     public static final String[] NAMES = {
             I18n.getText("standard"),
             I18n.getText("high"),
@@ -34,7 +35,7 @@ public class AudioQuality {
             I18n.getText("lossless"),
             I18n.getText("hires"),
             I18n.getText("atmosphere"),
-            I18n.getText("master"),
+            I18n.getText("master")
     };
 
     // Hi-Res

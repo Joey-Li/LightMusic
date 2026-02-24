@@ -24,19 +24,20 @@ public class KgMvUrlReq {
     /**
      * 根据 MV id 获取 MV 视频链接
      */
-    public String fetchMvUrl(NetMvInfo mvInfo) {
+    public String fetchMvUrl(NetMvInfo mvInfo, boolean forDownload) {
         String id = mvInfo.getId();
         String mvBody = HttpRequest.get(String.format(MV_URL_KG_API, id))
                 .executeAsStr();
         JSONObject data = JSONObject.parseObject(mvBody).getJSONObject("mvdata");
         // 高画质优先
-        JSONObject mvJson = VideoQuality.quality >= VideoQuality.FHD ? data.getJSONObject("rq") : null;
+        int quality = forDownload ? VideoQuality.downQuality : VideoQuality.playQuality;
+        JSONObject mvJson = quality >= VideoQuality.FHD ? data.getJSONObject("rq") : null;
         if (JsonUtil.isEmpty(mvJson))
-            mvJson = VideoQuality.quality >= VideoQuality.HD ? data.getJSONObject("sq") : null;
+            mvJson = quality >= VideoQuality.HD ? data.getJSONObject("sq") : null;
         if (JsonUtil.isEmpty(mvJson))
-            mvJson = VideoQuality.quality >= VideoQuality.SD ? data.getJSONObject("hd") : null;
+            mvJson = quality >= VideoQuality.SD ? data.getJSONObject("hd") : null;
         if (JsonUtil.isEmpty(mvJson))
-            mvJson = VideoQuality.quality >= VideoQuality.SD ? data.getJSONObject("sd") : null;
+            mvJson = quality >= VideoQuality.SD ? data.getJSONObject("sd") : null;
         if (JsonUtil.isEmpty(mvJson)) mvJson = data.getJSONObject("le");
         return mvJson.getString("downurl");
 

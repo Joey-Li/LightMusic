@@ -3148,6 +3148,10 @@ public class MainFrame extends JFrame {
         autoDownloadLyric = config.getBooleanValue(ConfigConstants.AUTO_DOWNLOAD_LYRIC, true);
         // 载入是否使用逐字时间轴
         verbatimTimeline = config.getBooleanValue(ConfigConstants.VERBATIM_TIMELINE, false);
+        // 载入下载音质
+        AudioQuality.downQuality = config.getIntValue(ConfigConstants.AUDIO_DOWN_QUALITY, AudioQuality.downQuality);
+        // 载入下载画质
+        VideoQuality.downQuality = config.getIntValue(ConfigConstants.VIDEO_DOWN_QUALITY, VideoQuality.downQuality);
         // 载入歌词偏移
         lyricOffset = config.getDoubleValue(ConfigConstants.LYRIC_OFFSET);
         currLyricOffsetMenuItem.setText(String.format(LYRIC_OFFSET_MSG, lyricOffset).replace(".0", ""));
@@ -3196,10 +3200,10 @@ public class MainFrame extends JFrame {
                 changeToShuffle(false);
                 break;
         }
-        // 载入音质
-        AudioQuality.quality = config.getIntValue(ConfigConstants.AUDIO_QUALITY, AudioQuality.quality);
-        // 载入画质
-        VideoQuality.quality = config.getIntValue(ConfigConstants.VIDEO_QUALITY, VideoQuality.quality);
+        // 载入播放音质
+        AudioQuality.playQuality = config.getIntValue(ConfigConstants.AUDIO_PLAY_QUALITY, AudioQuality.playQuality);
+        // 载入播放画质
+        VideoQuality.playQuality = config.getIntValue(ConfigConstants.VIDEO_PLAY_QUALITY, VideoQuality.playQuality);
         // 载入快进/快退时间
         forwardOrBackwardTime = config.getIntValue(ConfigConstants.FOB_TIME, DEFAULT_FORWARD_OR_BACKWARD_TIME);
         // 载入视频快进/快退时间
@@ -3972,6 +3976,10 @@ public class MainFrame extends JFrame {
         config.put(ConfigConstants.AUTO_DOWNLOAD_LYRIC, autoDownloadLyric);
         // 存入是否使用逐字时间轴
         config.put(ConfigConstants.VERBATIM_TIMELINE, verbatimTimeline);
+        // 存入下载音质
+        config.put(ConfigConstants.AUDIO_DOWN_QUALITY, AudioQuality.downQuality);
+        // 存入下载画质
+        config.put(ConfigConstants.VIDEO_DOWN_QUALITY, VideoQuality.downQuality);
         // 存入歌词偏移
         config.put(ConfigConstants.LYRIC_OFFSET, lyricOffset);
         // 存入频谱透明渐变
@@ -3991,10 +3999,10 @@ public class MainFrame extends JFrame {
         config.put(ConfigConstants.DESKTOP_LYRIC_OPACITY, desktopLyricOpacity);
         // 存入桌面歌词字体大小
         config.put(ConfigConstants.DESKTOP_LYRIC_FONT_SIZE, desktopLyricFontSize);
-        // 存入音质
-        config.put(ConfigConstants.AUDIO_QUALITY, AudioQuality.quality);
-        // 存入画质
-        config.put(ConfigConstants.VIDEO_QUALITY, VideoQuality.quality);
+        // 存入播放音质
+        config.put(ConfigConstants.AUDIO_PLAY_QUALITY, AudioQuality.playQuality);
+        // 存入播放画质
+        config.put(ConfigConstants.VIDEO_PLAY_QUALITY, VideoQuality.playQuality);
         // 存入快进/快退时间
         config.put(ConfigConstants.FOB_TIME, forwardOrBackwardTime);
         // 存入视频快进/快退时间
@@ -4086,7 +4094,7 @@ public class MainFrame extends JFrame {
                 jsonObject.put(ConfigConstants.TASK_MUSIC_INFO, jo);
             }
             // 如果是 MV 下载任务，需要额外记录 MV 信息
-            else if (task.getType() == TaskType.MV) {
+            else if (task.isMv()) {
                 NetMvInfo mvInfo = (NetMvInfo) task.getResource();
                 JSONObject jo = new JSONObject();
                 jo.put(ConfigConstants.NET_MV_SOURCE, mvInfo.getSource());
@@ -18589,15 +18597,16 @@ public class MainFrame extends JFrame {
                 downloadListModel.removeElement(task);
                 if (!checked) continue;
                 // 删除歌词文件
+                String dest = task.getDest();
                 if (task.isMusic()) {
                     NetMusicInfo musicInfo = (NetMusicInfo) task.getResource();
                     FileUtil.delete(SimplePath.DOWNLOAD_MUSIC_PATH + musicInfo.toSimpleLyricFileName());
                     FileUtil.delete(SimplePath.DOWNLOAD_MUSIC_PATH + musicInfo.toSimpleLmlFileName());
+                    AudioFile audioFile = new AudioFile(dest);
+                    // 卸载正在播放的文件
+                    if (player.loadedAudioFile(audioFile)) unload();
                 }
-                AudioFile audioFile = new AudioFile(task.getDest());
-                // 卸载正在播放的文件
-                if (player.loadedAudioFile(audioFile)) unload();
-                FileUtil.delete(audioFile);
+                FileUtil.delete(dest);
             }
             downloadList.setModel(downloadListModel);
             new TipDialog(THIS, REMOVE_SUCCESS_MSG).showDialog();
@@ -19595,6 +19604,8 @@ public class MainFrame extends JFrame {
             if (!netCommentListModel.isEmpty()) netCommentListModel.clear();
             if (!netSheetListModel.isEmpty()) netSheetListModel.clear();
             hideDetailButton.setVisible(true);
+            // 防止事件不起作用
+            globalPanel.requestFocus();
             changePaneButton.setToolTipText(CHANGE_TO_TAB_VIEW_TIP);
         };
         // 有时切换到歌词面板，歌词自动滚动失败，在动画结束后再试
@@ -20305,7 +20316,7 @@ public class MainFrame extends JFrame {
             NetMusicInfo musicInfo = player.getMusicInfo();
 
             // 耳机取下导致的播放异常 或者 转格式后的未知异常，重新播放
-            if (type == MediaException.Type.PLAYBACK_HALTED || type == MediaException.Type.UNKNOWN && musicInfo.isFlac()) {
+            if (type == MediaException.Type.PLAYBACK_HALTED || type == MediaException.Type.UNKNOWN && musicInfo.isFlacPlayFormat()) {
                 resetMp();
             }
             // 歌曲 url 过期后重新加载 url 再播放
@@ -20315,8 +20326,8 @@ public class MainFrame extends JFrame {
                 // 重置标题
                 updateTitle(REFRESH_URL);
                 playExecutor.execute(() -> {
-                    musicInfo.setUrl("");
-                    MusicServerUtil.fillMusicUrl(musicInfo);
+                    musicInfo.setPlayUrl("");
+                    MusicServerUtil.fillMusicUrl(musicInfo, false);
                     resetMp();
                 });
             }
@@ -20633,13 +20644,13 @@ public class MainFrame extends JFrame {
                 });
 
                 // 加载在线音乐的 url
-                MusicServerUtil.fillMusicUrl(musicInfo);
-                String url = musicInfo.getUrl();
+                MusicServerUtil.fillMusicUrl(musicInfo, false);
+                String url = musicInfo.getPlayUrl();
                 // 歌曲无版权
                 if (StringUtil.isEmpty(url)) throw new InvalidResourceException("歌曲资源获取失败");
                 // 酷狗的链接给的 wav，实际上是 mp3 格式，这种情况以 mp3 格式下载到本地再播放
                 // 另外 flac 格式文件先下载 flac 文件，转为 mp3 格式再播放
-                if (url.endsWith(Format.WAV) || musicInfo.isFlac()) {
+                if (url.endsWith(Format.WAV) || musicInfo.isFlacPlayFormat()) {
                     String fileName = musicInfo.toFileName();
                     file = new AudioFile(SimplePath.CACHE_PATH + fileName);
                     AudioFile tmpFile = new AudioFile(FileUtil.replaceSuffix(file, Format.MP3));
@@ -20648,12 +20659,12 @@ public class MainFrame extends JFrame {
                         if (!file.exists() || FileUtil.startsWithLeftBrace(file)) {
                             loading.start();
                             loading.setText(LOADING_MSG);
-                            HttpUtil.download(musicInfo.getUrl(), file.getPath(), (finishedSize, totalSize) -> {
+                            HttpUtil.download(musicInfo.getPlayUrl(), file.getPath(), (finishedSize, totalSize) -> {
                                 loading.setText("加载歌曲文件，" + String.format("%.1f%%", (double) finishedSize / totalSize * 100).replace(".0", ""));
                             });
                         }
                         // Flac 文件需要转换格式，并删除原来的文件
-                        if (musicInfo.isFlac()) {
+                        if (musicInfo.isFlacPlayFormat()) {
                             loading.setText("转换音频文件格式......");
                             MediaUtil.convert(file, tmpFile);
                             file.delete();
@@ -22281,8 +22292,8 @@ public class MainFrame extends JFrame {
 
             // 加载 MV url
             try {
-                MusicServerUtil.fillMvInfo(mvInfo);
-                String url = mvInfo.getUrl();
+                MusicServerUtil.fillMvInfo(mvInfo, false);
+                String url = mvInfo.getPlayUrl();
                 if (StringUtil.isEmpty(url)) throw new InvalidResourceException(" MV 资源获取失败");
                 if (player.isPlaying()) playOrPause();
                 dialog.transitionClose();
@@ -22300,7 +22311,7 @@ public class MainFrame extends JFrame {
         }
         // 播放搜索/下载/收藏列表的 MV
         else {
-            NetMvInfo mvInfo = null;
+            NetMvInfo mvInfo;
             File file = null;
             if (mvType == MvCompSourceType.MV_LIST) mvInfo = netMvList.getSelectedValue();
             else if (mvType == MvCompSourceType.MV_RECOMMEND_LIST)
@@ -22312,12 +22323,12 @@ public class MainFrame extends JFrame {
             dialog.showDialog();
 
             try {
-                MusicServerUtil.fillMvInfo(mvInfo);
-                String url = mvInfo.getUrl();
+                MusicServerUtil.fillMvInfo(mvInfo, false);
+                String url = mvInfo.getPlayUrl();
                 if (StringUtil.isEmpty(url)) throw new InvalidResourceException(" MV 资源获取失败");
 
                 // 不支持的格式转为 mp4 格式再播放
-                if (!mvInfo.isMp4()) {
+                if (!mvInfo.isMp4PlayFormat()) {
                     String fileName = mvInfo.toFileName();
                     file = new File(SimplePath.CACHE_PATH + fileName);
                     // 转为 mp4 再播放
@@ -22333,7 +22344,7 @@ public class MainFrame extends JFrame {
                                 headers = new HashMap<>();
                                 headers.put("referer", "https://www.bilibili.com/");
                             }
-                            HttpUtil.download(mvInfo.getUrl(), file.getPath(), headers);
+                            HttpUtil.download(mvInfo.getPlayUrl(), file.getPath(), headers);
                         }
                         dialog.setMessage("转换视频文件格式......");
                         dialog.updateSize();

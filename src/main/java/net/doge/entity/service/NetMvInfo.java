@@ -24,10 +24,14 @@ public class NetMvInfo implements NetResource, Downloadable {
     private int source = NetResourceSource.NC;
     // 类型 (网易云分成 MV 视频 Mlog)
     private int type;
-    // 格式
-    private String format = Format.MP4;
-    // 画质
-    private int quality;
+    // 播放格式
+    private String playFormat = Format.MP4;
+    // 下载格式
+    private String downFormat = Format.MP4;
+    // 播放画质
+    private int playQuality;
+    // 下载画质
+    private int downQuality;
     // MV id
     private String id;
     // MV bvid (哔哩哔哩)
@@ -42,8 +46,10 @@ public class NetMvInfo implements NetResource, Downloadable {
     private String coverImgUrl;
     // 封面图片缩略图
     private BufferedImage coverImgThumb;
-    // url
-    private String url;
+    // 播放 url
+    private String playUrl;
+    // 下载 url
+    private String downUrl;
     // 播放量
     private Long playCount;
     // 时长
@@ -53,6 +59,8 @@ public class NetMvInfo implements NetResource, Downloadable {
 
     // 缩略图加载后的回调函数
     private Runnable invokeLater;
+
+    private static final String SEPARATOR = " - ";
 
     public boolean isRealMV() {
         return type == MvInfoType.MV && source != NetResourceSource.HK && source != NetResourceSource.BI;
@@ -96,24 +104,25 @@ public class NetMvInfo implements NetResource, Downloadable {
 
     // 判断 MV 信息是否完整
     public boolean isIntegrated() {
-        return hasUrl();
+        return hasPlayUrl();
     }
 
-    // 判断当前画质是否与设置的画质匹配
-    public boolean isQualityMatch() {
-        return quality == VideoQuality.quality;
+    // 判断当前播放画质是否与设置的匹配
+    public boolean isPlayQualityMatch() {
+        return playQuality == VideoQuality.playQuality;
     }
 
-    public void setFormat(String format) {
-        this.format = StringUtil.notEmpty(format) ? format : Format.MP4;
+    // 判断当前下载画质是否与设置的匹配
+    public boolean isDownQualityMatch() {
+        return downQuality == VideoQuality.downQuality;
     }
 
-    public boolean isFlv() {
-        return Format.FLV.equalsIgnoreCase(format);
+    public boolean isFlvPlayFormat() {
+        return Format.FLV.equalsIgnoreCase(playFormat);
     }
 
-    public boolean isMp4() {
-        return Format.MP4.equalsIgnoreCase(format);
+    public boolean isMp4PlayFormat() {
+        return Format.MP4.equalsIgnoreCase(playFormat);
     }
 
     public boolean isVideo() {
@@ -128,8 +137,12 @@ public class NetMvInfo implements NetResource, Downloadable {
         return coverImgThumb != null;
     }
 
-    public boolean hasUrl() {
-        return StringUtil.notEmpty(url);
+    public boolean hasPlayUrl() {
+        return StringUtil.notEmpty(playUrl);
+    }
+
+    public boolean hasDownUrl() {
+        return StringUtil.notEmpty(downUrl);
     }
 
     @Override
@@ -147,19 +160,21 @@ public class NetMvInfo implements NetResource, Downloadable {
         return Objects.hash(source, id, bvId);
     }
 
+    // 用于播放的文件名
     public String toFileName() {
-        return FileUtil.filterFileName(String.format("%s - %s.%s", toSimpleString(), id, format));
+        return FileUtil.filterFileName(toSimpleString() + SEPARATOR + id + "." + playFormat);
     }
 
+    // 用于下载的文件名
     public String toSimpleFileName() {
-        return FileUtil.filterFileName(String.format("%s.%s", toSimpleString(), format));
+        return FileUtil.filterFileName(toSimpleString() + "." + downFormat);
     }
 
     public String toString() {
-        return NetResourceSource.NAMES[source] + " - " + toSimpleString();
+        return NetResourceSource.NAMES[source] + SEPARATOR + toSimpleString();
     }
 
     public String toSimpleString() {
-        return StringUtil.shorten(name + " - " + artist, 230);
+        return StringUtil.shorten(name + (StringUtil.notEmpty(artist) ? SEPARATOR + artist : ""), 230);
     }
 }

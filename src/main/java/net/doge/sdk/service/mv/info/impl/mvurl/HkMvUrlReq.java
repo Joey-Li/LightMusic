@@ -24,7 +24,7 @@ public class HkMvUrlReq {
     /**
      * 根据 MV id 获取 MV 视频链接
      */
-    public String fetchMvUrl(NetMvInfo mvInfo) {
+    public String fetchMvUrl(NetMvInfo mvInfo, boolean forDownload) {
         String id = mvInfo.getId();
         String mvBody = HttpRequest.get(String.format(MV_URL_HK_API, id))
                 .executeAsStr();
@@ -32,7 +32,7 @@ public class HkMvUrlReq {
         JSONArray urlArray = data.getJSONObject("apiData").getJSONObject("curVideoMeta").getJSONArray("clarityUrl");
         String quality;
         String[] qs = {"1080p", "sc", "hd", "sd"};
-        switch (VideoQuality.quality) {
+        switch (forDownload ? VideoQuality.downQuality : VideoQuality.playQuality) {
             case VideoQuality.UHD:
             case VideoQuality.FHD:
                 quality = "1080p";

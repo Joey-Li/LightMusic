@@ -20,7 +20,8 @@ public class VideoQuality {
     public static final int UHD = 4;
 
     // 当前画质
-    public static int quality = FHD;
+    public static int playQuality = FHD;
+    public static int downQuality = FHD;
     public static final String[] NAMES = {
             I18n.getText("fluent"),
             I18n.getText("sd"),

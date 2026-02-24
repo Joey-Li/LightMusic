@@ -170,7 +170,7 @@ public class VideoDialog extends AbstractTitledDialog {
         super(f, HtmlUtil.textToHtml(StringUtil.shorten(mvInfo.toSimpleString(), ScaleUtil.scale(60))));
         this.isLocal = dest != null;
         this.mvInfo = mvInfo;
-        this.uri = isLocal ? dest : mvInfo.getUrl();
+        this.uri = isLocal ? dest : mvInfo.getPlayUrl();
 
         mediaWidth = WindowSize.VIDEO_DIMENSIONS[f.windowSize][0];
         mediaHeight = WindowSize.VIDEO_DIMENSIONS[f.windowSize][1];
@@ -296,9 +296,9 @@ public class VideoDialog extends AbstractTitledDialog {
                     || type == MediaException.Type.MEDIA_UNAVAILABLE
                     || type == MediaException.Type.UNKNOWN) {
                 if (!isLocal) {
-                    mvInfo.setUrl("");
-                    MusicServerUtil.fillMvInfo(mvInfo);
-                    uri = mvInfo.getUrl();
+                    mvInfo.setPlayUrl("");
+                    MusicServerUtil.fillMvInfo(mvInfo, false);
+                    uri = mvInfo.getPlayUrl();
                 }
                 initAgain();
             }
@@ -464,7 +464,7 @@ public class VideoDialog extends AbstractTitledDialog {
             }
         });
         // 下载
-        downloadButton.setEnabled(!isLocal || !mvInfo.isMp4());
+        downloadButton.setEnabled(!isLocal || !mvInfo.isMp4PlayFormat());
         downloadButton.setToolTipText(DOWNLOAD_TIP);
         downloadButton.setIcon(ImageUtil.dye(downloadIcon, iconColor));
         downloadButton.setDisabledIcon(ImageUtil.dye(downloadIcon, ColorUtil.darker(iconColor)));

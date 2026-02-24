@@ -176,7 +176,7 @@ public class MusicPlayer {
         this.musicInfo = musicInfo;
 
         // 音频格式(以 source 文件为准)
-        metaMusicInfo.setFormat(source == null ? musicInfo.getFormat() : source.getFormat());
+        metaMusicInfo.setFormat(source == null ? musicInfo.getPlayFormat() : source.getFormat());
         // 时长(优先考虑 NetMusicInfo 的 duration 属性，有时 getDuration 方法返回的时长不准确)
         metaMusicInfo.setDuration(musicInfo != null ? musicInfo.hasDuration() ? musicInfo.getDuration() : 0 : source.getDuration());
 
@@ -276,7 +276,7 @@ public class MusicPlayer {
     // 初始化 MediaPlayer 对象
     public void initMp() {
         // 加载文件(在线音乐直接播放 url)
-        String src = audioFile != null ? audioFile.toURI().toString() : musicInfo.getUrl();
+        String src = audioFile != null ? audioFile.toURI().toString() : musicInfo.getPlayUrl();
         Media media = new Media(src);
         initRequestHeaders(musicInfo, media);
         mp = new MediaPlayer(media);

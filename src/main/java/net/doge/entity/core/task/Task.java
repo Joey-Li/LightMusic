@@ -63,7 +63,7 @@ public class Task {
         this.name = type == TaskType.MUSIC ? ((NetMusicInfo) resource).toSimpleString() : ((NetMvInfo) resource).toSimpleString();
         this.dest = type == TaskType.MUSIC ? SimplePath.DOWNLOAD_MUSIC_PATH + ((NetMusicInfo) resource).toSimpleFileName()
                 : SimplePath.DOWNLOAD_MV_PATH + ((NetMvInfo) resource).toSimpleFileName();
-        this.format = type == TaskType.MUSIC ? ((NetMusicInfo) resource).getFormat() : ((NetMvInfo) resource).getFormat();
+        this.format = type == TaskType.MUSIC ? ((NetMusicInfo) resource).getDownFormat() : ((NetMvInfo) resource).getDownFormat();
     }
 
     public void setPercent(double percent) {
@@ -179,14 +179,14 @@ public class Task {
             NetMusicInfo musicInfo = (NetMusicInfo) resource;
             // 先补全音乐信息、url
             MusicServerUtil.fillMusicInfo(musicInfo);
-            MusicServerUtil.fillMusicUrl(musicInfo);
+            MusicServerUtil.fillMusicUrl(musicInfo, true);
             MusicServerUtil.fillLyric(musicInfo);
-            url = musicInfo.getUrl();
+            url = musicInfo.getDownUrl();
             dest = SimplePath.DOWNLOAD_MUSIC_PATH + musicInfo.toSimpleFileName();
         } else if (type == TaskType.MV) {
             NetMvInfo mvInfo = (NetMvInfo) resource;
-            MusicServerUtil.fillMvInfo(mvInfo);
-            url = mvInfo.getUrl();
+            MusicServerUtil.fillMvInfo(mvInfo, true);
+            url = mvInfo.getDownUrl();
             dest = SimplePath.DOWNLOAD_MV_PATH + mvInfo.toSimpleFileName();
         }
     }

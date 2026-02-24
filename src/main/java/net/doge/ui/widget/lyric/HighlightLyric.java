@@ -21,16 +21,23 @@ import java.util.List;
 
 @Data
 public class HighlightLyric {
+    // 尺寸
     private int width;
     private int height;
+    // 歌词
     private double time;
     private String lyric;
     private String plainLyric;
+    // 字体
     private Font labelFont;
+    // 是否为桌面歌词
     private boolean isDesktopLyric;
+    // 颜色
     private Color c1;
     private Color c2;
+    // 比率
     private double ratio;
+    // 宽度限制
     private int widthThreshold;
     // 阴影水平偏移
     private int shadowHOffset;
@@ -48,7 +55,7 @@ public class HighlightLyric {
 
     // 最小上浮动画时间
     private final int minDropDuration = 100;
-    // 最最大简单上浮动画时间
+    // 最大简单上浮动画时间
     private final int maxSimpleDropDuration = 1000;
     // 起始/经过/结束位移
     private final int startDrop = ScaleUtil.scale(3);
@@ -118,25 +125,17 @@ public class HighlightLyric {
         initWordWidthList(lyric);
 
         // 计算宽度
+        List<Font> fonts = isDesktopLyric ? Fonts.TYPES_HUGE : Fonts.TYPES_BIG;
         for (int i = 0, len = plainLyric.length(); i < len; i++) {
             int codePoint = plainLyric.codePointAt(i);
             char[] chars = Character.toChars(codePoint);
             String str = new String(chars);
 
-            if (isDesktopLyric) {
-                for (int j = 0, l = metricsArray.length; j < l; j++) {
-                    if (!Fonts.TYPES_HUGE.get(j).canDisplay(codePoint)) continue;
-                    width += metricsArray[j].stringWidth(str);
-                    i += chars.length - 1;
-                    break;
-                }
-            } else {
-                for (int j = 0, l = metricsArray.length; j < l; j++) {
-                    if (!Fonts.TYPES_BIG.get(j).canDisplay(codePoint)) continue;
-                    width += metricsArray[j].stringWidth(str);
-                    i += chars.length - 1;
-                    break;
-                }
+            for (int j = 0, l = metricsArray.length; j < l; j++) {
+                if (!fonts.get(j).canDisplay(codePoint)) continue;
+                width += metricsArray[j].stringWidth(str);
+                i += chars.length - 1;
+                break;
             }
         }
         // 桌面歌词阴影显示不完全解决
@@ -154,12 +153,8 @@ public class HighlightLyric {
         buffImg2 = ImageUtil.createTransparentImage(width, height);
 
         // 通过 BufferedImage 创建 Graphics2D 对象
-        Graphics2D g1 = buffImg1.createGraphics();
-        Graphics2D g2 = buffImg2.createGraphics();
-
-        // 设置抗锯齿
-        g1.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        Graphics2D g1 = GraphicsUtil.setup(buffImg1.createGraphics());
+        Graphics2D g2 = GraphicsUtil.setup(buffImg2.createGraphics());
 
         int dy = height - (int) fontSize;
         if (!isDesktopLyric) dy += ScaleUtil.scale(5);
@@ -167,76 +162,29 @@ public class HighlightLyric {
         g1.setColor(c1);
         g2.setColor(ColorUtil.deriveAlpha(c2, 0.45f));
 
-        // 画字符串
-        if (isDesktopLyric) {
-            int widthDrawn = shadowHOffset;
-            for (int i = 0, len = plainLyric.length(); i < len; i++) {
-                int codePoint = plainLyric.codePointAt(i);
-                char[] chars = Character.toChars(codePoint);
-                String str = new String(chars);
+        // 画文字
+        int widthDrawn = shadowHOffset;
+        for (int i = 0, len = plainLyric.length(); i < len; i++) {
+            int codePoint = plainLyric.codePointAt(i);
+            char[] chars = Character.toChars(codePoint);
+            String str = new String(chars);
 
-                for (int j = 0, l = metricsArray.length; j < l; j++) {
-                    Font font = Fonts.TYPES_HUGE.get(j);
-                    if (!font.canDisplay(codePoint)) continue;
-//                        Shape shape = font.createGlyphVector(metricsHuge[j].getFontRenderContext(), str).getOutline();
-//                        // 文字阴影
-//                        g1.setColor(shadowColor);
-//                        g2.setColor(shadowColor);
-//                        g1.translate(shadowXOffset, shadowYOffset);
-//                        g2.translate(shadowXOffset, shadowYOffset);
-//                        g1.fill(shape);
-//                        g2.fill(shape);
-//                        g1.translate(-shadowXOffset, -shadowYOffset);
-//                        g2.translate(-shadowXOffset, -shadowYOffset);
-//                        // 文字本体
-//                        g1.setColor(c1);
-//                        g2.setColor(c2);
-//                        g1.fill(shape);
-//                        g2.fill(shape);
-//                        // 文字描边
-//                        g1.setColor(borderColor);
-//                        g2.setColor(borderColor);
-//                        g1.draw(shape);
-//                        g2.draw(shape);
-                    Font nf = font.deriveFont(fontSize);
-                    g1.setFont(nf);
-                    g2.setFont(nf);
-                    g1.drawString(str, widthDrawn, dy);
-                    g2.drawString(str, widthDrawn, dy);
-                    int strWidth = metricsArray[j].stringWidth(str);
-                    widthDrawn += strWidth;
-                    i += chars.length - 1;
-                    break;
-                }
+            for (int j = 0, l = metricsArray.length; j < l; j++) {
+                Font font = fonts.get(j);
+                if (!font.canDisplay(codePoint)) continue;
+                Font nf = font.deriveFont(fontSize);
+                g1.setFont(nf);
+                g2.setFont(nf);
+                g1.drawString(str, widthDrawn, dy);
+                g2.drawString(str, widthDrawn, dy);
+                int strWidth = metricsArray[j].stringWidth(str);
+                widthDrawn += strWidth;
+                i += chars.length - 1;
+                break;
             }
-
-            // 文字阴影
-            buffImg1 = ImageUtil.shadow(buffImg1, c1);
-//            buffImg2 = ImageUtil.shadow(buffImg2, c2);
-        } else {
-            int widthDrawn = 0;
-            for (int i = 0, len = plainLyric.length(); i < len; i++) {
-                int codePoint = plainLyric.codePointAt(i);
-                char[] chars = Character.toChars(codePoint);
-                String str = new String(chars);
-
-                for (int j = 0, l = metricsArray.length; j < l; j++) {
-                    Font font = Fonts.TYPES_BIG.get(j);
-                    if (!font.canDisplay(codePoint)) continue;
-                    Font nf = font.deriveFont(fontSize);
-                    g1.setFont(nf);
-                    g2.setFont(nf);
-                    g1.drawString(str, widthDrawn, dy);
-                    g2.drawString(str, widthDrawn, dy);
-                    int strWidth = metricsArray[j].stringWidth(str);
-                    widthDrawn += strWidth;
-                    i += chars.length - 1;
-                    break;
-                }
-            }
-            // 文字阴影
-//            buffImg1 = ImageUtil.shadow(buffImg1, c1);
         }
+        // 文字阴影
+        if (isDesktopLyric) buffImg1 = ImageUtil.shadow(buffImg1, c1);
 
         g1.dispose();
         g2.dispose();
@@ -311,10 +259,11 @@ public class HighlightLyric {
 
     // 更新普通歌词 DropOriginList
     public void updateNormalWordDropOriginList(double currTime, double lineStartTime, double lineEndTime) {
-        int lineStartTimeMs = (int) (lineStartTime * 1000), lineEndTimeMs = (int) (lineEndTime * 1000);
-        int lineDurationMs = lineEndTimeMs - lineStartTimeMs;
-        // 如果每段起始/持续时间未初始化
+        // 如果每段起始/持续时间未初始化(针对非逐字歌词)
         if (wordStartList.isEmpty()) {
+            int lineStartTimeMs = (int) (lineStartTime * 1000), lineEndTimeMs = (int) (lineEndTime * 1000);
+            int lineDurationMs = lineEndTimeMs - lineStartTimeMs;
+
             int totalWidth = width - 2 * shadowHOffset;
             for (int i = 0, len = wordWidthList.size(); i < len; i++) {
                 int wordWidth = wordWidthList.get(i);
@@ -347,10 +296,11 @@ public class HighlightLyric {
     private int computeWordDrop(double progress, boolean useCurve) {
         if (useCurve)
             return (int) curve(progress, startDrop, interpolarX, topDrop, destDrop);
+        // 线性匀速
         return (int) (startDrop + (destDrop - startDrop) * progress);
     }
 
-    // 曲线函数
+    // 曲线：过 (0, a) 和 (1, b)，在中间插入 (t1, c) 的曲线，计算 t 处的值
     private double curve(double t, double a, double t1, double c, double b) {
         // 使用正弦函数实现平滑的缓入缓出
         if (t <= t1) {
@@ -394,26 +344,20 @@ public class HighlightLyric {
 
     public void setRatio(double ratio) {
         if (width == 0 || height == 0) return;
-
         int pw = width - 2 * shadowHOffset, t = (int) (shadowHOffset + pw * ratio + 0.5);
-
         // 虽然不断创建新的图像存在性能开销，但是单例清除图像时会闪烁
         buffImg = ImageUtil.createTransparentImage(width, height);
         Graphics2D g2d = GraphicsUtil.setup(buffImg.createGraphics());
-
         if (ratio > 0) {
             // 将 buffImg 的左半部分用 buffImg1 的左半部分替换
-            GraphicsUtil.srcOver(g2d);
             paintBuffImg1WithDrop(g2d, t);
 //            g2d.drawImage(buffImg1, shadowHOffset, 0, t + fadeWidth, height, shadowHOffset, 0, t + fadeWidth, height, null);
-
             // 创建渐变覆盖层（使用黑色到透明的渐变，然后使用 DST_OUT）
             GradientPaint fadeOverlay = new GradientPaint(t, 0, Colors.TRANSPARENT, t + fadeWidth, 0, Colors.BLACK, false);
             // 使用 DST_OUT：目标在源外（移除黑色覆盖的部分）
             g2d.setComposite(AlphaComposite.DstOut);
             g2d.setPaint(fadeOverlay);
             g2d.fillRect(t, 0, fadeWidth, height);
-
             // 背景覆盖前景的模式
             g2d.setComposite(AlphaComposite.DstOver);
         }

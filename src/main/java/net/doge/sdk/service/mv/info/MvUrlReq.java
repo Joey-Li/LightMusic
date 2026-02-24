@@ -18,27 +18,27 @@ public class MvUrlReq {
     /**
      * 根据 MV id 获取 MV 视频链接
      */
-    public String fetchMvUrl(NetMvInfo mvInfo) {
+    public String fetchMvUrl(NetMvInfo mvInfo, boolean forDownload) {
         int source = mvInfo.getSource();
         switch (source) {
             case NetResourceSource.NC:
-                return NcMvUrlReq.getInstance().fetchMvUrl(mvInfo);
+                return NcMvUrlReq.getInstance().fetchMvUrl(mvInfo, forDownload);
             case NetResourceSource.KG:
-                return KgMvUrlReq.getInstance().fetchMvUrl(mvInfo);
+                return KgMvUrlReq.getInstance().fetchMvUrl(mvInfo, forDownload);
             case NetResourceSource.QQ:
-                return QqMvUrlReq.getInstance().fetchMvUrl(mvInfo);
+                return QqMvUrlReq.getInstance().fetchMvUrl(mvInfo, forDownload);
             case NetResourceSource.KW:
                 return KwMvUrlReq.getInstance().fetchMvUrl(mvInfo);
             case NetResourceSource.QI:
-                return QiMvUrlReq.getInstance().fetchMvUrl(mvInfo);
+                return QiMvUrlReq.getInstance().fetchMvUrl(mvInfo, forDownload);
             case NetResourceSource.FS:
-                return FsMvUrlReq.getInstance().fetchMvUrl(mvInfo);
+                return FsMvUrlReq.getInstance().fetchMvUrl(mvInfo, forDownload);
             case NetResourceSource.HK:
-                return HkMvUrlReq.getInstance().fetchMvUrl(mvInfo);
+                return HkMvUrlReq.getInstance().fetchMvUrl(mvInfo, forDownload);
             case NetResourceSource.BI:
-                return BiMvUrlReq.getInstance().fetchMvUrl(mvInfo);
+                return BiMvUrlReq.getInstance().fetchMvUrl(mvInfo, forDownload);
             case NetResourceSource.YY:
-                return YyMvUrlReq.getInstance().fetchMvUrl(mvInfo);
+                return YyMvUrlReq.getInstance().fetchMvUrl(mvInfo, forDownload);
             case NetResourceSource.FA:
                 return FaMvUrlReq.getInstance().fetchMvUrl(mvInfo);
             case NetResourceSource.LZ:

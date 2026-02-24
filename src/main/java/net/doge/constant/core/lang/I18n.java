@@ -596,12 +596,14 @@ public class I18n {
         LANG_MAP.put("darkerFactor", new String[]{"暗角滤镜因子（因子越小越暗）：", "Darker mode factor(Smaller factor, darker): "});
         LANG_MAP.put("autoDownloadLyric", new String[]{"下载歌曲时自动下载歌词", "Download lyrics while downloading tracks"});
         LANG_MAP.put("verbatimTimeline", new String[]{"优先下载带逐字时间轴的歌词文件(LML 格式)", "Download lyrics with verbatim timelines (LML Format) preferentially"});
+        LANG_MAP.put("audioDownQuality", new String[]{"下载优先音质（如果可用）：", "Preferred audio quality for download(If available): "});
+        LANG_MAP.put("videoDownQuality", new String[]{"下载优先画质（如果可用）：", "Preferred video quality for download(If available): "});
         LANG_MAP.put("musicDown", new String[]{"歌曲下载路径：", "Track download path: "});
         LANG_MAP.put("mvDown", new String[]{"MV 下载路径：", "MV download path: "});
         LANG_MAP.put("cache", new String[]{"缓存路径：", "Cache path: "});
         LANG_MAP.put("maxCacheSize", new String[]{"最大缓存大小(≤%sMB)：", "Max cache size(≤%sMB): "});
-        LANG_MAP.put("audioQuality", new String[]{"优先音质（如果可用）：", "Preferred audio quality(If available): "});
-        LANG_MAP.put("videoQuality", new String[]{"优先画质（如果可用）：", "Preferred video quality(If available): "});
+        LANG_MAP.put("audioPlayQuality", new String[]{"播放优先音质（如果可用）：", "Preferred audio quality for playback(If available): "});
+        LANG_MAP.put("videoPlayQuality", new String[]{"播放优先画质（如果可用）：", "Preferred video quality for playback(If available): "});
         LANG_MAP.put("fob", new String[]{"快进/快退时间：", "Fast forward/rewind interval: "});
         LANG_MAP.put("balance", new String[]{"声道平衡：", "Audio channel: "});
         LANG_MAP.put("maxHistoryCount", new String[]{"最大播放历史数量(≤%s)：", "Max playback history count(≤%s): "});

@@ -23,7 +23,7 @@ public class QqMvUrlReq {
     /**
      * 根据 MV id 获取 MV 视频链接
      */
-    public String fetchMvUrl(NetMvInfo mvInfo) {
+    public String fetchMvUrl(NetMvInfo mvInfo, boolean forDownload) {
         String id = mvInfo.getId();
         String mvBody = HttpRequest.post(SdkCommon.QQ_MAIN_API)
                 .jsonBody(String.format("{\"getMvUrl\":{\"module\":\"gosrf.Stream.MvUrlProxy\",\"method\":\"GetMvUrls\"," +
@@ -33,7 +33,7 @@ public class QqMvUrlReq {
         JSONArray mp4Array = data.getJSONArray("mp4");
         String quality;
         String[] qs = {"50", "40", "30", "20", "10"};
-        switch (VideoQuality.quality) {
+        switch (forDownload ? VideoQuality.downQuality : VideoQuality.playQuality) {
             case VideoQuality.UHD:
                 quality = "50";
                 break;

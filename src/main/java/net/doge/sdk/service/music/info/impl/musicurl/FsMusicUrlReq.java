@@ -28,7 +28,7 @@ public class FsMusicUrlReq {
     /**
      * 根据歌曲 id 获取歌曲地址
      */
-    public String fetchMusicUrl(NetMusicInfo musicInfo) {
+    public String fetchMusicUrl(NetMusicInfo musicInfo, boolean forDownload) {
         String id = musicInfo.getId();
         String[] sp = id.split("_");
         Map<String, Object> params = new TreeMap<>();
@@ -39,8 +39,9 @@ public class FsMusicUrlReq {
         String songBody = SdkCommon.fsRequest(params, null, options)
                 .executeAsStr();
         JSONObject data = JSONObject.parseObject(songBody).getJSONObject("data");
-        String url = AudioQuality.quality >= AudioQuality.SUPER ? data.getString("squrl") : "";
-        if (StringUtil.isEmpty(url)) url = AudioQuality.quality >= AudioQuality.HIGH ? data.getString("hqurl") : "";
+        int quality = forDownload ? AudioQuality.downQuality : AudioQuality.playQuality;
+        String url = quality >= AudioQuality.SUPER ? data.getString("squrl") : "";
+        if (StringUtil.isEmpty(url)) url = quality >= AudioQuality.HIGH ? data.getString("hqurl") : "";
         if (StringUtil.isEmpty(url)) url = data.getString("lqurl");
         return url;
     }

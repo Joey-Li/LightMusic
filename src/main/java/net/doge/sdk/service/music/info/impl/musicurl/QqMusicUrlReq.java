@@ -21,10 +21,10 @@ public class QqMusicUrlReq {
     /**
      * 根据歌曲 id 获取歌曲地址
      */
-    public String fetchMusicUrl(NetMusicInfo musicInfo) {
+    public String fetchMusicUrl(NetMusicInfo musicInfo, boolean forDownload) {
         String id = musicInfo.getId();
         String quality;
-        switch (AudioQuality.quality) {
+        switch (forDownload ? AudioQuality.downQuality : AudioQuality.playQuality) {
             case AudioQuality.MASTER:
                 quality = AudioQuality.KEYS[AudioQuality.MASTER];
                 break;

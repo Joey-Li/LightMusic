@@ -24,7 +24,7 @@ public class QiMvUrlReq {
     /**
      * 根据 MV id 获取 MV 视频链接
      */
-    public String fetchMvUrl(NetMvInfo mvInfo) {
+    public String fetchMvUrl(NetMvInfo mvInfo, boolean forDownload) {
         String id = mvInfo.getId();
         String mvBody = SdkCommon.qiRequest(String.format(MV_URL_QI_API, id, System.currentTimeMillis()))
                 .executeAsStr();
@@ -32,7 +32,7 @@ public class QiMvUrlReq {
         JSONArray urlArray = data.getJSONObject(0).getJSONArray("allRate");
         String quality;
         String[] qs = {"r2k", "r1080", "r720", "r480", "r360"};
-        switch (VideoQuality.quality) {
+        switch (forDownload ? VideoQuality.downQuality : VideoQuality.playQuality) {
             case VideoQuality.UHD:
                 quality = "r2k";
                 break;

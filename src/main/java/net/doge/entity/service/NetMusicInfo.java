@@ -33,16 +33,22 @@ public class NetMusicInfo implements MusicResource, NetResource, Downloadable {
     private String programId;
     // MV id
     private String mvId;
-    // 地址
-    private String url;
-    // 音频格式
-    private String format = Format.MP3;
+    // 播放 url
+    private String playUrl;
+    // 下载 url
+    private String downUrl;
+    // 播放音频格式
+    private String playFormat = Format.MP3;
+    // 下载音频格式
+    private String downFormat = Format.MP3;
     // 时长(秒)
     private double duration;
     // 音质类型
     private int qualityType = AudioQuality.UNKNOWN;
-    // 当前使用的音质
-    private int quality;
+    // 当前使用的播放音质
+    private int playQuality;
+    // 当前使用的下载音质
+    private int downQuality;
     // 歌曲名称
     private String name;
     // 艺术家
@@ -81,12 +87,17 @@ public class NetMusicInfo implements MusicResource, NetResource, Downloadable {
 
     // 判断歌曲信息是否完整
     public boolean isIntegrated() {
-        return hasUrl() && hasLyric() && hasAlbumImage();
+        return hasPlayUrl() && hasLyric() && hasAlbumImage();
     }
 
-    // 判断当前音质是否为设置的音质
-    public boolean isQualityMatch() {
-        return quality == AudioQuality.quality;
+    // 判断当前播放音质是否与设置的匹配
+    public boolean isPlayQualityMatch() {
+        return playQuality == AudioQuality.playQuality;
+    }
+
+    // 判断当前下载音质是否与设置的匹配
+    public boolean isDownQualityMatch() {
+        return downQuality == AudioQuality.downQuality;
     }
 
     public boolean hasProgramId() {
@@ -137,8 +148,12 @@ public class NetMusicInfo implements MusicResource, NetResource, Downloadable {
         return qualityType != AudioQuality.UNKNOWN;
     }
 
-    public boolean hasUrl() {
-        return StringUtil.notEmpty(url);
+    public boolean hasPlayUrl() {
+        return StringUtil.notEmpty(playUrl);
+    }
+
+    public boolean hasDownUrl() {
+        return StringUtil.notEmpty(downUrl);
     }
 
     // 判断歌词是否完整
@@ -166,16 +181,16 @@ public class NetMusicInfo implements MusicResource, NetResource, Downloadable {
         return duration != 0 && Double.isFinite(duration);
     }
 
-    public boolean isMp3() {
-        return Format.MP3.equalsIgnoreCase(format);
+    public boolean isMp3PlayFormat() {
+        return Format.MP3.equalsIgnoreCase(playFormat);
     }
 
-    public boolean isM4a() {
-        return Format.M4A.equalsIgnoreCase(format);
+    public boolean isM4aPlayFormat() {
+        return Format.M4A.equalsIgnoreCase(playFormat);
     }
 
-    public boolean isFlac() {
-        return Format.FLAC.equalsIgnoreCase(format);
+    public boolean isFlacPlayFormat() {
+        return Format.FLAC.equalsIgnoreCase(playFormat);
     }
 
     @Override
@@ -197,12 +212,14 @@ public class NetMusicInfo implements MusicResource, NetResource, Downloadable {
         return FileUtil.filterFileName(toSimpleString() + SEPARATOR + id + "." + Format.JPG);
     }
 
+    // 用于播放的文件名
     public String toFileName() {
-        return FileUtil.filterFileName(toSimpleString() + SEPARATOR + id + "." + format);
+        return FileUtil.filterFileName(toSimpleString() + SEPARATOR + id + "." + playFormat);
     }
 
+    // 用于下载的文件名
     public String toSimpleFileName() {
-        return FileUtil.filterFileName(toSimpleString() + "." + format);
+        return FileUtil.filterFileName(toSimpleString() + "." + downFormat);
     }
 
     public String toLyricFileName() {
