@@ -21,7 +21,7 @@ public class FontUtil {
      */
     public static Font toFont(String base64, float fontSize) {
         try {
-            byte[] bytes = CryptoUtil.base64DecodeToBytes(base64);
+            byte[] bytes = CryptoUtil.base64Decode(base64);
             ByteArrayInputStream in = new ByteArrayInputStream(bytes);
             Font dynamicFont = Font.createFont(Font.TRUETYPE_FONT, in);
             Font dynamicFontPt = dynamicFont.deriveFont(fontSize);

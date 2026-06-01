@@ -35,7 +35,7 @@ public class NeteaseCrypto {
         String params = CryptoUtil.base64Encode(aesBytes2);
         // encSecKey
         ArrayUtil.reverse(secretKey);
-        byte[] rsaBytes = CryptoUtil.rsaEncrypt(secretKey, CryptoUtil.base64DecodeToBytes(PUBLIC_KEY));
+        byte[] rsaBytes = CryptoUtil.rsaEncrypt(secretKey, CryptoUtil.base64Decode(PUBLIC_KEY));
         String encSecKey = CryptoUtil.bytesToHex(rsaBytes);
         return "params=" + UrlUtil.encodeAll(params) + "&encSecKey=" + encSecKey;
     }

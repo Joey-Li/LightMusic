@@ -104,8 +104,8 @@ public class QqLyricReq {
             JSONObject lyricJson = JSONObject.parseObject(lyricBody);
             String lyric = lyricJson.getString("lyric");
             String trans = lyricJson.getString("trans");
-            musicInfo.setLyric(HtmlUtil.removeHtmlLabel(CryptoUtil.base64Decode(lyric)));
-            musicInfo.setTrans(HtmlUtil.removeHtmlLabel(CryptoUtil.base64Decode(trans)));
+            musicInfo.setLyric(HtmlUtil.removeHtmlLabel(CryptoUtil.base64DecodeStr(lyric)));
+            musicInfo.setTrans(HtmlUtil.removeHtmlLabel(CryptoUtil.base64DecodeStr(trans)));
             musicInfo.setRoma("");
         }
         // qrc

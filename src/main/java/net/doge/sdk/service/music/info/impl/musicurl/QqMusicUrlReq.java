@@ -48,9 +48,9 @@ public class QqMusicUrlReq {
                 quality = AudioQuality.KEYS[AudioQuality.STANDARD];
                 break;
         }
-        String trackUrl = VkeysQqTrackReq.getInstance().getTrackUrl(id, quality);
+        String trackUrl = XcvtsQqTrackReq.getInstance().getTrackUrl(id, quality);
         if (StringUtil.isEmpty(trackUrl)) trackUrl = HuibqQqTrackReq.getInstance().getTrackUrl(id, quality);
-        if (StringUtil.isEmpty(trackUrl)) trackUrl = XcvtsQqTrackReq.getInstance().getTrackUrl(id, quality);
+        if (StringUtil.isEmpty(trackUrl)) trackUrl = VkeysQqTrackReq.getInstance().getTrackUrl(id, quality);
         if (StringUtil.isEmpty(trackUrl)) trackUrl = QqTrackReqV2.getInstance().getTrackUrl(id, quality);
         return trackUrl;
     }

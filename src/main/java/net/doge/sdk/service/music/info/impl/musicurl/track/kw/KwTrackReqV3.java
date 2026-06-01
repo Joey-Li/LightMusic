@@ -24,6 +24,8 @@ public class KwTrackReqV3 {
     }
 
     // 歌曲 URL 获取 API (酷我)
+    // kwplayer_ar_6.0.0.9_B_jiakong_vh.apk
+    // kwplayer_ar_6.4.1.1_B_jiakong_vh.apk
     private final String SONG_URL_KW_API = "https://mobi.kuwo.cn/mobi.s?f=web&source=kwplayer_ar_5.0.0.0_B_jiakong_vh.apk&type=convert_url_with_sign&rid=%s&br=%s&user=0";
 
     private Map<String, String> brMap = new HashMap<>();

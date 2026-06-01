@@ -59,7 +59,7 @@ public class KwLyricReq {
         // 无 lrcx 参数时，此处直接获得 lrc 歌词
 //        String lyricStr = new String(lyricData, Charset.forName("gb18030"));
         String lyricDataStr = new String(lyricData, StandardCharsets.UTF_8);
-        byte[] lyricBytes = CryptoUtil.base64DecodeToBytes(lyricDataStr);
+        byte[] lyricBytes = CryptoUtil.base64Decode(lyricDataStr);
         int lyricLen = lyricBytes.length;
         output = new byte[lyricLen];
         i = 0;

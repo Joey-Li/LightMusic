@@ -38,7 +38,7 @@ public class GgMusicUrlReq {
             String base64Pattern = "base64_decode\\(\"(.*?)\"\\)";
             String base64Str = RegexUtil.getGroup1(base64Pattern, dataStr);
             if (StringUtil.notEmpty(base64Str))
-                dataStr = dataStr.replaceFirst(base64Pattern, String.format("\"%s\"", CryptoUtil.base64Decode(base64Str)));
+                dataStr = dataStr.replaceFirst(base64Pattern, String.format("\"%s\"", CryptoUtil.base64DecodeStr(base64Str)));
 
             // json 字段带引号
             JSONObject data = JSONObject.parseObject(dataStr.replaceAll(" (\\w+):", "'$1':"));

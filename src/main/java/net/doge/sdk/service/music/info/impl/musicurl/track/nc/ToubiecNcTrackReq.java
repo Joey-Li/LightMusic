@@ -1,4 +1,4 @@
-package net.doge.sdk.service.music.info.impl.musicurl.track.nc.deprecated;
+package net.doge.sdk.service.music.info.impl.musicurl.track.nc;
 
 import com.alibaba.fastjson2.JSONObject;
 import net.doge.constant.core.media.AudioQuality;
@@ -29,6 +29,9 @@ public class ToubiecNcTrackReq {
     // 歌曲 URL 获取 API
     private final String SONG_URL_API = "https://nextmusic.toubiec.cn/api/getSongUrl";
 
+    // 加密参数
+    private final int TAG_LENGTH = 128;
+
     private Map<String, String> qualityMap = new HashMap<>();
 
     private void initMap() {
@@ -47,13 +50,13 @@ public class ToubiecNcTrackReq {
     private String encryptPayload(String payload, String key) {
         // payload 转字节
         byte[] payloadBytes = payload.getBytes(StandardCharsets.UTF_8);
-        byte[] keyBytes = CryptoUtil.base64DecodeToBytes(key);
+        byte[] keyBytes = CryptoUtil.base64Decode(key);
         // 生成随机 nonce
         byte[] nonce = ArrayUtil.randomBytes(12);
         // AES-GCM 加密
-        byte[] encrypted = CryptoUtil.aesGcmEncrypt(payloadBytes, keyBytes, nonce);
-        // 提取认证标签（最后 16 字节）和密文（前面部分）
-        int tagLength = 128 / 8;
+        byte[] encrypted = CryptoUtil.aesGcmEncrypt(payloadBytes, keyBytes, TAG_LENGTH, nonce);
+        // 提取认证标签(最后 16 字节)和密文(前面部分)
+        int tagLength = TAG_LENGTH / 8;
         byte[] tag = new byte[tagLength];
         byte[] cipherText = new byte[encrypted.length - tagLength];
         System.arraycopy(encrypted, encrypted.length - tagLength, tag, 0, tagLength);
@@ -71,16 +74,16 @@ public class ToubiecNcTrackReq {
         String[] parts = payload.split("\\.");
         if (parts.length != 3) throw new IllegalArgumentException("Invalid format: expected nonce.tag.ciphertext");
         // Base64 解码
-        byte[] nonce = CryptoUtil.base64DecodeToBytes(parts[0]);
-        byte[] tag = CryptoUtil.base64DecodeToBytes(parts[1]);
-        byte[] cipherText = CryptoUtil.base64DecodeToBytes(parts[2]);
+        byte[] nonce = CryptoUtil.base64Decode(parts[0]);
+        byte[] tag = CryptoUtil.base64Decode(parts[1]);
+        byte[] cipherText = CryptoUtil.base64Decode(parts[2]);
         // 拼接密文和标签
         byte[] cipherTextWithTag = new byte[cipherText.length + tag.length];
         System.arraycopy(cipherText, 0, cipherTextWithTag, 0, cipherText.length);
         System.arraycopy(tag, 0, cipherTextWithTag, cipherText.length, tag.length);
         // AES-GCM 解密
-        byte[] keyBytes = CryptoUtil.base64DecodeToBytes(key);
-        byte[] decrypted = CryptoUtil.aesGcmDecrypt(cipherTextWithTag, keyBytes, nonce);
+        byte[] keyBytes = CryptoUtil.base64Decode(key);
+        byte[] decrypted = CryptoUtil.aesGcmDecrypt(cipherTextWithTag, keyBytes, TAG_LENGTH, nonce);
         return new String(decrypted, StandardCharsets.UTF_8);
     }
 
@@ -105,8 +108,8 @@ public class ToubiecNcTrackReq {
         // 获取 url
         String payload = String.format("{\"id\":\"%s\",\"level\":\"%s\",\"timestamp\":%s}", id, qualityMap.get(quality), System.currentTimeMillis());
         String rawBody = HttpRequest.post(SONG_URL_API)
-                .jsonBody(String.format("{\"keyId\":\"%s\",\"keyToken\":\"%s\",\"data\":\"%s\"}", keyId, keyToken, encryptPayload(payload, key)))
                 .header(Header.REFERER, "https://wyapi.toubiec.cn/")
+                .jsonBody(String.format("{\"keyId\":\"%s\",\"keyToken\":\"%s\",\"data\":\"%s\"}", keyId, keyToken, encryptPayload(payload, key)))
                 .executeAsStr();
         JSONObject rawJson = JSONObject.parseObject(rawBody);
         String urlBody = decryptPayload(rawJson.getString("ciphertext"), key);

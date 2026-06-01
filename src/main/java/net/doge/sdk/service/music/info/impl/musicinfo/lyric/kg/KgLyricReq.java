@@ -71,7 +71,7 @@ public class KgLyricReq {
 
         // 解密
         byte[] encKey = new byte[]{0x40, 0x47, 0x61, 0x77, 0x5e, 0x32, 0x74, 0x47, 0x51, 0x36, 0x31, 0x2d, (byte) 0xce, (byte) 0xd2, 0x6e, 0x69};
-        byte[] contentBytes = CryptoUtil.base64DecodeToBytes(content);
+        byte[] contentBytes = CryptoUtil.base64Decode(content);
         contentBytes = Arrays.copyOfRange(contentBytes, 4, contentBytes.length);
         for (int i = 0, len = contentBytes.length; i < len; i++)
             contentBytes[i] = (byte) (contentBytes[i] ^ encKey[i % 16]);
@@ -86,7 +86,7 @@ public class KgLyricReq {
         // 处理翻译和罗马音
         if (StringUtil.notEmpty(trans)) {
             result = result.replaceFirst("\\[language:[\\w=\\\\/+]+\\]\\n", "");
-            String transBody = CryptoUtil.base64Decode(trans);
+            String transBody = CryptoUtil.base64DecodeStr(trans);
             JSONObject transJson = JSONObject.parseObject(transBody);
             JSONArray contentArray = transJson.getJSONArray("content");
             JSONArray transArray = null, romaArray = null;

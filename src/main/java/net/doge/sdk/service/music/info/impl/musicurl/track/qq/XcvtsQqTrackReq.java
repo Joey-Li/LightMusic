@@ -46,7 +46,7 @@ public class XcvtsQqTrackReq {
     }
 
     private String decodeRequestKey(String requestKey) {
-        return CryptoUtil.base64Decode(requestKey);
+        return CryptoUtil.base64DecodeStr(requestKey);
     }
 
     /**

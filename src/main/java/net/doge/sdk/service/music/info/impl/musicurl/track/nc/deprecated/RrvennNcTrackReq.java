@@ -3,26 +3,27 @@
 //import com.alibaba.fastjson2.JSONObject;
 //import net.doge.constant.core.media.AudioQuality;
 //import net.doge.util.core.StringUtil;
+//import net.doge.util.core.crypto.CryptoUtil;
 //import net.doge.util.core.http.HttpRequest;
 //import net.doge.util.core.log.LogUtil;
 //
 //import java.util.HashMap;
 //import java.util.Map;
 //
-//public class XuanluogeNcTrackReq {
-//    private static XuanluogeNcTrackReq instance;
+//public class RrvennNcTrackReq {
+//    private static RrvennNcTrackReq instance;
 //
-//    private XuanluogeNcTrackReq() {
+//    private RrvennNcTrackReq() {
 //        initMap();
 //    }
 //
-//    public static XuanluogeNcTrackReq getInstance() {
-//        if (instance == null) instance = new XuanluogeNcTrackReq();
+//    public static RrvennNcTrackReq getInstance() {
+//        if (instance == null) instance = new RrvennNcTrackReq();
 //        return instance;
 //    }
 //
 //    // 歌曲 URL 获取 API (网易云)
-//    private final String SONG_URL_NC_API = "https://music.xuanluoge.top/api.php?miss=getMusicUrl&id=%s&level=%s";
+//    private final String SONG_URL_NC_API = "https://music.rrvenn.cn/api/api.php?action=music&url=%s&level=%s&type=json&timestamp=%s&signature=%s";
 //
 //    private Map<String, String> qualityMap = new HashMap<>();
 //
@@ -47,11 +48,11 @@
 //     */
 //    public String getTrackUrl(String id, String quality) {
 //        try {
-//            String songBody = HttpRequest.get(String.format(SONG_URL_NC_API, id, qualityMap.get(quality)))
+//            long ts = System.currentTimeMillis() / 1000;
+//            String sign = CryptoUtil.md5(ts + "kxz_163music_secret_key_2024");
+//            String songBody = HttpRequest.get(String.format(SONG_URL_NC_API, id, qualityMap.get(quality), ts, sign))
 //                    .executeAsStr();
-//            JSONObject urlJson = JSONObject.parseObject(songBody);
-//            if (urlJson.getIntValue("message") != 200) return "";
-//            JSONObject data = urlJson.getJSONArray("data").getJSONObject(0);
+//            JSONObject data = JSONObject.parseObject(songBody);
 //            String trackUrl = data.getString("url");
 //            if (StringUtil.isEmpty(trackUrl)) return "";
 //            return trackUrl;
@@ -62,7 +63,7 @@
 //    }
 //
 //    public static void main(String[] args) {
-//        XuanluogeNcTrackReq trackReq = getInstance();
+//        RrvennNcTrackReq trackReq = getInstance();
 //        System.out.println(trackReq.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.STANDARD]));
 //        System.out.println(trackReq.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.HIGH]));
 //        System.out.println(trackReq.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.LOSSLESS]));

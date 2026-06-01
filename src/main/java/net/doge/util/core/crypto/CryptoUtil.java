@@ -44,25 +44,6 @@ public class CryptoUtil {
         return DigestUtil.md5Hex(file);
     }
 
-    /**
-     * Base 64 解码为字符串
-     *
-     * @param base64
-     * @return
-     */
-    public static String base64Decode(String base64) {
-        return Base64.decodeStr(base64);
-    }
-
-    /**
-     * Base 64 解码为 bytes
-     *
-     * @param base64
-     * @return
-     */
-    public static byte[] base64DecodeToBytes(String base64) {
-        return Base64.decode(base64);
-    }
 
     /**
      * Base 64 编码 bytes
@@ -82,6 +63,26 @@ public class CryptoUtil {
      */
     public static String base64Encode(String s) {
         return Base64.encode(s);
+    }
+
+    /**
+     * Base 64 解码为字符串
+     *
+     * @param base64
+     * @return
+     */
+    public static String base64DecodeStr(String base64) {
+        return Base64.decodeStr(base64);
+    }
+
+    /**
+     * Base 64 解码为 bytes
+     *
+     * @param base64
+     * @return
+     */
+    public static byte[] base64Decode(String base64) {
+        return Base64.decode(base64);
     }
 
     /**
@@ -128,11 +129,11 @@ public class CryptoUtil {
      *
      * @param data
      * @param key
-     * @param nonce
+     * @param iv
      * @return
      */
-    public static byte[] aesGcmEncrypt(byte[] data, byte[] key, byte[] nonce) {
-        return aesGcm(data, key, nonce, Cipher.ENCRYPT_MODE);
+    public static byte[] aesGcmEncrypt(byte[] data, byte[] key, int tLen, byte[] iv) {
+        return aesGcm(data, key, tLen, iv, Cipher.ENCRYPT_MODE);
     }
 
     /**
@@ -140,19 +141,19 @@ public class CryptoUtil {
      *
      * @param data
      * @param key
-     * @param nonce
+     * @param iv
      * @return
      */
-    public static byte[] aesGcmDecrypt(byte[] data, byte[] key, byte[] nonce) {
-        return aesGcm(data, key, nonce, Cipher.DECRYPT_MODE);
+    public static byte[] aesGcmDecrypt(byte[] data, byte[] key, int tLen, byte[] iv) {
+        return aesGcm(data, key, tLen, iv, Cipher.DECRYPT_MODE);
     }
 
     // AES GCM 加解密
-    public static byte[] aesGcm(byte[] data, byte[] key, byte[] nonce, int mode) {
+    public static byte[] aesGcm(byte[] data, byte[] key, int tLen, byte[] iv, int mode) {
         try {
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
-            cipher.init(mode, secretKeySpec, new GCMParameterSpec(128, nonce));
+            cipher.init(mode, secretKeySpec, new GCMParameterSpec(tLen, iv));
             return cipher.doFinal(data);
         } catch (Exception e) {
             LogUtil.error(e);

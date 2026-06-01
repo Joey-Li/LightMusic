@@ -1,6 +1,5 @@
-//package net.doge.sdk.service.music.info.trackhero.nc;
+//package net.doge.sdk.service.music.info.impl.musicurl.track.nc.deprecated;
 //
-//import cn.hutool.http.HttpRequest;
 //import com.alibaba.fastjson2.JSONArray;
 //import com.alibaba.fastjson2.JSONObject;
 //import net.doge.constant.core.media.AudioQuality;
@@ -10,15 +9,15 @@
 //import java.util.HashMap;
 //import java.util.Map;
 //
-//public class CggNcTrackHero {
-//    private static CggNcTrackHero instance;
+//public class CggNcTrackReq {
+//    private static CggNcTrackReq instance;
 //
-//    private CggNcTrackHero() {
+//    private CggNcTrackReq() {
 //        initMap();
 //    }
 //
-//    public static CggNcTrackHero getInstance() {
-//        if (instance == null) instance = new CggNcTrackHero();
+//    public static CggNcTrackReq getInstance() {
+//        if (instance == null) instance = new CggNcTrackReq();
 //        return instance;
 //    }
 //
@@ -47,9 +46,8 @@
 //     * @return
 //     */
 //    public String getTrackUrl(String id, String quality) {
-//        String songBody = HttpRequest.get(String.format(SONG_URL_API, id, qualityMap.get(quality)))
-//                .executeAsync()
-//                .body();
+//        String songBody = net.doge.util.core.http.HttpRequest.get(String.format(SONG_URL_API, id, qualityMap.get(quality)))
+//                .executeAsStr();
 //        JSONArray data = JSONObject.parseObject(songBody).getJSONArray("data");
 //        if (JsonUtil.isEmpty(data)) return "";
 //        JSONObject urlJson = data.getJSONObject(0);
@@ -62,7 +60,7 @@
 //    }
 //
 //    public static void main(String[] args) {
-//        CggNcTrackHero trackHero = getInstance();
+//        CggNcTrackReq trackHero = getInstance();
 //        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.STANDARD]));
 //        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.HIGH]));
 //        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
