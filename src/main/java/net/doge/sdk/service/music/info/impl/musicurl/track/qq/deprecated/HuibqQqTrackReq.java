@@ -5,27 +5,25 @@
 //import net.doge.util.core.StringUtil;
 //import net.doge.util.core.http.HttpRequest;
 //import net.doge.util.core.http.constant.Header;
-//import net.doge.util.core.json.JsonUtil;
 //import net.doge.util.core.log.LogUtil;
 //
 //import java.util.HashMap;
 //import java.util.Map;
 //
-//public class LiuyunidcTrackReq {
-//    private static LiuyunidcTrackReq instance;
+//public class HuibqQqTrackReq {
+//    private static HuibqQqTrackReq instance;
 //
-//    private LiuyunidcTrackReq() {
+//    private HuibqQqTrackReq() {
 //        initMap();
 //    }
 //
-//    public static LiuyunidcTrackReq getInstance() {
-//        if (instance == null) instance = new LiuyunidcTrackReq();
+//    public static HuibqQqTrackReq getInstance() {
+//        if (instance == null) instance = new HuibqQqTrackReq();
 //        return instance;
 //    }
 //
 //    // 歌曲 URL 获取 API (QQ)
-//    // 参考 https://github.com/CharlesPikachu/musicdl/blob/master/musicdl/modules/sources/qq.py
-//    private final String SONG_URL_QQ_API = "http://api.liuyunidc.cn/baimusic/musicurl.php?source=tx&musicId=%s&quality=%s&card=BAI-153B4JE4I40HSG40H1FP";
+//    private final String SONG_URL_QQ_API = "https://lxmusicapi.onrender.com/url/tx/%s/%s";
 //
 //    private Map<String, String> qualityMap = new HashMap<>();
 //
@@ -37,11 +35,11 @@
 //        qualityMap.put(AudioQuality.KEYS[AudioQuality.SUPER], "320k");
 //        // 无损
 //        qualityMap.put(AudioQuality.KEYS[AudioQuality.LOSSLESS], "flac");
-//        qualityMap.put(AudioQuality.KEYS[AudioQuality.HI_RES], "atmos");
+//        qualityMap.put(AudioQuality.KEYS[AudioQuality.HI_RES], "hires");
 //        // 至臻全景声
-//        qualityMap.put(AudioQuality.KEYS[AudioQuality.ATMOSPHERE], "atmos_plus");
+//        qualityMap.put(AudioQuality.KEYS[AudioQuality.ATMOSPHERE], "flac24bit");
 //        // 至臻母带
-//        qualityMap.put(AudioQuality.KEYS[AudioQuality.MASTER], "master");
+//        qualityMap.put(AudioQuality.KEYS[AudioQuality.MASTER], "flac24bit");
 //    }
 //
 //    /**
@@ -54,16 +52,12 @@
 //    public String getTrackUrl(String mid, String quality) {
 //        try {
 //            String songBody = HttpRequest.get(String.format(SONG_URL_QQ_API, mid, qualityMap.get(quality)))
-//                    .header(Header.USER_AGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36")
-//                    .header(Header.HOST, "api.liuyunidc.cn")
-//                    .header("accept", "*/*")
-//                    .header("accept-encoding", "gzip, deflate")
-//                    .header("accept-language", "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7")
-//                    .header(Header.REFERER, "http://api.liuyunidc.cn/baimusic/")
+//                    .header(Header.CONTENT_TYPE, "application/json")
+//                    .header(Header.USER_AGENT, "lx-music-request/2.6.0")
+//                    .header(Header.X_REQUEST_KEY, "share-v3")
 //                    .executeAsStr();
-//            JSONObject data = JSONObject.parseObject(songBody).getJSONObject("data");
-//            if (JsonUtil.isEmpty(data)) return "";
-//            String trackUrl = data.getString("music");
+//            JSONObject data = JSONObject.parseObject(songBody);
+//            String trackUrl = data.getString("url");
 //            if (StringUtil.isEmpty(trackUrl)) return "";
 //            return trackUrl;
 //        } catch (Exception e) {
@@ -73,7 +67,7 @@
 //    }
 //
 //    public static void main(String[] args) {
-//        LiuyunidcTrackReq trackHero = getInstance();
+//        HuibqQqTrackReq trackHero = getInstance();
 //        System.out.println(trackHero.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.STANDARD]));
 //        System.out.println(trackHero.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.HIGH]));
 //        System.out.println(trackHero.getTrackUrl("0039MnYb0qxYhV", AudioQuality.KEYS[AudioQuality.LOSSLESS]));

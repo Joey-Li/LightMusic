@@ -2,9 +2,9 @@ package net.doge.sdk.service.music.info.impl.musicurl;
 
 import net.doge.constant.core.media.AudioQuality;
 import net.doge.entity.service.NetMusicInfo;
-import net.doge.sdk.service.music.info.impl.musicurl.track.nc.KangqiovoNcTrackReq;
 import net.doge.sdk.service.music.info.impl.musicurl.track.nc.NcTrackReq;
 import net.doge.sdk.service.music.info.impl.musicurl.track.nc.XuanluogeNcTrackReq;
+import net.doge.sdk.service.music.info.impl.musicurl.track.nc.ZnnuNcTrackReq;
 import net.doge.util.core.StringUtil;
 
 public class NcMusicUrlReq {
@@ -45,8 +45,8 @@ public class NcMusicUrlReq {
                 quality = AudioQuality.KEYS[AudioQuality.STANDARD];
                 break;
         }
-        String trackUrl = XuanluogeNcTrackReq.getInstance().getTrackUrl(id, quality);
-        if (StringUtil.isEmpty(trackUrl)) trackUrl = KangqiovoNcTrackReq.getInstance().getTrackUrl(id, quality);
+        String trackUrl = ZnnuNcTrackReq.getInstance().getTrackUrl(id, quality);
+        if (StringUtil.isEmpty(trackUrl)) trackUrl = XuanluogeNcTrackReq.getInstance().getTrackUrl(id, quality);
         if (StringUtil.isEmpty(trackUrl)) trackUrl = NcTrackReq.getInstance().getTrackUrl(id, quality);
         return trackUrl;
     }

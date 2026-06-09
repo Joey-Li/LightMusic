@@ -78,9 +78,7 @@ public class ToubiecNcTrackReq {
         byte[] tag = CryptoUtil.base64Decode(parts[1]);
         byte[] cipherText = CryptoUtil.base64Decode(parts[2]);
         // 拼接密文和标签
-        byte[] cipherTextWithTag = new byte[cipherText.length + tag.length];
-        System.arraycopy(cipherText, 0, cipherTextWithTag, 0, cipherText.length);
-        System.arraycopy(tag, 0, cipherTextWithTag, cipherText.length, tag.length);
+        byte[] cipherTextWithTag = ArrayUtil.concat(cipherText, tag);
         // AES-GCM 解密
         byte[] keyBytes = CryptoUtil.base64Decode(key);
         byte[] decrypted = CryptoUtil.aesGcmDecrypt(cipherTextWithTag, keyBytes, TAG_LENGTH, nonce);

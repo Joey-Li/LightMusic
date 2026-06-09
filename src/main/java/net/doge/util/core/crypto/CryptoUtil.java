@@ -6,6 +6,7 @@ import cn.hutool.crypto.digest.DigestUtil;
 import net.doge.util.core.log.LogUtil;
 
 import javax.crypto.Cipher;
+import javax.crypto.Mac;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -174,6 +175,25 @@ public class CryptoUtil {
             Cipher cipher = Cipher.getInstance("RSA/ECB/NoPadding");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             return cipher.doFinal(data);
+        } catch (Exception e) {
+            LogUtil.error(e);
+            return null;
+        }
+    }
+
+    /**
+     * HMAC-SHA256 加密，返回 bytes
+     *
+     * @param data
+     * @param key
+     * @return
+     */
+    public static byte[] hmacSha256Encrypt(byte[] data, byte[] key) {
+        try {
+            Mac hmacSha256 = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secretKey = new SecretKeySpec(key, "HmacSHA256");
+            hmacSha256.init(secretKey);
+            return hmacSha256.doFinal(data);
         } catch (Exception e) {
             LogUtil.error(e);
             return null;

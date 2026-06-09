@@ -169,6 +169,15 @@ public class ArrayUtil {
 
     /**
      * 连接多个数组
+     * @param arrays
+     * @return
+     */
+    public static byte[] concat(byte[]... arrays) {
+        return cn.hutool.core.util.ArrayUtil.addAll(arrays);
+    }
+
+    /**
+     * 连接多个数组
      *
      * @param arrays
      * @param <T>
