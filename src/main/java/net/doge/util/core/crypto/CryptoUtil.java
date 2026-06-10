@@ -12,6 +12,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
@@ -26,25 +27,55 @@ import java.util.zip.Inflater;
  */
 public class CryptoUtil {
     /**
-     * 字符串转为 32 位 MD5
+     * 计算文件 32 位 MD5 值(16 进制字符串)
      *
      * @param s
      * @return
      */
-    public static String md5(String s) {
+    public static String md5Hex(String s) {
         return DigestUtil.md5Hex(s);
     }
 
     /**
-     * 计算文件 MD5 值
+     * 计算文件 32 位 MD5 值(16 进制字符串)
      *
      * @param file
      * @return
      */
-    public static String md5(File file) {
+    public static String md5Hex(File file) {
         return DigestUtil.md5Hex(file);
     }
 
+    /**
+     * 计算 HMAC-SHA256，返回 16 进制字符串
+     *
+     * @param data
+     * @param secret
+     * @return
+     */
+    public static String hmacSha256Hex(String data, String secret) {
+        byte[] res = hmacSha256(data.getBytes(StandardCharsets.UTF_8), secret.getBytes(StandardCharsets.UTF_8));
+        return res == null ? null : bytesToHex(res);
+    }
+
+    /**
+     * 计算 HMAC-SHA256，返回 bytes
+     *
+     * @param data
+     * @param key
+     * @return
+     */
+    public static byte[] hmacSha256(byte[] data, byte[] key) {
+        try {
+            Mac hmacSha256 = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secretKey = new SecretKeySpec(key, "HmacSHA256");
+            hmacSha256.init(secretKey);
+            return hmacSha256.doFinal(data);
+        } catch (Exception e) {
+            LogUtil.error(e);
+            return null;
+        }
+    }
 
     /**
      * Base 64 编码 bytes
@@ -175,25 +206,6 @@ public class CryptoUtil {
             Cipher cipher = Cipher.getInstance("RSA/ECB/NoPadding");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             return cipher.doFinal(data);
-        } catch (Exception e) {
-            LogUtil.error(e);
-            return null;
-        }
-    }
-
-    /**
-     * HMAC-SHA256 加密，返回 bytes
-     *
-     * @param data
-     * @param key
-     * @return
-     */
-    public static byte[] hmacSha256Encrypt(byte[] data, byte[] key) {
-        try {
-            Mac hmacSha256 = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secretKey = new SecretKeySpec(key, "HmacSHA256");
-            hmacSha256.init(secretKey);
-            return hmacSha256.doFinal(data);
         } catch (Exception e) {
             LogUtil.error(e);
             return null;

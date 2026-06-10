@@ -52,7 +52,7 @@ public class KugouReqBuilder {
 
         // 带加密 key
         if ((Boolean) options.getOrDefault(KugouReqOptEnum.ENCRYPT_KEY, false))
-            params.put("key", CryptoUtil.md5(params.get("hash") + pidversec + appid + mid + userid));
+            params.put("key", CryptoUtil.md5Hex(params.get("hash") + pidversec + appid + mid + userid));
 
         String crypto = (String) options.get(KugouReqOptEnum.CRYPTO);
         switch (crypto) {
@@ -90,11 +90,11 @@ public class KugouReqBuilder {
     private String signAndroid(Map<String, Object> params, String data) {
 //        Map<String, Object> paramsTreeMap = new TreeMap<>(params);
         String content = buildSignParams(params);
-        return CryptoUtil.md5(androidSignKey + content + (StringUtil.notEmpty(data) ? data : "") + androidSignKey);
+        return CryptoUtil.md5Hex(androidSignKey + content + (StringUtil.notEmpty(data) ? data : "") + androidSignKey);
     }
 
     // 请求参数签名
     public static String signParamsKey(String data) {
-        return CryptoUtil.md5(appid + androidSignKey + clientver + data);
+        return CryptoUtil.md5Hex(appid + androidSignKey + clientver + data);
     }
 }

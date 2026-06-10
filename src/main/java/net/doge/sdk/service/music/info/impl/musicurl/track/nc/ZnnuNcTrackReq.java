@@ -57,10 +57,7 @@ public class ZnnuNcTrackReq {
         }
         String data = timestamp + domain + paramsStrBuilder;
         String hmacSecretKey = "a09d0f3700a279584e1515354fbe08a7ee1c617f919543142fa625b82f1b5ad0";
-        byte[] secretBytes = hmacSecretKey.getBytes(StandardCharsets.UTF_8);
-        byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
-        byte[] encrypted = CryptoUtil.hmacSha256Encrypt(dataBytes, secretBytes);
-        return CryptoUtil.bytesToHex(encrypted);
+        return CryptoUtil.hmacSha256Hex(data, hmacSecretKey);
     }
 
     // Map 转表单参数
@@ -82,7 +79,6 @@ public class ZnnuNcTrackReq {
     public String getTrackUrl(String id, String quality) {
         // 获取认证参数
         String authBody = HttpRequest.get(AUTH_API)
-                .header(Header.REFERER, "https://music.znnu.com/")
                 .executeAsStr();
         JSONObject authJson = JSONObject.parseObject(authBody);
         if (authJson.getIntValue("code") != 200) return "";
@@ -97,6 +93,7 @@ public class ZnnuNcTrackReq {
         params.put("act", "song");
         params.put("id", id);
         params.put("level", qualityMap.get(quality));
+        params.put("rawInput", String.format("https://music.163.com/#/song?id=%s", id));
         params.put("ip", IpUtil.randomIpv4());
         String signature = generateSignature(params, timestamp, domain);
         params.put("timestamp", timestamp);
@@ -105,7 +102,8 @@ public class ZnnuNcTrackReq {
         String payload = mapToForm(params);
         String rawBody = HttpRequest.post(SONG_URL_API)
                 .header(Header.REFERER, "https://music.znnu.com/")
-                .header("x-key-token", keyToken)
+                .header("X-Key-Token", keyToken)
+                .header("X-Referer", "musicParser")
                 // 注意此处以表单形式传入！
                 .formBody(payload)
                 .executeAsStr();
@@ -126,10 +124,10 @@ public class ZnnuNcTrackReq {
         return trackUrl;
     }
 
-//    public static void main(String[] args) {
-//        ZnnuNcTrackReq trackHero = getInstance();
-//        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.STANDARD]));
-//        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.HIGH]));
-//        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
-//    }
+    public static void main(String[] args) {
+        ZnnuNcTrackReq trackHero = getInstance();
+        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.STANDARD]));
+        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.HIGH]));
+        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
+    }
 }

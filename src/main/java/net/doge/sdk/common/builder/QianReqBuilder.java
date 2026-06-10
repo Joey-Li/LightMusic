@@ -30,7 +30,7 @@ public class QianReqBuilder {
         StringJoiner sj = new StringJoiner("&");
         for (String s : sp) sj.add(s);
         String sortedParams = sj.toString();
-        String sign = CryptoUtil.md5(sortedParams + secret);
+        String sign = CryptoUtil.md5Hex(sortedParams + secret);
         return HttpRequest.get(url + "&sign=" + sign);
     }
 }

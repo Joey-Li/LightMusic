@@ -44,7 +44,7 @@ public class KgPlaylistInfoReq {
         Integer t = 1;
 
         HttpResponse resp = HttpRequest.get(String.format(PLAYLIST_DETAIL_KG_API, id,
-                        CryptoUtil.md5("NVPh5oo715z5DIWAeQlhMDsWXXQV4hwtappid=1058clienttime=1586163242519clientver=20000dfid=-format=jsonpglobal_specialid="
+                        CryptoUtil.md5Hex("NVPh5oo715z5DIWAeQlhMDsWXXQV4hwtappid=1058clienttime=1586163242519clientver=20000dfid=-format=jsonpglobal_specialid="
                                 + id + "mid=1586163242519specialid=0srcappid=2919uuid=1586163242519NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt")))
                 .header(Header.REFERER, "https://m3ws.kugou.com/share/index.php")
                 .header("mid", "1586163242519")
@@ -89,7 +89,7 @@ public class KgPlaylistInfoReq {
     public void fillPlaylistInfo(NetPlaylistInfo playlistInfo) {
         String id = playlistInfo.getId();
         String playlistInfoBody = HttpRequest.get(String.format(PLAYLIST_DETAIL_KG_API, id,
-                        CryptoUtil.md5("NVPh5oo715z5DIWAeQlhMDsWXXQV4hwtappid=1058clienttime=1586163242519clientver=20000dfid=-format=jsonpglobal_specialid="
+                        CryptoUtil.md5Hex("NVPh5oo715z5DIWAeQlhMDsWXXQV4hwtappid=1058clienttime=1586163242519clientver=20000dfid=-format=jsonpglobal_specialid="
                                 + id + "mid=1586163242519specialid=0srcappid=2919uuid=1586163242519NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt")))
                 .header(Header.REFERER, "https://m3ws.kugou.com/share/index.php")
                 .header("mid", "1586163242519")
@@ -118,7 +118,7 @@ public class KgPlaylistInfoReq {
 
         String id = playlistInfo.getId();
         String playlistInfoBody = HttpRequest.get(String.format(PLAYLIST_SONGS_KG_API, id, page, limit,
-                        CryptoUtil.md5("NVPh5oo715z5DIWAeQlhMDsWXXQV4hwtappid=1058clienttime=1586163263991" +
+                        CryptoUtil.md5Hex("NVPh5oo715z5DIWAeQlhMDsWXXQV4hwtappid=1058clienttime=1586163263991" +
                                 "clientver=20000dfid=-global_specialid=" + id + "mid=1586163263991page=" + page + "pagesize=" + limit +
                                 "plat=0specialid=0srcappid=2919uuid=1586163263991version=8000NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt")))
                 .header("mid", "1586163263991")

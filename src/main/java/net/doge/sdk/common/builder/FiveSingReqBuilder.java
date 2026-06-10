@@ -75,6 +75,6 @@ public class FiveSingReqBuilder {
     private String sign(Map<String, Object> params, String data) {
 //        Map<String, Object> paramsTreeMap = new TreeMap<>(params);
         String content = buildSignParams(params);
-        return CryptoUtil.md5(signKey + content + (StringUtil.notEmpty(data) ? data : "") + signKey);
+        return CryptoUtil.md5Hex(signKey + content + (StringUtil.notEmpty(data) ? data : "") + signKey);
     }
 }
