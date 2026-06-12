@@ -1,4 +1,4 @@
-//package net.doge.sdk.entity.music.info.trackhero.qq;
+//package net.doge.sdk.entity.music.info.trackReq.qq;
 //
 //import cn.hutool.http.HttpRequest;
 //import cn.hutool.http.HttpResponse;
@@ -7,14 +7,14 @@
 //
 //import java.nio.charset.StandardCharsets;
 //
-//public class QqTrackHero {
-//    private static QqTrackHero instance;
+//public class QqTrackReq {
+//    private static QqTrackReq instance;
 //
-//    private QqTrackHero() {
+//    private QqTrackReq() {
 //    }
 //
-//    public static QqTrackHero getInstance() {
-//        if (instance == null) instance = new QqTrackHero();
+//    public static QqTrackReq getInstance() {
+//        if (instance == null) instance = new QqTrackReq();
 //        return instance;
 //    }
 //

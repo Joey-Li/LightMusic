@@ -42,7 +42,7 @@ public class KgMusicUrlReq {
         }
         String trackUrl = KgTrackReqV2.getInstance().getTrackUrl(hash, quality);
         // Cgg 有时返回的 url 不是正确音源，优先使用官方 api
-//            if (StringUtil.isEmpty(trackUrl)) trackUrl = CggKgTrackHero.getInstance().getTrackUrl(hash, quality);
+//            if (StringUtil.isEmpty(trackUrl)) trackUrl = CggKgTrackReq.getInstance().getTrackUrl(hash, quality);
         return trackUrl;
     }
 }

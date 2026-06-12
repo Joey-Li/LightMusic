@@ -29,7 +29,7 @@ public class HfNewMusicReq {
     }
 
     // 推荐新歌 API (音乐磁场)
-    private final String RECOMMEND_NEW_MUSIC_HF_API = "https://www.hifiti.com/%s-%s.htm?orderby=tid";
+    private final String RECOMMEND_NEW_MUSIC_HF_API = "https://www.hifiti.net/%s-%s.htm?orderby=tid";
 
     /**
      * 推荐新歌

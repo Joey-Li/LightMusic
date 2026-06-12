@@ -4,8 +4,6 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import net.doge.constant.core.ui.image.ImageConstants;
 import net.doge.util.core.StringUtil;
-import net.doge.util.core.http.HttpRequest;
-import net.doge.util.core.http.HttpResponse;
 import net.doge.util.core.img.ImageUtil;
 import net.doge.util.core.json.JsonUtil;
 import net.doge.util.ui.ScaleUtil;
@@ -190,20 +188,5 @@ public class SdkUtil {
             }
         }
         return sj.toString();
-    }
-
-    /**
-     * 获取重定向之后的 url
-     *
-     * @param url
-     * @return
-     */
-    public static String getRedirectUrl(String url) {
-        try {
-            HttpResponse resp = HttpRequest.get(url).execute();
-            return resp.header("Location");
-        } catch (Exception e) {
-            return "";
-        }
     }
 }

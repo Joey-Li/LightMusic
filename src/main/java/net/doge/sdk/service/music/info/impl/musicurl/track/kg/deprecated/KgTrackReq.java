@@ -1,4 +1,4 @@
-//package net.doge.sdk.entity.music.info.trackhero;
+//package net.doge.sdk.entity.music.info.trackReq;
 //
 //import cn.hutool.http.Header;
 //import cn.hutool.http.HttpRequest;
@@ -11,15 +11,15 @@
 //import java.text.SimpleDateFormat;
 //import java.util.*;
 //
-//public class KgTrackHero {
-//    private static KgTrackHero instance;
+//public class KgTrackReq {
+//    private static KgTrackReq instance;
 //
-//    private KgTrackHero() {
+//    private KgTrackReq() {
 //        initMap();
 //    }
 //
-//    public static KgTrackHero getInstance() {
-//        if (instance == null) instance = new KgTrackHero();
+//    public static KgTrackReq getInstance() {
+//        if (instance == null) instance = new KgTrackReq();
 //        return instance;
 //    }
 //

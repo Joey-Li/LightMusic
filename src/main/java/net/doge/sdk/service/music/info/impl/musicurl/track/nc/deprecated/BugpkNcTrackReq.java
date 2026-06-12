@@ -1,4 +1,4 @@
-//package net.doge.sdk.service.music.info.trackhero.nc;
+//package net.doge.sdk.service.music.info.trackReq.nc;
 //
 //import com.alibaba.fastjson2.JSONArray;
 //import com.alibaba.fastjson2.JSONObject;
@@ -60,9 +60,9 @@
 //    }
 //
 //    public static void main(String[] args) {
-//        BugpkNcTrackReq trackHero = getInstance();
-//        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.STANDARD]));
-//        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.HIGH]));
-//        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
+//        BugpkNcTrackReq trackReq = getInstance();
+//        System.out.println(trackReq.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.STANDARD]));
+//        System.out.println(trackReq.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.HIGH]));
+//        System.out.println(trackReq.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
 //    }
 //}

@@ -24,7 +24,7 @@ public class QsTrackReq {
     }
 
     // 歌曲 URL 获取 API (汽水)
-    private final String SONG_URL_QS_API = "https://api.qishui.com/luna/h5/track?track_id=%s";
+    private final String SONG_URL_QS_API = "https://api.qishui.com/luna/pc/track_v2?track_id=%s&media_type=track&queue_type=";
 
     private Map<String, String> qualityMap = new HashMap<>();
 
@@ -47,8 +47,11 @@ public class QsTrackReq {
         String songBody = HttpRequest.get(String.format(SONG_URL_QS_API, id))
                 .executeAsStr();
         JSONObject songJson = JSONObject.parseObject(songBody);
+        JSONObject track = songJson.getJSONObject("track");
+        // 有时被风控
+        if (JsonUtil.isEmpty(track)) return "";
         // 需要 vip 才能播放，会返回试听 url，排除掉
-        boolean needVip = songJson.getJSONObject("track").getJSONObject("label_info").getBooleanValue("only_vip_playable");
+        boolean needVip = track.getJSONObject("label_info").getBooleanValue("only_vip_playable");
         if (needVip) return "";
         // 先获取 urlPlayerInfo
         JSONObject data = songJson.getJSONObject("track_player");
@@ -64,10 +67,10 @@ public class QsTrackReq {
         return trackUrl;
     }
 
-//    public static void main(String[] args) {
-//        QsTrackReq trackHero = getInstance();
-//        System.out.println(trackHero.getTrackUrl("7495039122983356470", AudioQuality.KEYS[AudioQuality.STANDARD]));
-//        System.out.println(trackHero.getTrackUrl("7495039122983356470", AudioQuality.KEYS[AudioQuality.HIGH]));
-//        System.out.println(trackHero.getTrackUrl("7495039122983356470", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
-//    }
+    public static void main(String[] args) {
+        QsTrackReq trackReq = getInstance();
+        System.out.println(trackReq.getTrackUrl("7495039122983356470", AudioQuality.KEYS[AudioQuality.STANDARD]));
+        System.out.println(trackReq.getTrackUrl("7495039122983356470", AudioQuality.KEYS[AudioQuality.HIGH]));
+        System.out.println(trackReq.getTrackUrl("7495039122983356470", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
+    }
 }

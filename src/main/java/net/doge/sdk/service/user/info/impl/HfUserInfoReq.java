@@ -31,9 +31,9 @@ public class HfUserInfoReq {
     }
 
     // 用户信息 API (音乐磁场)
-    private final String USER_DETAIL_HF_API = "https://www.hifiti.com/user-%s.htm";
+    private final String USER_DETAIL_HF_API = "https://www.hifiti.net/user-%s.htm";
     // 用户节目 API (音乐磁场)
-    private final String USER_PROGRAMS_HF_API = "https://www.hifiti.com/user-thread-%s-%s.htm";
+    private final String USER_PROGRAMS_HF_API = "https://www.hifiti.net/user-thread-%s-%s.htm";
 
     /**
      * 根据用户 id 补全用户信息(包括封面图、描述)
@@ -111,7 +111,7 @@ public class HfUserInfoReq {
         String userId = id;
         String userName = b.text().trim();
         String gender = "保密";
-        String avatarThumbUrl = "https://www.hifiti.com/" + tc.select("img").attr("src");
+        String avatarThumbUrl = "https://www.hifiti.net/" + tc.select("img").attr("src");
         String avatarUrl = avatarThumbUrl;
         Integer programCount = Integer.parseInt(RegexUtil.getGroup1("主题数：(\\d+)", sm.text()));
 

@@ -1,4 +1,4 @@
-//package net.doge.sdk.entity.music.info.trackhero.kg;
+//package net.doge.sdk.entity.music.info.trackReq.kg;
 //
 //import com.alibaba.fastjson2.JSONArray;
 //import com.alibaba.fastjson2.JSONObject;
@@ -12,15 +12,15 @@
 //import java.util.HashMap;
 //import java.util.Map;
 //
-//public class KgTrackHeroV3 {
-//    private static KgTrackHeroV3 instance;
+//public class KgTrackReqV3 {
+//    private static KgTrackReqV3 instance;
 //
-//    private KgTrackHeroV3() {
+//    private KgTrackReqV3() {
 //        initMap();
 //    }
 //
-//    public static KgTrackHeroV3 getInstance() {
-//        if (instance == null) instance = new KgTrackHeroV3();
+//    public static KgTrackReqV3 getInstance() {
+//        if (instance == null) instance = new KgTrackReqV3();
 //        return instance;
 //    }
 //

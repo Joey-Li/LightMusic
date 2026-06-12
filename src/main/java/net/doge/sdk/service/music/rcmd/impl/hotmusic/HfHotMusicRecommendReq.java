@@ -29,7 +29,7 @@ public class HfHotMusicRecommendReq {
     }
 
     // 热歌 API (音乐磁场)
-    private final String HOT_MUSIC_HF_API = "https://www.hifiti.com/%s-%s.htm";
+    private final String HOT_MUSIC_HF_API = "https://www.hifiti.net/%s-%s.htm";
 
     /**
      * 热门歌曲

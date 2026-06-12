@@ -7,6 +7,7 @@ import net.doge.util.core.array.ArrayUtil;
 import net.doge.util.core.crypto.CryptoUtil;
 import net.doge.util.core.http.HttpRequest;
 import net.doge.util.core.http.constant.Header;
+import net.doge.util.core.log.LogUtil;
 import net.doge.util.core.net.IpUtil;
 
 import java.nio.charset.StandardCharsets;
@@ -77,57 +78,62 @@ public class ZnnuNcTrackReq {
      * @return
      */
     public String getTrackUrl(String id, String quality) {
-        // 获取认证参数
-        String authBody = HttpRequest.get(AUTH_API)
-                .executeAsStr();
-        JSONObject authJson = JSONObject.parseObject(authBody);
-        if (authJson.getIntValue("code") != 200) return "";
-        JSONObject authData = authJson.getJSONObject("data");
-        String keyToken = authData.getString("keyToken");
-        String b64Key = authData.getString("key");
-        // 获取 url
-        String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
-        String domain = "music.znnu.com";
-        // TreeMap 有助于 key 排序
-        Map<String, Object> params = new TreeMap<>();
-        params.put("act", "song");
-        params.put("id", id);
-        params.put("level", qualityMap.get(quality));
-        params.put("rawInput", String.format("https://music.163.com/#/song?id=%s", id));
-        params.put("ip", IpUtil.randomIpv4());
-        String signature = generateSignature(params, timestamp, domain);
-        params.put("timestamp", timestamp);
-        params.put("domain", domain);
-        params.put("signature", signature);
-        String payload = mapToForm(params);
-        String rawBody = HttpRequest.post(SONG_URL_API)
-                .header(Header.REFERER, "https://music.znnu.com/")
-                .header("X-Key-Token", keyToken)
-                .header("X-Referer", "musicParser")
-                // 注意此处以表单形式传入！
-                .formBody(payload)
-                .executeAsStr();
-        JSONObject rawJson = JSONObject.parseObject(rawBody);
-        if (rawJson.getIntValue("code") != 200) return "";
-        JSONObject rawData = rawJson.getJSONObject("data");
-        // AES-GCM 解密
-        byte[] iv = CryptoUtil.base64Decode(rawData.getString("iv"));
-        byte[] ciphertext = CryptoUtil.base64Decode(rawData.getString("ciphertext"));
-        byte[] tag = CryptoUtil.base64Decode(rawData.getString("tag"));
-        byte[] key = CryptoUtil.base64Decode(b64Key);
-        byte[] dataBytes = ArrayUtil.concat(ciphertext, tag);
-        byte[] decrypted = CryptoUtil.aesGcmDecrypt(dataBytes, key, 128, iv);
-        String urlBody = new String(decrypted, StandardCharsets.UTF_8);
-        JSONObject urlJson = JSONObject.parseObject(urlBody);
-        String trackUrl = urlJson.getString("url");
-        if (StringUtil.isEmpty(trackUrl)) return "";
-        return trackUrl;
+        try {
+            // 获取认证参数
+            String authBody = HttpRequest.get(AUTH_API)
+                    .executeAsStr();
+            JSONObject authJson = JSONObject.parseObject(authBody);
+            if (authJson.getIntValue("code") != 200) return "";
+            JSONObject authData = authJson.getJSONObject("data");
+            String keyToken = authData.getString("keyToken");
+            String b64Key = authData.getString("key");
+            // 获取 url
+            String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
+            String domain = "music.znnu.com";
+            // TreeMap 有助于 key 排序
+            Map<String, Object> params = new TreeMap<>();
+            params.put("act", "song");
+            params.put("id", id);
+            params.put("level", qualityMap.get(quality));
+            params.put("rawInput", String.format("https://music.163.com/#/song?id=%s", id));
+            params.put("ip", IpUtil.randomIpv4());
+            String signature = generateSignature(params, timestamp, domain);
+            params.put("timestamp", timestamp);
+            params.put("domain", domain);
+            params.put("signature", signature);
+            String payload = mapToForm(params);
+            String rawBody = HttpRequest.post(SONG_URL_API)
+                    .header(Header.REFERER, "https://music.znnu.com/")
+                    .header("X-Key-Token", keyToken)
+                    .header("X-Referer", "musicParser")
+                    // 注意此处以表单形式传入！
+                    .formBody(payload)
+                    .executeAsStr();
+            JSONObject rawJson = JSONObject.parseObject(rawBody);
+            if (rawJson.getIntValue("code") != 200) return "";
+            JSONObject rawData = rawJson.getJSONObject("data");
+            // AES-GCM 解密
+            byte[] iv = CryptoUtil.base64Decode(rawData.getString("iv"));
+            byte[] ciphertext = CryptoUtil.base64Decode(rawData.getString("ciphertext"));
+            byte[] tag = CryptoUtil.base64Decode(rawData.getString("tag"));
+            byte[] key = CryptoUtil.base64Decode(b64Key);
+            byte[] dataBytes = ArrayUtil.concat(ciphertext, tag);
+            byte[] decrypted = CryptoUtil.aesGcmDecrypt(dataBytes, key, 128, iv);
+            String urlBody = new String(decrypted, StandardCharsets.UTF_8);
+            JSONObject urlJson = JSONObject.parseObject(urlBody);
+            String trackUrl = urlJson.getString("url");
+            if (StringUtil.isEmpty(trackUrl)) return "";
+            return trackUrl;
+        } catch (Exception e) {
+            LogUtil.error(e);
+            return "";
+        }
     }
 
-    public static void main(String[] args) {
-        ZnnuNcTrackReq trackHero = getInstance();
-        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.STANDARD]));
-        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.HIGH]));
-        System.out.println(trackHero.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
-    }
+//    public static void main(String[] args) {
+//        ZnnuNcTrackReq trackReq = getInstance();
+//        System.out.println(trackReq.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.STANDARD]));
+//        System.out.println(trackReq.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.HIGH]));
+//        System.out.println(trackReq.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
+//    }
 }

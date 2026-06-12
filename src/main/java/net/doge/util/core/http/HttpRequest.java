@@ -92,7 +92,7 @@ public class HttpRequest {
     }
 
     // Body
-    private HttpRequest body(RequestBody body) {
+    public HttpRequest body(RequestBody body) {
         requestBuilder.method(method.getValue(), body);
         return this;
     }
@@ -106,10 +106,14 @@ public class HttpRequest {
     }
 
     // 表单
-    public HttpRequest form(String name, Object value) {
+    public HttpRequest form(String name, String value) {
         if (formBuilder == null) formBuilder = new FormBody.Builder();
-        formBuilder.add(name, String.valueOf(value));
+        formBuilder.add(name, value);
         return this;
+    }
+
+    public HttpRequest form(String name, Object value) {
+        return form(name, String.valueOf(value));
     }
 
     public HttpRequest form(Map<String, ?> forms) {

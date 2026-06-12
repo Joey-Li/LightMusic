@@ -17,6 +17,23 @@ import java.util.Map;
  */
 public class HttpUtil {
     /**
+     * 获取重定向之后的 url
+     *
+     * @param url
+     * @return
+     */
+    public static String getRedirectUrl(String url) {
+        try {
+            HttpResponse resp = HttpRequest.get(url).execute();
+            String finalUrl = resp.getFinalUrl();
+            resp.close();
+            return finalUrl;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
      * 下载文件
      *
      * @param url
@@ -71,6 +88,8 @@ public class HttpUtil {
                 }
             }
             out.flush();
+        } finally {
+            resp.close();
         }
     }
 }

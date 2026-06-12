@@ -26,7 +26,7 @@ public class HfMusicMenuReq {
     }
 
     // 歌曲信息 API (音乐磁场)
-    private final String SONG_DETAIL_HF_API = "https://www.hifiti.com/thread-%s.htm";
+    private final String SONG_DETAIL_HF_API = "https://www.hifiti.net/thread-%s.htm";
 
     /**
      * 获取相似歌曲

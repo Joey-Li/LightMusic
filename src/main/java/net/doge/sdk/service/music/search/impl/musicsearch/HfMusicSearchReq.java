@@ -28,7 +28,7 @@ public class HfMusicSearchReq {
     }
 
     // 关键词搜索歌曲 API (音乐磁场)
-    private final String SEARCH_MUSIC_HF_API = "https://www.hifiti.com/search-%s-1-0-%s.htm";
+    private final String SEARCH_MUSIC_HF_API = "https://www.hifiti.net/search-%s-1-0-%s.htm";
 
     /**
      * 根据关键词获取歌曲

@@ -1,24 +1,24 @@
-//package net.doge.sdk.entity.music.info.trackhero.qq;
+//package net.doge.sdk.entity.music.info.trackReq.qq;
 //
 //import cn.hutool.http.HttpRequest;
 //import com.alibaba.fastjson2.JSONObject;
 //import net.doge.sdk.common.SdkCommon;
-//import net.doge.sdk.entity.music.info.trackhero.qq.model.QQualityEntry;
+//import net.doge.sdk.entity.music.info.trackReq.qq.model.QQualityEntry;
 //import net.doge.util.common.JsonUtil;
 //import net.doge.util.common.StringUtil;
 //
 //import java.util.HashMap;
 //import java.util.Map;
 //
-//public class QqTrackHeroV3 {
-//    private static QqTrackHeroV3 instance;
+//public class QqTrackReqV3 {
+//    private static QqTrackReqV3 instance;
 //
-//    private QqTrackHeroV3() {
+//    private QqTrackReqV3() {
 //        initMap();
 //    }
 //
-//    public static QqTrackHeroV3 getInstance() {
-//        if (instance == null) instance = new QqTrackHeroV3();
+//    public static QqTrackReqV3 getInstance() {
+//        if (instance == null) instance = new QqTrackReqV3();
 //        return instance;
 //    }
 //

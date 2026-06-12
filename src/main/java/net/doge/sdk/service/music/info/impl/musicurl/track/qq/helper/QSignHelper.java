@@ -1,4 +1,4 @@
-//package net.doge.sdk.entity.music.info.trackhero.qq.helper;
+//package net.doge.sdk.entity.music.info.trackReq.qq.helper;
 //
 //import net.doge.util.common.CryptoUtil;
 //

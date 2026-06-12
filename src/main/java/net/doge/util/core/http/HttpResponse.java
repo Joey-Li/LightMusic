@@ -31,6 +31,16 @@ public class HttpResponse {
         return response.header(name);
     }
 
+    // 获取重定向地址
+    public String getFinalUrl() {
+        return response.request().url().toString();
+    }
+
+    // 关闭
+    public void close() {
+        response.close();
+    }
+
     // Body
     public String body() {
         try {
@@ -39,7 +49,7 @@ public class HttpResponse {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            response.close();
+            close();
         }
     }
 
@@ -50,7 +60,7 @@ public class HttpResponse {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            response.close();
+            close();
         }
     }
 

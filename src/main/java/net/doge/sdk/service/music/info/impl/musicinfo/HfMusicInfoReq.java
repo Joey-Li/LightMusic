@@ -33,7 +33,7 @@ public class HfMusicInfoReq {
     }
 
     // 歌曲信息 API (音乐磁场)
-    private final String SONG_DETAIL_HF_API = "https://www.hifiti.com/thread-%s.htm";
+    private final String SONG_DETAIL_HF_API = "https://www.hifiti.net/thread-%s.htm";
 
     /**
      * 补充 NetMusicInfo 歌曲信息(包括 时长、专辑名称、封面图片、歌词)
@@ -61,7 +61,7 @@ public class HfMusicInfoReq {
                     picUrl = picUrl.replaceFirst("param=\\d+y\\d+", "param=500y500");
                 else if (picUrl.contains("y.gtimg.cn"))
                     picUrl = picUrl.replaceFirst("300x300", "500x500");
-                if (!picUrl.startsWith("http")) picUrl = "https://www.hifiti.com/" + picUrl;
+                if (!picUrl.startsWith("http")) picUrl = "https://www.hifiti.net/" + picUrl;
                 BufferedImage albumImage = SdkUtil.getImageFromUrl(picUrl);
                 FileUtil.mkDir(SimplePath.IMG_CACHE_PATH);
                 ImageUtil.toFile(albumImage, SimplePath.IMG_CACHE_PATH + musicInfo.toAlbumImageFileName());

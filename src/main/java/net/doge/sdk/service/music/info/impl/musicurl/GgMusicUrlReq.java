@@ -2,11 +2,11 @@ package net.doge.sdk.service.music.info.impl.musicurl;
 
 import com.alibaba.fastjson2.JSONObject;
 import net.doge.entity.service.NetMusicInfo;
-import net.doge.sdk.util.SdkUtil;
 import net.doge.util.core.RegexUtil;
 import net.doge.util.core.StringUtil;
 import net.doge.util.core.crypto.CryptoUtil;
 import net.doge.util.core.http.HttpRequest;
+import net.doge.util.core.http.HttpUtil;
 import net.doge.util.core.net.UrlUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -47,7 +47,7 @@ public class GgMusicUrlReq {
             else {
                 // 获取重定向之后的 url
                 String startUrl = "http://www.gggmusic.com" + url;
-                String newUrl = SdkUtil.getRedirectUrl(startUrl);
+                String newUrl = HttpUtil.getRedirectUrl(startUrl);
                 return StringUtil.isEmpty(newUrl) ? startUrl : newUrl;
             }
         }
