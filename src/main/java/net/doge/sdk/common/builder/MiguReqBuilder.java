@@ -1,5 +1,6 @@
 package net.doge.sdk.common.builder;
 
+import net.doge.sdk.common.constant.mg.MgSearchType;
 import net.doge.util.core.crypto.CryptoUtil;
 import net.doge.util.core.http.HttpRequest;
 import net.doge.util.core.net.UrlUtil;
@@ -15,7 +16,7 @@ public class MiguReqBuilder {
         return instance;
     }
 
-    public HttpRequest buildSearchRequest(String type, String keyword, int page, int limit) {
+    public HttpRequest buildSearchRequest(MgSearchType type, String keyword, int page, int limit) {
         String deviceId = "963B7AA0D21511ED807EE5846EC87D20";
         String signatureMD5 = "6cdc72a439cef99a3418d2a78aa28c73";
         String time = String.valueOf(System.currentTimeMillis());
@@ -23,20 +24,20 @@ public class MiguReqBuilder {
 
         String json;
         switch (type) {
-            case "song":
+            case SONG:
             default:
                 json = "{\"song\":1,\"album\":0,\"singer\":0,\"tagSong\":1,\"mvSong\":1,\"bestShow\":0,\"songlist\":0,\"lyricSong\":0}";
                 break;
-            case "lyric":
+            case LYRIC:
                 json = "{\"song\":0,\"album\":0,\"singer\":0,\"tagSong\":0,\"mvSong\":0,\"bestShow\":0,\"songlist\":0,\"lyricSong\":1}";
                 break;
-            case "playlist":
+            case PLAYLIST:
                 json = "{\"song\":0,\"album\":0,\"singer\":0,\"tagSong\":0,\"mvSong\":0,\"bestShow\":0,\"songlist\":1,\"lyricSong\":0}";
                 break;
-            case "album":
+            case ALBUM:
                 json = "{\"song\":0,\"album\":1,\"singer\":0,\"tagSong\":0,\"mvSong\":0,\"bestShow\":0,\"songlist\":0,\"lyricSong\":0}";
                 break;
-            case "artist":
+            case ARTIST:
                 json = "{\"song\":0,\"album\":0,\"singer\":1,\"tagSong\":0,\"mvSong\":0,\"bestShow\":0,\"songlist\":0,\"lyricSong\":0}";
                 break;
         }

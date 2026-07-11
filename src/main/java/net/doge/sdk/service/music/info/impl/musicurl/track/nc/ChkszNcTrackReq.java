@@ -10,20 +10,21 @@ import net.doge.util.core.log.LogUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RrvennNcTrackReq {
-    private static RrvennNcTrackReq instance;
+public class ChkszNcTrackReq {
+    private static ChkszNcTrackReq instance;
 
-    private RrvennNcTrackReq() {
+    private ChkszNcTrackReq() {
         initMap();
     }
 
-    public static RrvennNcTrackReq getInstance() {
-        if (instance == null) instance = new RrvennNcTrackReq();
+    public static ChkszNcTrackReq getInstance() {
+        if (instance == null) instance = new ChkszNcTrackReq();
         return instance;
     }
 
     // 歌曲 URL 获取 API (网易云)
-    private final String SONG_URL_NC_API = "https://music.rrvenn.cn/Song_V1";
+    // https://github.com/CharlesPikachu/musicdl/blob/master/musicdl/modules/sources/netease.py
+    private final String SONG_URL_NC_API = "https://api.chksz.top/api/163_music?id=%s&level=%s";
 
     private Map<String, String> qualityMap = new HashMap<>();
 
@@ -48,12 +49,11 @@ public class RrvennNcTrackReq {
      */
     public String getTrackUrl(String id, String quality) {
         try {
-            String urlBody = HttpRequest.post(SONG_URL_NC_API)
-                    .header(Header.REFERER, "https://music.rrvenn.cn/")
-                    .jsonBody(String.format("{\"url\":\"%s\",\"level\":\"%s\",\"type\":\"json\"}", id, qualityMap.get(quality)))
+            String songBody = HttpRequest.get(String.format(SONG_URL_NC_API, id, qualityMap.get(quality)))
+                    .header(Header.REFERER, "https://cp.chksz.top/")
                     .executeAsStr();
-            JSONObject urlJson = JSONObject.parseObject(urlBody);
-            if (urlJson.getIntValue("status") != 200) return "";
+            JSONObject urlJson = JSONObject.parseObject(songBody);
+            if (urlJson.getIntValue("code") != 200) return "";
             JSONObject data = urlJson.getJSONObject("data");
             String trackUrl = data.getString("url");
             if (StringUtil.isEmpty(trackUrl)) return "";
@@ -65,7 +65,7 @@ public class RrvennNcTrackReq {
     }
 
 //    public static void main(String[] args) {
-//        RrvennNcTrackReq trackReq = getInstance();
+//        ChkszNcTrackReq trackReq = getInstance();
 //        System.out.println(trackReq.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.STANDARD]));
 //        System.out.println(trackReq.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.HIGH]));
 //        System.out.println(trackReq.getTrackUrl("2600493765", AudioQuality.KEYS[AudioQuality.LOSSLESS]));

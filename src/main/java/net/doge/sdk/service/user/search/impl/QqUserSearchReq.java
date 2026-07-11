@@ -6,9 +6,10 @@ import net.doge.constant.core.async.GlobalExecutors;
 import net.doge.constant.service.source.NetResourceSource;
 import net.doge.entity.service.NetUserInfo;
 import net.doge.sdk.common.SdkCommon;
+import net.doge.sdk.common.constant.qq.QqSearchDevice;
+import net.doge.sdk.common.constant.qq.QqSearchType;
 import net.doge.sdk.common.entity.CommonResult;
 import net.doge.sdk.util.SdkUtil;
-import net.doge.util.core.http.HttpRequest;
 
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
@@ -32,11 +33,10 @@ public class QqUserSearchReq {
         List<NetUserInfo> r = new LinkedList<>();
         int t;
 
-        String userInfoBody = HttpRequest.post(SdkCommon.QQ_MAIN_API)
-                .jsonBody(String.format(SdkCommon.QQ_SEARCH_JSON, page, limit, keyword, 8))
+        String userInfoBody = SdkCommon.qqSearchRequest(QqSearchDevice.PC, QqSearchType.USER, keyword, page, limit)
                 .executeAsStr();
         JSONObject userInfoJson = JSONObject.parseObject(userInfoBody);
-        JSONObject data = userInfoJson.getJSONObject("music.search.SearchCgiService").getJSONObject("data");
+        JSONObject data = userInfoJson.getJSONObject("req").getJSONObject("data");
         t = data.getJSONObject("meta").getIntValue("sum");
         JSONArray userArray = data.getJSONObject("body").getJSONObject("user").getJSONArray("list");
         for (int i = 0, len = userArray.size(); i < len; i++) {
@@ -65,6 +65,40 @@ public class QqUserSearchReq {
 
             r.add(userInfo);
         }
+
+//        String userInfoBody = SdkCommon.qqSearchRequest(QqSearchDevice.MOBILE, QqSearchType.USER, keyword, page, limit)
+//                .executeAsStr();
+//        JSONObject userInfoJson = JSONObject.parseObject(userInfoBody);
+//        JSONObject data = userInfoJson.getJSONObject("req").getJSONObject("data");
+//        t = data.getJSONObject("meta").getIntValue("sum");
+//        JSONArray userArray = data.getJSONObject("body").getJSONArray("item_user");
+//        for (int i = 0, len = userArray.size(); i < len; i++) {
+//            JSONObject userJson = userArray.getJSONObject(i);
+//
+//            String userId = userJson.getString("encrypt_uin");
+//            String userName = HtmlUtil.removeHtmlLabel(userJson.getString("title"));
+//            String gender = "保密";
+//            String avatarThumbUrl = userJson.getString("pic");
+//            Integer fan = (int) LangUtil.parseNumber(RegexUtil.getGroup1("(.*?)人关注", userJson.getString("subtitle")));
+////                Integer playlistCount = userJson.getIntValue("diss_num");
+//
+//            NetUserInfo userInfo = new NetUserInfo();
+//            userInfo.setSource(NetResourceSource.QQ);
+//            userInfo.setId(userId);
+//            userInfo.setName(userName);
+//            userInfo.setGender(gender);
+//            userInfo.setAvatarThumbUrl(avatarThumbUrl);
+//            userInfo.setAvatarUrl(avatarThumbUrl);
+//            userInfo.setFan(fan);
+////                userInfo.setPlaylistCount(playlistCount);
+//            GlobalExecutors.imageExecutor.execute(() -> {
+//                BufferedImage avatarThumb = SdkUtil.extractCover(avatarThumbUrl);
+//                userInfo.setAvatarThumb(avatarThumb);
+//            });
+//
+//            r.add(userInfo);
+//        }
+
         return new CommonResult<>(r, t);
     }
 }

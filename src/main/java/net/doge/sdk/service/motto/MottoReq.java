@@ -31,6 +31,6 @@ public class MottoReq {
         String from = mottoJson.getString("from");
         String fromWho = mottoJson.getString("from_who");
         return "「" + content + "」    —— " + (StringUtil.isEmpty(fromWho) ? "" : fromWho)
-                + (StringUtil.isEmpty(from) || from.equals(fromWho) ? "" : String.format("《%s》", from.replaceAll("《|》", "")));
+                + (StringUtil.isEmpty(from) || from.equals(fromWho) ? "" : String.format("《%s》", from.replaceAll("[《》]", "")));
     }
 }

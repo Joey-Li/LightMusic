@@ -16,7 +16,7 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
  * @date 2020/12/15
  */
 public class LangUtil {
-    static HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
+    private static HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
     private static MojiConverter mojiConverter = new MojiConverter();
 
     static {
@@ -35,7 +35,7 @@ public class LangUtil {
      * @param s2
      * @return
      */
-    public static int compare(String s1, String s2) throws BadHanyuPinyinOutputFormatCombination {
+    public static int compareByPinyin(String s1, String s2) throws BadHanyuPinyinOutputFormatCombination {
         if (s1 == null) return -1;
         if (s2 == null) return 1;
         for (int i = 0, len = Math.min(s1.length(), s2.length()); i < len; i++) {
@@ -87,16 +87,6 @@ public class LangUtil {
      * @return
      */
     public static String formatNumber(long n) {
-        return formatNumberWithoutSuffix(n) + " 播放";
-    }
-
-    /**
-     * 格式化数字使其带中文单位(万、亿等)
-     *
-     * @param n
-     * @return
-     */
-    public static String formatNumberWithoutSuffix(long n) {
         if (n < 10000) return String.valueOf(n);
         if (n < 100000000) return String.format("%.1f 万", (double) n / 10000).replace(".0", "");
         return String.format("%.1f 亿", (double) n / 100000000).replace(".0", "");
@@ -109,6 +99,7 @@ public class LangUtil {
      * @return
      */
     public static long parseNumber(String s) {
+        if (StringUtil.isEmpty(s)) return 0;
         if (s.contains("k") || s.contains("千"))
             return (long) (Double.parseDouble(s.replaceAll("[k千]", "").trim()) * 1000);
         else if (s.contains("w") || s.contains("万"))

@@ -112,7 +112,7 @@ public class NetRadioListRenderer extends CustomListCellRenderer {
                 StringUtil.shorten(radioInfo.hasDj() ? radioInfo.getDj() : "", RendererConstants.STRING_MAX_LENGTH), tw));
         String category = radioInfo.hasCategory() ? HtmlUtil.textToHtml(radioInfo.getCategory()) : "";
         String trackCount = radioInfo.hasTrackCount() ? HtmlUtil.textToHtml(radioInfo.getTrackCount() + " 节目") : "";
-        String playCount = radioInfo.hasPlayCount() ? HtmlUtil.textToHtml(LangUtil.formatNumber(radioInfo.getPlayCount())) : "";
+        String playCount = radioInfo.hasPlayCount() ? HtmlUtil.textToHtml(LangUtil.formatNumber(radioInfo.getPlayCount()) + " 播放") : "";
 //        String createTime = radioInfo.hasCreateTime() ? radioInfo.getCreateTime() : "";
 
         iconLabel.setText(source);

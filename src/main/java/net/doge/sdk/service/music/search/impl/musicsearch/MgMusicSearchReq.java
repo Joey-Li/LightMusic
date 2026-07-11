@@ -6,6 +6,7 @@ import net.doge.constant.core.media.AudioQuality;
 import net.doge.constant.service.source.NetResourceSource;
 import net.doge.entity.service.NetMusicInfo;
 import net.doge.sdk.common.SdkCommon;
+import net.doge.sdk.common.constant.mg.MgSearchType;
 import net.doge.sdk.common.entity.CommonResult;
 import net.doge.sdk.util.SdkUtil;
 import net.doge.util.core.json.JsonUtil;
@@ -73,7 +74,7 @@ public class MgMusicSearchReq {
         List<NetMusicInfo> r = new LinkedList<>();
         int t;
 
-        String musicInfoBody = SdkCommon.mgSearchRequest("song", keyword, page, limit)
+        String musicInfoBody = SdkCommon.mgSearchRequest(MgSearchType.SONG, keyword, page, limit)
                 .executeAsStr();
         JSONObject musicInfoJson = JSONObject.parseObject(musicInfoBody);
         JSONObject data = musicInfoJson.getJSONObject("songResultData");
@@ -168,7 +169,7 @@ public class MgMusicSearchReq {
         List<NetMusicInfo> r = new LinkedList<>();
         int t;
 
-        String musicInfoBody = SdkCommon.mgSearchRequest("lyric", keyword, page, limit)
+        String musicInfoBody = SdkCommon.mgSearchRequest(MgSearchType.LYRIC, keyword, page, limit)
                 .executeAsStr();
         JSONObject musicInfoJson = JSONObject.parseObject(musicInfoBody);
         JSONObject data = musicInfoJson.getJSONObject("lyricResultData");

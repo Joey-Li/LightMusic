@@ -102,7 +102,7 @@ public class NetPlaylistListRenderer extends CustomListCellRenderer {
         String name = playlistInfo.hasName() ? HtmlUtil.textToHtml(HtmlUtil.wrapLineByWidth(StringUtil.shorten(playlistInfo.getName(), RendererConstants.STRING_MAX_LENGTH), tw)) : "";
         String creator = playlistInfo.hasCreator() ? HtmlUtil.textToHtml(HtmlUtil.wrapLineByWidth(
                 StringUtil.shorten(playlistInfo.getCreator(), RendererConstants.STRING_MAX_LENGTH), tw)) : "";
-        String playCount = playlistInfo.hasPlayCount() ? HtmlUtil.textToHtml(LangUtil.formatNumber(playlistInfo.getPlayCount())) : "";
+        String playCount = playlistInfo.hasPlayCount() ? HtmlUtil.textToHtml(LangUtil.formatNumber(playlistInfo.getPlayCount()) + " 播放") : "";
         String trackCount = playlistInfo.hasTrackCount() ? HtmlUtil.textToHtml(playlistInfo.getTrackCount() + " 歌曲") : "";
 
         iconLabel.setText(source);

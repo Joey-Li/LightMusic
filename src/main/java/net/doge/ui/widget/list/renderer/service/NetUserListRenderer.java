@@ -118,8 +118,8 @@ public class NetUserListRenderer extends CustomListCellRenderer {
                 : hasRadioCount ? HtmlUtil.textToHtml(userInfo.getRadioCount() + " 电台")
                 : hasProgramCount ? HtmlUtil.textToHtml(userInfo.getProgramCount() + (userInfo.fromDt() ? " 专辑" : userInfo.fromBI() ? " 视频" : " 节目"))
                 : "";
-        String follow = userInfo.hasFollow() ? HtmlUtil.textToHtml(LangUtil.formatNumberWithoutSuffix(userInfo.getFollow()) + " 关注") : "";
-        String fan = userInfo.hasFan() ? HtmlUtil.textToHtml(LangUtil.formatNumberWithoutSuffix(userInfo.getFan()) + " 粉丝") : "";
+        String follow = userInfo.hasFollow() ? HtmlUtil.textToHtml(LangUtil.formatNumber(userInfo.getFollow()) + " 关注") : "";
+        String fan = userInfo.hasFan() ? HtmlUtil.textToHtml(LangUtil.formatNumber(userInfo.getFan()) + " 粉丝") : "";
 
         avatarLabel.setText(source);
         nameLabel.setText(name);

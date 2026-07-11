@@ -10,13 +10,16 @@ import net.doge.util.core.json.JsonUtil;
 import net.doge.util.core.log.LogUtil;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class XcvtsQqTrackReq {
     private static XcvtsQqTrackReq instance;
 
     private XcvtsQqTrackReq() {
         initMap();
+        initBlacklist();
     }
 
     public static XcvtsQqTrackReq getInstance() {
@@ -33,6 +36,8 @@ public class XcvtsQqTrackReq {
     };
 
     private Map<String, String> qualityMap = new HashMap<>();
+    // url 黑名单
+    private Set<String> urlBlacklist = new HashSet<>();
 
     private void initMap() {
         // 标准品质
@@ -47,6 +52,10 @@ public class XcvtsQqTrackReq {
         qualityMap.put(AudioQuality.KEYS[AudioQuality.ATMOSPHERE], "臻品全景声");
         // 至臻母带
         qualityMap.put(AudioQuality.KEYS[AudioQuality.MASTER], "臻品母带");
+    }
+
+    private void initBlacklist() {
+        urlBlacklist.add("&API=api.xcvts.cn");
     }
 
     private String decodeRequestKey(String requestKey) {
@@ -70,7 +79,7 @@ public class XcvtsQqTrackReq {
             JSONObject data = songJson.getJSONObject("data");
             if (JsonUtil.isEmpty(data)) return "";
             String trackUrl = data.getString("music");
-            if (StringUtil.isEmpty(trackUrl)) return "";
+            if (StringUtil.isEmpty(trackUrl) || urlBlacklist.contains(trackUrl)) return "";
             return trackUrl;
         } catch (Exception e) {
             LogUtil.error(e);
@@ -78,12 +87,12 @@ public class XcvtsQqTrackReq {
         }
     }
 
-    public static void main(String[] args) {
-        XcvtsQqTrackReq trackReq = getInstance();
-        System.out.println(trackReq.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.STANDARD]));
-        System.out.println(trackReq.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.HIGH]));
-        System.out.println(trackReq.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.SUPER]));
-        System.out.println(trackReq.getTrackUrl("0039MnYb0qxYhV", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
-        System.out.println(trackReq.getTrackUrl("0039MnYb0qxYhV", AudioQuality.KEYS[AudioQuality.HI_RES]));
-    }
+//    public static void main(String[] args) {
+//        XcvtsQqTrackReq trackReq = getInstance();
+//        System.out.println(trackReq.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.STANDARD]));
+//        System.out.println(trackReq.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.HIGH]));
+//        System.out.println(trackReq.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.SUPER]));
+//        System.out.println(trackReq.getTrackUrl("0039MnYb0qxYhV", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
+//        System.out.println(trackReq.getTrackUrl("0039MnYb0qxYhV", AudioQuality.KEYS[AudioQuality.HI_RES]));
+//    }
 }

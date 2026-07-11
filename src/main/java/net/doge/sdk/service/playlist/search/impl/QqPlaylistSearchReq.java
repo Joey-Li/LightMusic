@@ -6,9 +6,10 @@ import net.doge.constant.core.async.GlobalExecutors;
 import net.doge.constant.service.source.NetResourceSource;
 import net.doge.entity.service.NetPlaylistInfo;
 import net.doge.sdk.common.SdkCommon;
+import net.doge.sdk.common.constant.qq.QqSearchDevice;
+import net.doge.sdk.common.constant.qq.QqSearchType;
 import net.doge.sdk.common.entity.CommonResult;
 import net.doge.sdk.util.SdkUtil;
-import net.doge.util.core.http.HttpRequest;
 
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
@@ -32,22 +33,52 @@ public class QqPlaylistSearchReq {
         List<NetPlaylistInfo> r = new LinkedList<>();
         int t;
 
-        String playlistInfoBody = HttpRequest.post(SdkCommon.QQ_MAIN_API)
-                .jsonBody(String.format(SdkCommon.QQ_SEARCH_JSON, page, limit, keyword, 3))
+//        String playlistInfoBody = SdkCommon.qqSearchRequest(QqSearchDevice.PC, QqSearchType.PLAYLIST, keyword, page, limit)
+//                .executeAsStr();
+//        JSONObject playlistInfoJson = JSONObject.parseObject(playlistInfoBody);
+//        JSONObject data = playlistInfoJson.getJSONObject("req").getJSONObject("data");
+//        t = data.getJSONObject("meta").getIntValue("sum");
+//        JSONArray playlistArray = data.getJSONObject("body").getJSONArray("item_songlist");
+//        for (int i = 0, len = playlistArray.size(); i < len; i++) {
+//            JSONObject playlistJson = playlistArray.getJSONObject(i);
+//
+//            String playlistId = playlistJson.getString("dissid");
+//            String playlistName = playlistJson.getString("dissname");
+//            String creator = playlistJson.getJSONObject("creator").getString("name");
+//            Long playCount = playlistJson.getLong("listennum");
+//            Integer trackCount = playlistJson.getIntValue("song_count");
+//            String coverImgThumbUrl = playlistJson.getString("imgurl");
+//
+//            NetPlaylistInfo playlistInfo = new NetPlaylistInfo();
+//            playlistInfo.setSource(NetResourceSource.QQ);
+//            playlistInfo.setId(playlistId);
+//            playlistInfo.setName(playlistName);
+//            playlistInfo.setCreator(creator);
+//            playlistInfo.setCoverImgThumbUrl(coverImgThumbUrl);
+//            playlistInfo.setPlayCount(playCount);
+//            playlistInfo.setTrackCount(trackCount);
+//            GlobalExecutors.imageExecutor.execute(() -> {
+//                BufferedImage coverImgThumb = SdkUtil.extractCover(coverImgThumbUrl);
+//                playlistInfo.setCoverImgThumb(coverImgThumb);
+//            });
+//            r.add(playlistInfo);
+//        }
+
+        String playlistInfoBody = SdkCommon.qqSearchRequest(QqSearchDevice.MOBILE, QqSearchType.PLAYLIST, keyword, page, limit)
                 .executeAsStr();
         JSONObject playlistInfoJson = JSONObject.parseObject(playlistInfoBody);
-        JSONObject data = playlistInfoJson.getJSONObject("music.search.SearchCgiService").getJSONObject("data");
+        JSONObject data = playlistInfoJson.getJSONObject("req").getJSONObject("data");
         t = data.getJSONObject("meta").getIntValue("sum");
-        JSONArray playlistArray = data.getJSONObject("body").getJSONObject("songlist").getJSONArray("list");
+        JSONArray playlistArray = data.getJSONObject("body").getJSONArray("item_songlist");
         for (int i = 0, len = playlistArray.size(); i < len; i++) {
             JSONObject playlistJson = playlistArray.getJSONObject(i);
 
             String playlistId = playlistJson.getString("dissid");
             String playlistName = playlistJson.getString("dissname");
-            String creator = playlistJson.getJSONObject("creator").getString("name");
+            String creator = playlistJson.getString("nickname");
             Long playCount = playlistJson.getLong("listennum");
-            Integer trackCount = playlistJson.getIntValue("song_count");
-            String coverImgThumbUrl = playlistJson.getString("imgurl");
+            Integer trackCount = playlistJson.getIntValue("songnum");
+            String coverImgThumbUrl = playlistJson.getString("logo");
 
             NetPlaylistInfo playlistInfo = new NetPlaylistInfo();
             playlistInfo.setSource(NetResourceSource.QQ);
@@ -63,6 +94,7 @@ public class QqPlaylistSearchReq {
             });
             r.add(playlistInfo);
         }
+
         return new CommonResult<>(r, t);
     }
 }

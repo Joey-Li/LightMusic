@@ -2,18 +2,17 @@ package net.doge.sdk.service.music.info.impl.musicurl.track.nc;
 
 import com.alibaba.fastjson2.JSONObject;
 import net.doge.constant.core.media.AudioQuality;
+import net.doge.util.core.RandomUtil;
 import net.doge.util.core.StringUtil;
 import net.doge.util.core.array.ArrayUtil;
 import net.doge.util.core.crypto.CryptoUtil;
 import net.doge.util.core.http.HttpRequest;
 import net.doge.util.core.http.constant.Header;
 import net.doge.util.core.log.LogUtil;
-import net.doge.util.core.net.IpUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringJoiner;
 import java.util.TreeMap;
 
 public class ZnnuNcTrackReq {
@@ -32,9 +31,6 @@ public class ZnnuNcTrackReq {
     private final String AUTH_API = "https://music.znnu.com/api/key";
     // 歌曲 URL 获取 API
     private final String SONG_URL_API = "https://music.znnu.com/api/song";
-
-    // 加密参数
-    private final int TAG_LENGTH = 128;
 
     private Map<String, String> qualityMap = new HashMap<>();
 
@@ -59,15 +55,6 @@ public class ZnnuNcTrackReq {
         String data = timestamp + domain + paramsStrBuilder;
         String hmacSecretKey = "a09d0f3700a279584e1515354fbe08a7ee1c617f919543142fa625b82f1b5ad0";
         return CryptoUtil.hmacSha256Hex(data, hmacSecretKey);
-    }
-
-    // Map 转表单参数
-    private String mapToForm(Map<String, Object> params) {
-        StringJoiner sj = new StringJoiner("&");
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
-            sj.add(entry.getKey() + "=" + entry.getValue());
-        }
-        return sj.toString();
     }
 
     /**
@@ -96,18 +83,17 @@ public class ZnnuNcTrackReq {
             params.put("id", id);
             params.put("level", qualityMap.get(quality));
             params.put("rawInput", String.format("https://music.163.com/#/song?id=%s", id));
-            params.put("ip", IpUtil.randomIpv4());
+            params.put("ip", RandomUtil.randomIpv4());
             String signature = generateSignature(params, timestamp, domain);
             params.put("timestamp", timestamp);
             params.put("domain", domain);
             params.put("signature", signature);
-            String payload = mapToForm(params);
             String rawBody = HttpRequest.post(SONG_URL_API)
                     .header(Header.REFERER, "https://music.znnu.com/")
                     .header("X-Key-Token", keyToken)
                     .header("X-Referer", "musicParser")
                     // 注意此处以表单形式传入！
-                    .formBody(payload)
+                    .form(params)
                     .executeAsStr();
             JSONObject rawJson = JSONObject.parseObject(rawBody);
             if (rawJson.getIntValue("code") != 200) return "";

@@ -77,7 +77,7 @@ public class NetCommentInfo {
                 + (hasLocation() ? "    " + location : "")
                 + (hasScore() ? "    " + LangUtil.genStar(score) + " " + score + " 分" : "") + "\n"
                 + content + "\n"
-                + (hasLikedCount() ? "❤ " + LangUtil.formatNumberWithoutSuffix(likedCount) : "");
+                + (hasLikedCount() ? "❤ " + LangUtil.formatNumber(likedCount) : "");
     }
 
     public String toSimpleString() {

@@ -20881,7 +20881,7 @@ public class MainFrame extends JFrame {
                         AudioFile f2 = (AudioFile) o2;
                         s2 = f2.toString();
                     } else if (o2 instanceof NetMusicInfo) s2 = ((NetMusicInfo) o2).getName();
-                    return order == SortOrder.ASCENDING ? LangUtil.compare(s1, s2) : LangUtil.compare(s2, s1);
+                    return order == SortOrder.ASCENDING ? LangUtil.compareByPinyin(s1, s2) : LangUtil.compareByPinyin(s2, s1);
                 } catch (BadHanyuPinyinOutputFormatCombination e) {
                     LogUtil.error(e);
                 }
@@ -20895,7 +20895,7 @@ public class MainFrame extends JFrame {
                     else if (o1 instanceof NetMusicInfo) s1 = ((NetMusicInfo) o1).getName();
                     if (o2 instanceof AudioFile) s2 = ((AudioFile) o2).getSongName();
                     else if (o2 instanceof NetMusicInfo) s2 = ((NetMusicInfo) o2).getName();
-                    return order == SortOrder.ASCENDING ? LangUtil.compare(s1, s2) : LangUtil.compare(s2, s1);
+                    return order == SortOrder.ASCENDING ? LangUtil.compareByPinyin(s1, s2) : LangUtil.compareByPinyin(s2, s1);
                 } catch (BadHanyuPinyinOutputFormatCombination e) {
                     LogUtil.error(e);
                 }
@@ -20909,7 +20909,7 @@ public class MainFrame extends JFrame {
                     else if (o1 instanceof NetMusicInfo) s1 = ((NetMusicInfo) o1).getArtist();
                     if (o2 instanceof AudioFile) s2 = ((AudioFile) o2).getArtist();
                     else if (o2 instanceof NetMusicInfo) s2 = ((NetMusicInfo) o2).getArtist();
-                    return order == SortOrder.ASCENDING ? LangUtil.compare(s1, s2) : LangUtil.compare(s2, s1);
+                    return order == SortOrder.ASCENDING ? LangUtil.compareByPinyin(s1, s2) : LangUtil.compareByPinyin(s2, s1);
                 } catch (BadHanyuPinyinOutputFormatCombination e) {
                     LogUtil.error(e);
                 }
@@ -20923,7 +20923,7 @@ public class MainFrame extends JFrame {
                     else if (o1 instanceof NetMusicInfo) s1 = ((NetMusicInfo) o1).getAlbumName();
                     if (o2 instanceof AudioFile) s2 = ((AudioFile) o2).getAlbum();
                     else if (o2 instanceof NetMusicInfo) s2 = ((NetMusicInfo) o2).getAlbumName();
-                    return order == SortOrder.ASCENDING ? LangUtil.compare(s1, s2) : LangUtil.compare(s2, s1);
+                    return order == SortOrder.ASCENDING ? LangUtil.compareByPinyin(s1, s2) : LangUtil.compareByPinyin(s2, s1);
                 } catch (BadHanyuPinyinOutputFormatCombination e) {
                     LogUtil.error(e);
                 }
@@ -20937,7 +20937,7 @@ public class MainFrame extends JFrame {
                 if (o2 instanceof AudioFile) s2 = ((AudioFile) o2).getName();
                 else if (o2 instanceof NetMusicInfo) s2 = o2.toString();
                 try {
-                    return order == SortOrder.ASCENDING ? LangUtil.compare(s1, s2) : LangUtil.compare(s2, s1);
+                    return order == SortOrder.ASCENDING ? LangUtil.compareByPinyin(s1, s2) : LangUtil.compareByPinyin(s2, s1);
                 } catch (BadHanyuPinyinOutputFormatCombination e) {
                     LogUtil.error(e);
                     return 0;

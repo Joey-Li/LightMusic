@@ -6,6 +6,7 @@ import net.doge.constant.core.async.GlobalExecutors;
 import net.doge.constant.service.source.NetResourceSource;
 import net.doge.entity.service.NetPlaylistInfo;
 import net.doge.sdk.common.SdkCommon;
+import net.doge.sdk.common.constant.mg.MgSearchType;
 import net.doge.sdk.common.entity.CommonResult;
 import net.doge.sdk.util.SdkUtil;
 import net.doge.util.core.json.JsonUtil;
@@ -32,7 +33,7 @@ public class MgPlaylistSearchReq {
         List<NetPlaylistInfo> r = new LinkedList<>();
         int t;
 
-        String playlistInfoBody = SdkCommon.mgSearchRequest("playlist", keyword, page, limit)
+        String playlistInfoBody = SdkCommon.mgSearchRequest(MgSearchType.PLAYLIST, keyword, page, limit)
                 .executeAsStr();
         JSONObject playlistInfoJson = JSONObject.parseObject(playlistInfoBody).getJSONObject("songListResultData");
         t = playlistInfoJson.getIntValue("totalCount");
@@ -66,7 +67,7 @@ public class MgPlaylistSearchReq {
             }
         }
         return new CommonResult<>(r, t);
-        //            String playlistInfoBody = SdkCommon.mgSearchRequest("playlist", keyword, page, limit)
+        //            String playlistInfoBody = SdkCommon.mgSearchRequest(MgSearchType.PLAYLIST, keyword, page, limit)
 //                    .executeAsync()
 //                    .body();
 //            JSONObject playlistInfoJson = JSONObject.parseObject(playlistInfoBody);

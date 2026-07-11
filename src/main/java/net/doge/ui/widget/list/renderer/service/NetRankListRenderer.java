@@ -99,7 +99,7 @@ public class NetRankListRenderer extends CustomListCellRenderer {
         int pw = RendererConstants.CELL_WIDTH, tw = RendererConstants.TEXT_WIDTH;
         String source = "<html></html>";
         String name = rankInfo.hasName() ? HtmlUtil.textToHtml(HtmlUtil.wrapLineByWidth(StringUtil.shorten(rankInfo.getName(), RendererConstants.STRING_MAX_LENGTH), tw)) : "";
-        String playCount = rankInfo.hasPlayCount() ? HtmlUtil.textToHtml(LangUtil.formatNumber(rankInfo.getPlayCount())) : "";
+        String playCount = rankInfo.hasPlayCount() ? HtmlUtil.textToHtml(LangUtil.formatNumber(rankInfo.getPlayCount()) + " 播放") : "";
         String updateFre = rankInfo.hasUpdateFre() ? HtmlUtil.textToHtml(rankInfo.getUpdateFre()) : "";
         String updateTime = rankInfo.hasUpdateTime() ? HtmlUtil.textToHtml(rankInfo.getUpdateTime() + " 更新") : "";
 

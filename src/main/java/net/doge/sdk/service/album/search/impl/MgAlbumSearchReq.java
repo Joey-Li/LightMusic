@@ -6,6 +6,7 @@ import net.doge.constant.core.async.GlobalExecutors;
 import net.doge.constant.service.source.NetResourceSource;
 import net.doge.entity.service.NetAlbumInfo;
 import net.doge.sdk.common.SdkCommon;
+import net.doge.sdk.common.constant.mg.MgSearchType;
 import net.doge.sdk.common.entity.CommonResult;
 import net.doge.sdk.util.SdkUtil;
 import net.doge.util.core.json.JsonUtil;
@@ -32,7 +33,7 @@ public class MgAlbumSearchReq {
         List<NetAlbumInfo> r = new LinkedList<>();
         int t;
 
-        String albumInfoBody = SdkCommon.mgSearchRequest("album", keyword, page, limit)
+        String albumInfoBody = SdkCommon.mgSearchRequest(MgSearchType.ALBUM, keyword, page, limit)
                 .executeAsStr();
         JSONObject albumInfoJson = JSONObject.parseObject(albumInfoBody).getJSONObject("albumResultData");
         t = albumInfoJson.getIntValue("totalCount");

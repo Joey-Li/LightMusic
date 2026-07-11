@@ -1,6 +1,9 @@
 package net.doge.sdk.common;
 
 import net.doge.sdk.common.builder.*;
+import net.doge.sdk.common.constant.mg.MgSearchType;
+import net.doge.sdk.common.constant.qq.QqSearchDevice;
+import net.doge.sdk.common.constant.qq.QqSearchType;
 import net.doge.sdk.common.opt.fs.FiveSingReqOptEnum;
 import net.doge.sdk.common.opt.kg.KugouReqOptEnum;
 import net.doge.sdk.common.opt.nc.NeteaseReqOptEnum;
@@ -19,7 +22,6 @@ public class SdkCommon {
     public static final String BI_COOKIE = "_uuid=9538DF8D-CA4D-28F5-C692-C5B4B312E44E14370infoc; buvid3=DF3C6017-C78A-23EC-7EE8-41090853ED2A14442infoc; b_nut=1695097614; home_feed_column=5; DedeUserID=381984701; DedeUserID__ckMd5=62c28371e08c50b3; CURRENT_FNVAL=4048; rpdid=|(um~Rkm|Jll0J'uYml|m~YJ); buvid_fp_plain=undefined; LIVE_BUVID=AUTO7816953009976873; buvid4=83DE81EC-A37B-1F1D-C096-DA73D7F3529D14442-023091912-wTMxKM%2BXYt%2BXSTf2UGduUA%3D%3D; hit-dyn-v2=1; enable_web_push=DISABLE; header_theme_version=CLOSE; FEED_LIVE_VERSION=V8; fingerprint=6dbfa8e3b4e9f3a86e469c16e7fc1f67; buvid_fp=6dbfa8e3b4e9f3a86e469c16e7fc1f67; browser_resolution=1920-967; SESSDATA=a3d3fad6%2C1739965348%2C5f35b%2A81CjCiSAZFqZeFEjmF3NhqbaYJ9Hh3mlf8g8Bo4TzTVmGNgw-yTwFq3eKlCw9OYESgEJYSVl9WM0l6YTFXM3paRW9RSF9tcGRvbGRpWDhkUmNHbzBLNnM5WnpDWjYwVzR3OG1QRTdWelRmWnpWUTJJTjVqWDhzbzBkaGRycUNQMS1JcEw2bUhhcGx3IIEC; bili_jct=a959bf174a665dd973733e8b41c52dbc";
     // 小丘
     public static final String QQ_MAIN_API = "https://u.y.qq.com/cgi-bin/musicu.fcg";
-    public static final String QQ_SEARCH_JSON = "{\"music.search.SearchCgiService\": {\"method\": \"DoSearchForQQMusicDesktop\",\"module\": \"music.search.SearchCgiService\",\"param\":{\"page_num\": %s,\"num_per_page\": %s,\"query\": \"%s\",\"search_type\": %s}}}";
     // 歌曲封面信息 API (QQ)
     public static final String SONG_IMG_QQ_API = "https://y.gtimg.cn/music/photo_new/T002R500x500M000%s.jpg";
     // 歌手图片 API (QQ)
@@ -42,8 +44,13 @@ public class SdkCommon {
         return KuwoReqBuilder.getInstance().buildRequest(url);
     }
 
+    // 构造 QQ 音乐搜索请求
+    public static HttpRequest qqSearchRequest(QqSearchDevice device, QqSearchType type, String keyword, int page, int limit) {
+        return QqReqBuilder.getInstance().buildSearchRequest(device, type, keyword, page, limit);
+    }
+
     // 构造咪咕音乐搜索请求
-    public static HttpRequest mgSearchRequest(String type, String keyword, int page, int limit) {
+    public static HttpRequest mgSearchRequest(MgSearchType type, String keyword, int page, int limit) {
         return MiguReqBuilder.getInstance().buildSearchRequest(type, keyword, page, limit);
     }
 
