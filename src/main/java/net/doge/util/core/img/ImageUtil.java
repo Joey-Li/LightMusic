@@ -1,13 +1,13 @@
 package net.doge.util.core.img;
 
 import cn.hutool.core.img.ImgUtil;
-import cn.hutool.core.util.RandomUtil;
 import com.jhlabs.image.*;
 import com.luciad.imageio.webp.WebPReadParam;
 import net.coobird.thumbnailator.Thumbnails;
 import net.doge.constant.core.os.Format;
-import net.doge.constant.core.ui.core.Colors;
+import net.doge.constant.core.ui.Colors;
 import net.doge.constant.core.ui.image.BlurConstants;
+import net.doge.util.core.RandomUtil;
 import net.doge.util.core.StringUtil;
 import net.doge.util.core.http.HttpRequest;
 import net.doge.util.core.log.LogUtil;
@@ -100,8 +100,8 @@ public class ImageUtil {
      */
     public static BufferedImage read(InputStream in) {
         if (in == null) return null;
-        try (InputStream input = in) {
-            return Thumbnails.of(input).scale(1).asBufferedImage();
+        try (InputStream _in = in) {
+            return Thumbnails.of(_in).scale(1).asBufferedImage();
         } catch (Exception e) {
             LogUtil.error(e);
             return null;
@@ -116,7 +116,7 @@ public class ImageUtil {
      */
     public static BufferedImage readWebp(String imgUrl) {
         if (StringUtil.isEmpty(imgUrl)) return null;
-        try (InputStream in = getImgStream(imgUrl)) {
+        try (InputStream in = getStream(imgUrl)) {
             if (in == null) return null;
             // Obtain a WebP ImageReader instance
             ImageReader reader = ImageIO.getImageReadersByMIMEType("image/webp").next();
@@ -142,16 +142,16 @@ public class ImageUtil {
     public static BufferedImage readFromUrl(String imgUrl) {
         if (StringUtil.isEmpty(imgUrl)) return null;
         if (imgUrl.endsWith(Format.WEBP)) return readWebp(imgUrl);
-        return read(getImgStream(imgUrl));
+        return read(getStream(imgUrl));
     }
 
     /**
-     * 根据图片 url 获取图片流
+     * 从 url 获取图片流
      *
-     * @param imgUrl 图像 url
+     * @param imgUrl 图片 url
      * @return
      */
-    public static InputStream getImgStream(String imgUrl) {
+    public static InputStream getStream(String imgUrl) {
         if (StringUtil.isEmpty(imgUrl)) return null;
         try {
             return HttpRequest.get(imgUrl)
@@ -182,12 +182,7 @@ public class ImageUtil {
      * @return
      */
     public static void toFile(String imgUrl, File outputFile) {
-        try (InputStream in = getImgStream(imgUrl)) {
-            if (in == null) return;
-            Thumbnails.of(in).scale(1).toFile(outputFile);
-        } catch (Exception e) {
-            LogUtil.error(e);
-        }
+        toFile(readFromUrl(imgUrl), outputFile);
     }
 
     /**
@@ -297,7 +292,7 @@ public class ImageUtil {
     }
 
     /**
-     * 给 ImageIcon 着色，保留透明部分
+     * 给图标着色，保留透明部分
      *
      * @param icon
      * @param color
@@ -309,7 +304,7 @@ public class ImageUtil {
     }
 
     /**
-     * 给 Image 着色，保留透明部分
+     * 给图像着色，保留透明部分
      *
      * @param img
      * @return
@@ -332,7 +327,7 @@ public class ImageUtil {
     }
 
     /**
-     * 返回纯色指定宽高的矩形 BufferedImage
+     * 返回纯色指定宽高的矩形图片
      *
      * @param w
      * @param h
@@ -350,41 +345,41 @@ public class ImageUtil {
     }
 
     /**
-     * 返回纯色指定宽高的圆角矩形 ImageIcon
+     * 返回纯色指定宽高的圆角矩形图片
      *
      * @param w
      * @param h
      * @param color
      * @return
      */
-    public static ImageIcon dyeRoundRect(int w, int h, Color color) {
+    public static BufferedImage dyeRoundRect(int w, int h, Color color) {
         BufferedImage img = createTransparentImage(w, h);
         Graphics2D g2d = GraphicsUtil.setup(img.createGraphics());
         g2d.setColor(color);
         int arc = ScaleUtil.scale(10);
         g2d.fillRoundRect(0, 0, w, h, arc, arc);
         g2d.dispose();
-        return new ImageIcon(img);
+        return img;
     }
 
     /**
-     * 返回纯色指定宽度的圆形 ImageIcon
+     * 返回纯色指定宽度的圆形图片
      *
      * @param w
      * @param color
      * @return
      */
-    public static ImageIcon dyeCircle(int w, Color color) {
+    public static BufferedImage dyeCircle(int w, Color color) {
         BufferedImage img = createTransparentImage(w, w);
         Graphics2D g2d = GraphicsUtil.setup(img.createGraphics());
         g2d.setColor(color);
         g2d.fillOval(0, 0, w, w);
         g2d.dispose();
-        return new ImageIcon(img);
+        return img;
     }
 
     /**
-     * BufferedImage 设置为圆角边框，保留透明度
+     * 为图像设置圆角边框，保留透明度
      *
      * @param img
      * @param arc
@@ -395,7 +390,7 @@ public class ImageUtil {
     }
 
     /**
-     * BufferedImage 设置为圆角边框，保留透明度
+     * 为图像设置圆角边框，保留透明度
      *
      * @param img
      * @param radius
@@ -440,43 +435,6 @@ public class ImageUtil {
         if (img == null) return null;
         try {
             return Thumbnails.of(img).width(width).asBufferedImage();
-        } catch (Exception e) {
-            LogUtil.error(e);
-            return null;
-        }
-    }
-
-    /**
-     * 等比例设置图片宽度，返回新的 BufferedImage
-     *
-     * @param in
-     * @param width
-     * @return
-     */
-    public static BufferedImage width(InputStream in, int width) {
-        if (in == null) return null;
-        try (InputStream cin = in) {
-            return Thumbnails.of(cin).width(width).asBufferedImage();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * 等比例设置图片宽度，返回新的 BufferedImage
-     *
-     * @param imgUrl
-     * @param width
-     * @return
-     */
-    public static BufferedImage width(String imgUrl, int width) {
-        if (StringUtil.isEmpty(imgUrl)) return null;
-        try {
-            BufferedImage img = null;
-            // 先处理 webp 图像
-            if (imgUrl.endsWith(Format.WEBP)) img = readWebp(imgUrl);
-            if (img == null) return width(getImgStream(imgUrl), width);
-            return width(img, width);
         } catch (Exception e) {
             LogUtil.error(e);
             return null;
@@ -550,7 +508,7 @@ public class ImageUtil {
     }
 
     /**
-     * 改变图片比例
+     * 改变图像缩放比例
      *
      * @param img
      * @param scale
@@ -610,7 +568,7 @@ public class ImageUtil {
     }
 
     /**
-     * 获取 BufferedImage 亮度
+     * 获取图像亮度
      *
      * @param img
      * @return
@@ -638,16 +596,16 @@ public class ImageUtil {
      * @param img
      * @return
      */
-    public static BufferedImage fluidImage(BufferedImage img) {
+    public static BufferedImage fluid(BufferedImage img) {
         if (img == null) return null;
-        twirlFilter.setAngle((float) Math.toRadians(RandomUtil.randomInt(10, 350)));
+        twirlFilter.setAngle((float) Math.toRadians(RandomUtil.randomInt(30, 330)));
         twirlFilter.setRadius((float) img.getWidth() / 2);
         return twirlFilter.filter(img, null);
     }
 
 
     /**
-     * 对 BufferedImage 进行高斯模糊处理，用于歌曲封面
+     * 对图像进行高斯模糊处理
      *
      * @param img
      * @return
@@ -659,7 +617,7 @@ public class ImageUtil {
     }
 
     /**
-     * 对 BufferedImage 进行暗化处理
+     * 对图像进行暗化处理
      *
      * @param img
      * @return
@@ -683,7 +641,7 @@ public class ImageUtil {
     }
 
     /**
-     * 为 BufferedImage 添加遮罩
+     * 为图片添加遮罩
      *
      * @param img
      * @return

@@ -12,7 +12,7 @@ import javafx.scene.media.MediaView;
 import javafx.util.Duration;
 import net.doge.constant.core.async.GlobalExecutors;
 import net.doge.constant.core.lang.I18n;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.constant.core.ui.style.UIStyleStorage;
 import net.doge.constant.core.ui.window.WindowSize;
 import net.doge.constant.service.source.NetResourceSource;

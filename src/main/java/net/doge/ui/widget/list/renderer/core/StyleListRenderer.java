@@ -2,7 +2,7 @@ package net.doge.ui.widget.list.renderer.core;
 
 import lombok.Data;
 import net.doge.constant.core.lang.I18n;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.constant.core.ui.list.RendererConstants;
 import net.doge.constant.core.ui.style.UIStyleStorage;
 import net.doge.entity.core.ui.UIStyle;

@@ -1,6 +1,6 @@
 package net.doge.ui.widget.dialog.base;
 
-import net.doge.constant.core.ui.core.Colors;
+import net.doge.constant.core.ui.Colors;
 
 import javax.swing.*;
 import java.awt.*;

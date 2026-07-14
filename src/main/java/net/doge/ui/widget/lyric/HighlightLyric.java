@@ -2,8 +2,8 @@ package net.doge.ui.widget.lyric;
 
 import lombok.Data;
 import net.doge.constant.core.lyric.LyricPattern;
-import net.doge.constant.core.ui.core.Colors;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Colors;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.entity.core.lyric.Statement;
 import net.doge.util.core.RegexUtil;
 import net.doge.util.core.array.ArrayUtil;

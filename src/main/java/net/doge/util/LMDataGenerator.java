@@ -18,8 +18,8 @@ public class LMDataGenerator {
 
     public static void main(String[] args) {
 //        icon();
-        style();
-//        font();
+//        style();
+        font();
     }
 
     static void icon() {

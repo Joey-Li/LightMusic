@@ -9,7 +9,7 @@ import net.doge.constant.core.lang.I18n;
 import net.doge.constant.core.media.AudioQuality;
 import net.doge.constant.core.media.VideoQuality;
 import net.doge.constant.core.os.SimplePath;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.constant.core.ui.image.BlurConstants;
 import net.doge.constant.core.ui.lyric.LyricAlignment;
 import net.doge.constant.core.ui.spectrum.SpectrumConstants;

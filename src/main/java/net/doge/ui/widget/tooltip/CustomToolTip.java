@@ -1,7 +1,7 @@
 package net.doge.ui.widget.tooltip;
 
-import net.doge.constant.core.ui.core.Colors;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Colors;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.util.ui.ColorUtil;
 import net.doge.util.ui.GraphicsUtil;
 import net.doge.util.ui.ScaleUtil;

@@ -1,7 +1,7 @@
 package net.doge.ui.widget.list.renderer.service;
 
 import lombok.Data;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.constant.core.ui.image.ImageConstants;
 import net.doge.constant.core.ui.list.RendererConstants;
 import net.doge.entity.service.NetUserInfo;

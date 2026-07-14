@@ -1,7 +1,7 @@
 package net.doge.ui.widget.list.renderer.core;
 
 import lombok.Data;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.constant.core.ui.lyric.LyricAlignment;
 import net.doge.entity.core.lyric.Statement;
 import net.doge.ui.widget.label.ui.CustomLabelUI;

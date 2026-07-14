@@ -1,7 +1,7 @@
 package net.doge.ui.widget.dialog.base;
 
 import lombok.Setter;
-import net.doge.constant.core.ui.core.Colors;
+import net.doge.constant.core.ui.Colors;
 import net.doge.constant.core.ui.image.BlurConstants;
 import net.doge.constant.core.ui.image.ImageConstants;
 import net.doge.constant.core.ui.style.UIStyleStorage;
@@ -76,7 +76,7 @@ public abstract class AbstractShadowDialog extends BaseDialog {
         // 缩小
         img = ImageUtil.width(img, 256);
         // 流体图
-        if (f.fluidOn) img = ImageUtil.fluidImage(img);
+        if (f.fluidOn) img = ImageUtil.fluid(img);
         if (f.maskOn) img = ImageUtil.mask(img);
         // 高斯模糊
         if (f.gsOn) img = ImageUtil.gaussianBlur(img);

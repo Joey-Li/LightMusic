@@ -2,7 +2,7 @@ package net.doge.ui.widget.button;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.ui.widget.base.ExtendedOpacitySupported;
 import net.doge.ui.widget.button.base.BaseButton;
 import net.doge.ui.widget.button.listener.TabButtonMouseAdapter;

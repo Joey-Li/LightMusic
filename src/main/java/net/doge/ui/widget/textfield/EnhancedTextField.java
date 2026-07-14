@@ -159,7 +159,7 @@
 /// /        int stringHeight = fontMetrics.getHeight();
 /// /        g2d.setColor(foreColor);
 /// /
-/// /        FontMetrics[] metrics = new FontMetrics[net.doge.constant.core.ui.core.Fonts.TYPES.size()];
+/// /        FontMetrics[] metrics = new FontMetrics[net.doge.constant.core.ui.Fonts.TYPES.size()];
 /// /        for (int i = 0, len = metrics.length; i < len; i++) {
 /// /            metrics[i] = getFontMetrics(Fonts.TYPES.get(i));
 /// /        }

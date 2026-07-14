@@ -1,6 +1,6 @@
 package net.doge.ui.widget.menu.ui;
 
-import net.doge.constant.core.ui.core.Colors;
+import net.doge.constant.core.ui.Colors;
 import net.doge.constant.core.ui.style.UIStyleStorage;
 
 import javax.swing.plaf.basic.BasicMenuItemUI;

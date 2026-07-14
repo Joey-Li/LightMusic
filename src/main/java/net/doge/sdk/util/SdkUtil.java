@@ -113,7 +113,7 @@ public class SdkUtil {
      * @return
      */
     public static BufferedImage extractProfile(String imgUrl) {
-        BufferedImage img = ImageUtil.width(imgUrl, ImageConstants.PROFILE_WIDTH);
+        BufferedImage img = ImageUtil.width(ImageUtil.readFromUrl(imgUrl), ImageConstants.PROFILE_WIDTH);
         if (img == null) img = ImageUtil.width(ImageConstants.DEFAULT_IMG, ImageConstants.PROFILE_WIDTH);
         return ImageUtil.radius(img, ARC);
     }
@@ -125,7 +125,7 @@ public class SdkUtil {
      * @return
      */
     public static BufferedImage extractCover(String imgUrl) {
-        BufferedImage img = ImageUtil.width(imgUrl, ImageConstants.MEDIUM_WIDTH);
+        BufferedImage img = ImageUtil.width(ImageUtil.readFromUrl(imgUrl), ImageConstants.MEDIUM_WIDTH);
         if (img == null) img = ImageUtil.width(ImageConstants.DEFAULT_IMG, ImageConstants.MEDIUM_WIDTH);
         // 控制封面高度不超过阈值
         if (img.getHeight() > ImageConstants.MV_COVER_MAX_HEIGHT)
@@ -140,7 +140,7 @@ public class SdkUtil {
      * @return
      */
     public static BufferedImage extractMvCover(String imgUrl) {
-        BufferedImage img = ImageUtil.width(imgUrl, ImageConstants.MV_COVER_WIDTH);
+        BufferedImage img = ImageUtil.width(ImageUtil.readFromUrl(imgUrl), ImageConstants.MV_COVER_WIDTH);
         if (img == null) img = ImageUtil.width(ImageConstants.DEFAULT_IMG, ImageConstants.MV_COVER_WIDTH);
         // 控制 MV 封面高度不超过阈值
         if (img.getHeight() > ImageConstants.MV_COVER_MAX_HEIGHT)

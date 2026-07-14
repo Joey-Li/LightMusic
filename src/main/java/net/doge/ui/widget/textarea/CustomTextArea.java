@@ -2,8 +2,8 @@ package net.doge.ui.widget.textarea;
 
 import lombok.Data;
 import lombok.Getter;
-import net.doge.constant.core.ui.core.Colors;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Colors;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.ui.widget.base.ExtendedOpacitySupported;
 import net.doge.ui.widget.border.HDEmptyBorder;
 import net.doge.util.core.StringUtil;

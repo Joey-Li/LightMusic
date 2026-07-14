@@ -2,7 +2,7 @@ package net.doge.ui.widget.label;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.constant.core.ui.style.UIStyleStorage;
 import net.doge.ui.widget.base.ExtendedOpacitySupported;
 import net.doge.util.core.StringUtil;

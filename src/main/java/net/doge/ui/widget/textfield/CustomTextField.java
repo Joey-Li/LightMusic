@@ -1,8 +1,8 @@
 package net.doge.ui.widget.textfield;
 
 import lombok.Getter;
-import net.doge.constant.core.ui.core.Colors;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Colors;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.constant.core.ui.style.UIStyleStorage;
 import net.doge.ui.core.dimension.HDDimension;
 import net.doge.ui.widget.base.ExtendedOpacitySupported;

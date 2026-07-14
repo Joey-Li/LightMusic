@@ -1,7 +1,7 @@
 package net.doge.ui.widget.menu;
 
 import lombok.Getter;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.ui.widget.base.ExtendedOpacitySupported;
 import net.doge.ui.widget.border.HDEmptyBorder;
 import net.doge.util.ui.GraphicsUtil;

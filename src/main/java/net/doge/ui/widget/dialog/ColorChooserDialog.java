@@ -2,7 +2,7 @@ package net.doge.ui.widget.dialog;
 
 import lombok.Getter;
 import net.doge.constant.core.lang.I18n;
-import net.doge.constant.core.ui.core.Colors;
+import net.doge.constant.core.ui.Colors;
 import net.doge.constant.core.ui.style.UIStyleStorage;
 import net.doge.entity.core.color.HSL;
 import net.doge.entity.core.color.HSV;
@@ -220,7 +220,7 @@ public class ColorChooserDialog extends AbstractTitledDialog implements Document
         prePanel.setBorder(new HDEmptyBorder(10, 0, 0, 0));
         for (Color c : preColors) {
             CustomLabel l = new CustomLabel();
-            l.setIcon(ImageUtil.dyeCircle(ScaleUtil.scale(50), c));
+            l.setIcon(new ImageIcon(ImageUtil.dyeCircle(ScaleUtil.scale(50), c)));
             l.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             l.addMouseListener(new MouseAdapter() {
                 @Override
@@ -402,7 +402,7 @@ public class ColorChooserDialog extends AbstractTitledDialog implements Document
         rSlider.repaint();
         gSlider.repaint();
         bSlider.repaint();
-        view.setIcon(ImageUtil.dyeCircle(80, makeColor()));
+        view.setIcon(new ImageIcon(ImageUtil.dyeCircle(ScaleUtil.scale(80), makeColor())));
         try {
             boolean isRGB = isRGB(), isHSV = isHSV();
             rTextField.setText(String.valueOf(isRGB ? r : isHSV ? (int) h : (int) nh));

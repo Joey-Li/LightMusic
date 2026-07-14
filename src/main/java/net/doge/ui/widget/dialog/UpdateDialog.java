@@ -5,7 +5,7 @@ import net.doge.constant.core.async.GlobalExecutors;
 import net.doge.constant.core.lang.I18n;
 import net.doge.constant.core.meta.SoftInfo;
 import net.doge.constant.core.os.SimplePath;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.constant.core.ui.style.UIStyleStorage;
 import net.doge.entity.core.ui.UIStyle;
 import net.doge.exception.core.InvalidPackageFileException;

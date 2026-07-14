@@ -1,6 +1,6 @@
 package net.doge.ui.widget.button.base;
 
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.constant.core.ui.style.UIStyleStorage;
 import net.doge.ui.widget.border.HDEmptyBorder;
 import net.doge.ui.widget.tooltip.CustomToolTip;

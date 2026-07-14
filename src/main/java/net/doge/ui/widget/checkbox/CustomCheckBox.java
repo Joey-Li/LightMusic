@@ -1,6 +1,6 @@
 package net.doge.ui.widget.checkbox;
 
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.constant.core.ui.style.UIStyleStorage;
 import net.doge.util.core.img.ImageUtil;
 import net.doge.util.lmdata.manager.LMIconManager;

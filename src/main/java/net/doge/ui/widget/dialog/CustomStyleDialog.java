@@ -7,7 +7,7 @@ import lombok.Getter;
 import net.doge.constant.core.lang.I18n;
 import net.doge.constant.core.os.Format;
 import net.doge.constant.core.os.SimplePath;
-import net.doge.constant.core.ui.core.Colors;
+import net.doge.constant.core.ui.Colors;
 import net.doge.constant.core.ui.style.UIStyleStorage;
 import net.doge.entity.core.ui.UIStyle;
 import net.doge.ui.MainFrame;
@@ -214,7 +214,7 @@ public class CustomStyleDialog extends AbstractTitledDialog implements DocumentL
                 // 鼠标光标
                 label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 // 获取主题颜色并显示成小方格
-                label.setIcon(ImageUtil.dyeRoundRect(rectWidth, rectHeight, ((Color) results[i])));
+                label.setIcon(new ImageIcon(ImageUtil.dyeRoundRect(rectWidth, rectHeight, (Color) results[i])));
                 int finalI = i;
                 // 颜色选择
                 label.addMouseListener(new MouseAdapter() {
@@ -226,7 +226,7 @@ public class CustomStyleDialog extends AbstractTitledDialog implements DocumentL
                             if (!d.isConfirmed()) return;
                             Color color = d.getResult();
                             // 更改方框内颜色并保存
-                            label.setIcon(ImageUtil.dyeRoundRect(rectWidth, rectHeight, color));
+                            label.setIcon(new ImageIcon(ImageUtil.dyeRoundRect(rectWidth, rectHeight, color)));
                             results[finalI] = color;
                         }
                     }

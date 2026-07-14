@@ -1,7 +1,7 @@
 package net.doge.constant.core.ui.style;
 
 import net.doge.constant.core.lang.I18n;
-import net.doge.constant.core.ui.core.Colors;
+import net.doge.constant.core.ui.Colors;
 import net.doge.entity.core.ui.UIStyle;
 
 /**

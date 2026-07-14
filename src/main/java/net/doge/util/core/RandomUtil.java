@@ -9,6 +9,24 @@ import java.util.Random;
  */
 public class RandomUtil {
     /**
+     * 生成随机 [0, limit) 整数
+     *
+     * @return
+     */
+    public static int randomInt(int limitExclude) {
+        return cn.hutool.core.util.RandomUtil.randomInt(limitExclude);
+    }
+
+    /**
+     * 生成随机 [min, max) 整数
+     *
+     * @return
+     */
+    public static int randomInt(int minInclude, int maxExclude) {
+        return cn.hutool.core.util.RandomUtil.randomInt(minInclude, maxExclude);
+    }
+
+    /**
      * 生成随机 Ipv4 地址
      *
      * @return

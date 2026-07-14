@@ -29,8 +29,8 @@ import net.doge.constant.core.player.PlayMode;
 import net.doge.constant.core.sort.SortMethod;
 import net.doge.constant.core.sort.SortOrder;
 import net.doge.constant.core.task.TaskType;
-import net.doge.constant.core.ui.core.Colors;
-import net.doge.constant.core.ui.core.Fonts;
+import net.doge.constant.core.ui.Colors;
+import net.doge.constant.core.ui.Fonts;
 import net.doge.constant.core.ui.image.BlurConstants;
 import net.doge.constant.core.ui.image.ImageConstants;
 import net.doge.constant.core.ui.list.MvCompSourceType;
@@ -22557,7 +22557,7 @@ public class MainFrame extends JFrame {
             // 缩小
             img = ImageUtil.width(img, 256);
             // 流体图
-            if (fluidOn) img = ImageUtil.fluidImage(img);
+            if (fluidOn) img = ImageUtil.fluid(img);
             if (maskOn) img = ImageUtil.mask(img);
             // 高斯模糊
             if (gsOn) img = ImageUtil.gaussianBlur(img);
