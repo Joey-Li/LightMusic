@@ -3,7 +3,6 @@ package net.doge.util.core.array;
 import net.doge.util.core.StringUtil;
 
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  * @author Doge
@@ -115,30 +114,6 @@ public class ArrayUtil {
      */
     public static byte[] reverse(byte[] bytes) {
         return cn.hutool.core.util.ArrayUtil.reverse(bytes);
-    }
-
-    /**
-     * 随机选取数组中一个元素
-     *
-     * @param array
-     */
-    public static <T> T randomChoose(T[] array) {
-        Random rand = new Random();
-        int num = rand.nextInt(array.length);
-        return array[num];
-    }
-
-    /**
-     * 随机生成指定位 bytes
-     *
-     * @param n
-     * @return
-     */
-    public static byte[] randomBytes(int n) {
-        byte[] bytes = new byte[n];
-        Random random = new Random();
-        for (int i = 0; i < n; i++) bytes[i] = (byte) random.nextInt(128);
-        return bytes;
     }
 
     /**

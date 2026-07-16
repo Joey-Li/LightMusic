@@ -3,6 +3,7 @@ package net.doge.sdk.common.builder;
 import net.doge.sdk.common.crypto.NeteaseCrypto;
 import net.doge.sdk.common.opt.nc.NeteaseReqOptConstants;
 import net.doge.sdk.common.opt.nc.NeteaseReqOptEnum;
+import net.doge.util.core.RandomUtil;
 import net.doge.util.core.StringUtil;
 import net.doge.util.core.array.ArrayUtil;
 import net.doge.util.core.crypto.CryptoUtil;
@@ -57,22 +58,22 @@ public class NeteaseReqBuilder {
         String device = options.getOrDefault(NeteaseReqOptEnum.UA, NeteaseReqOptConstants.BOTH);
         switch (device) {
             case NeteaseReqOptConstants.MOBILE:
-                headers.put(Header.USER_AGENT, ArrayUtil.randomChoose(MOBILE_USER_AGENTS));
+                headers.put(Header.USER_AGENT, RandomUtil.randomChoose(MOBILE_USER_AGENTS));
                 break;
             case NeteaseReqOptConstants.PC:
-                headers.put(Header.USER_AGENT, ArrayUtil.randomChoose(PC_USER_AGENTS));
+                headers.put(Header.USER_AGENT, RandomUtil.randomChoose(PC_USER_AGENTS));
                 break;
             case NeteaseReqOptConstants.BOTH:
-                headers.put(Header.USER_AGENT, ArrayUtil.randomChoose(ArrayUtil.concat(MOBILE_USER_AGENTS, PC_USER_AGENTS)));
+                headers.put(Header.USER_AGENT, RandomUtil.randomChoose(ArrayUtil.concat(MOBILE_USER_AGENTS, PC_USER_AGENTS)));
                 break;
         }
         if (method == Method.POST) headers.put(Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
-        String _ntes_nuid = CryptoUtil.bytesToHex(ArrayUtil.randomBytes(32));
+        String _ntes_nuid = CryptoUtil.bytesToHex(RandomUtil.randomBytes(32));
         String _ntes_nnid = String.format("%s,%s", _ntes_nuid, System.currentTimeMillis());
         String WNMCID = getWNMCID();
         String WEVNSM = "1.0.0";
-        String NMTID = CryptoUtil.bytesToHex(ArrayUtil.randomBytes(16));
+        String NMTID = CryptoUtil.bytesToHex(RandomUtil.randomBytes(16));
         String osver = "Microsoft-Windows-10-Professional-build-19045-64bit";
         String deviceId = "";
         String os = "pc";

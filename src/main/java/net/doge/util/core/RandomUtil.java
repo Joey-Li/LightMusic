@@ -8,6 +8,8 @@ import java.util.Random;
  * @date 2020/12/15
  */
 public class RandomUtil {
+    private static final Random random = new Random();
+
     /**
      * 生成随机 [0, limit) 整数
      *
@@ -32,7 +34,6 @@ public class RandomUtil {
      * @return
      */
     public static String randomIpv4() {
-        Random random = new Random();
         return String.format("%d.%d.%d.%d", random.nextInt(256), random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
@@ -43,5 +44,27 @@ public class RandomUtil {
      */
     public static String randomNumbers(int n) {
         return cn.hutool.core.util.RandomUtil.randomNumbers(n);
+    }
+
+    /**
+     * 随机选取数组中一个元素
+     *
+     * @param array
+     */
+    public static <T> T randomChoose(T[] array) {
+        int num = random.nextInt(array.length);
+        return array[num];
+    }
+
+    /**
+     * 随机生成指定位 bytes
+     *
+     * @param n
+     * @return
+     */
+    public static byte[] randomBytes(int n) {
+        byte[] bytes = new byte[n];
+        for (int i = 0; i < n; i++) bytes[i] = (byte) random.nextInt(128);
+        return bytes;
     }
 }

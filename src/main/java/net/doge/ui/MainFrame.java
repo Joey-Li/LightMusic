@@ -832,8 +832,8 @@ public class MainFrame extends JFrame {
     public boolean fluidOn;
     // 是否高斯模糊
     public boolean gsOn;
-    // 是否朦胧遮罩
-    public boolean maskOn;
+    // 是否活力色彩
+    public boolean vibrantOn;
     // 是否暗化
     public boolean darkerOn;
     // 是否律动
@@ -1011,7 +1011,7 @@ public class MainFrame extends JFrame {
     private CustomCheckBoxMenuItem fluidMenuItem = new CustomCheckBoxMenuItem(I18n.getText("fluid"));
     private CustomCheckBoxMenuItem gsMenuItem = new CustomCheckBoxMenuItem(I18n.getText("gs"));
     private CustomCheckBoxMenuItem darkerMenuItem = new CustomCheckBoxMenuItem(I18n.getText("darker"));
-    private CustomCheckBoxMenuItem maskMenuItem = new CustomCheckBoxMenuItem(I18n.getText("mask"));
+    private CustomCheckBoxMenuItem vibrantMenuItem = new CustomCheckBoxMenuItem(I18n.getText("vibrant"));
     private CustomCheckBoxMenuItem grooveMenuItem = new CustomCheckBoxMenuItem(I18n.getText("groove"));
     private CustomMenuItem blurOffMenuItem = new CustomMenuItem(I18n.getText("blurOff"));
     private CustomMenuItem cvBlurMenuItem = new CustomMenuItem(I18n.getText("cvBlur"));
@@ -3131,9 +3131,9 @@ public class MainFrame extends JFrame {
         // 载入是否暗化
         darkerOn = config.getBooleanValue(ConfigConstants.DARKER_ON, true);
         darkerMenuItem.setSelected(darkerOn);
-        // 载入是否朦胧遮罩
-        maskOn = config.getBooleanValue(ConfigConstants.MASK_ON, false);
-        maskMenuItem.setSelected(maskOn);
+        // 载入是否活力色彩
+        vibrantOn = config.getBooleanValue(ConfigConstants.VIBRANT_ON, true);
+        vibrantMenuItem.setSelected(vibrantOn);
         // 载入是否律动
         grooveOn = config.getBooleanValue(ConfigConstants.GROOVE_ON, false);
         globalPanel.setGrooveOn(grooveOn);
@@ -3967,8 +3967,8 @@ public class MainFrame extends JFrame {
         config.put(ConfigConstants.GS_ON, gsOn);
         // 存入是否暗化
         config.put(ConfigConstants.DARKER_ON, darkerOn);
-        // 存入是否朦胧遮罩
-        config.put(ConfigConstants.MASK_ON, maskOn);
+        // 存入是否活力色彩
+        config.put(ConfigConstants.VIBRANT_ON, vibrantOn);
         // 存入是否律动
         config.put(ConfigConstants.GROOVE_ON, grooveOn);
         // 存入模糊类型
@@ -19837,7 +19837,7 @@ public class MainFrame extends JFrame {
         blurPopupMenu.add(fluidMenuItem);
         blurPopupMenu.add(gsMenuItem);
         blurPopupMenu.add(darkerMenuItem);
-        blurPopupMenu.add(maskMenuItem);
+        blurPopupMenu.add(vibrantMenuItem);
         blurPopupMenu.add(grooveMenuItem);
         blurPopupMenu.addSeparator();
         blurPopupMenu.add(blurOffMenuItem);
@@ -19857,8 +19857,8 @@ public class MainFrame extends JFrame {
             darkerMenuItem.setSelected(darkerOn = !darkerOn);
             doBlur();
         });
-        maskMenuItem.addActionListener(e -> {
-            maskMenuItem.setSelected(maskOn = !maskOn);
+        vibrantMenuItem.addActionListener(e -> {
+            vibrantMenuItem.setSelected(vibrantOn = !vibrantOn);
             doBlur();
         });
         grooveMenuItem.addActionListener(e -> {
@@ -22558,7 +22558,8 @@ public class MainFrame extends JFrame {
             img = ImageUtil.width(img, 256);
             // 流体图
             if (fluidOn) img = ImageUtil.fluid(img);
-            if (maskOn) img = ImageUtil.mask(img);
+            // 活力色彩
+            if (vibrantOn) img = ImageUtil.vibrant(img);
             // 高斯模糊
             if (gsOn) img = ImageUtil.gaussianBlur(img);
             // 缩放至窗口大小

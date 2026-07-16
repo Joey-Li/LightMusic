@@ -2,8 +2,8 @@ package net.doge.sdk.service.music.info.impl.musicurl.track.qq;
 
 import com.alibaba.fastjson2.JSONObject;
 import net.doge.constant.core.media.AudioQuality;
+import net.doge.util.core.RandomUtil;
 import net.doge.util.core.StringUtil;
-import net.doge.util.core.array.ArrayUtil;
 import net.doge.util.core.crypto.CryptoUtil;
 import net.doge.util.core.http.HttpRequest;
 import net.doge.util.core.json.JsonUtil;
@@ -71,7 +71,7 @@ public class XcvtsQqTrackReq {
      */
     public String getTrackUrl(String mid, String quality) {
         try {
-            String key = decodeRequestKey(ArrayUtil.randomChoose(REQUEST_KEYS));
+            String key = decodeRequestKey(RandomUtil.randomChoose(REQUEST_KEYS));
             String songBody = HttpRequest.get(String.format(SONG_URL_QQ_API, key, mid, qualityMap.get(quality)))
                     .executeAsStr();
             JSONObject songJson = JSONObject.parseObject(songBody);
@@ -87,12 +87,12 @@ public class XcvtsQqTrackReq {
         }
     }
 
-//    public static void main(String[] args) {
-//        XcvtsQqTrackReq trackReq = getInstance();
-//        System.out.println(trackReq.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.STANDARD]));
-//        System.out.println(trackReq.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.HIGH]));
-//        System.out.println(trackReq.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.SUPER]));
-//        System.out.println(trackReq.getTrackUrl("0039MnYb0qxYhV", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
-//        System.out.println(trackReq.getTrackUrl("0039MnYb0qxYhV", AudioQuality.KEYS[AudioQuality.HI_RES]));
-//    }
+    public static void main(String[] args) {
+        XcvtsQqTrackReq trackReq = getInstance();
+        System.out.println(trackReq.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.STANDARD]));
+        System.out.println(trackReq.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.HIGH]));
+        System.out.println(trackReq.getTrackUrl("001CnSwn2xF1ee", AudioQuality.KEYS[AudioQuality.SUPER]));
+        System.out.println(trackReq.getTrackUrl("0039MnYb0qxYhV", AudioQuality.KEYS[AudioQuality.LOSSLESS]));
+        System.out.println(trackReq.getTrackUrl("0039MnYb0qxYhV", AudioQuality.KEYS[AudioQuality.HI_RES]));
+    }
 }

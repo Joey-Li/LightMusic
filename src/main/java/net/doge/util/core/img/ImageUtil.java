@@ -21,9 +21,11 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,12 +37,16 @@ import java.util.List;
 public class ImageUtil {
     // 高斯模糊过滤器
     private static final GaussianFilter gaussianFilter = new GaussianFilter();
+    // 涟漪过滤器
+    private static final RippleFilter rippleFilter = new RippleFilter();
     // 旋转过滤器
-    private static final TwirlFilter twirlFilter = new TwirlFilter();
+//    private static final TwirlFilter twirlFilter = new TwirlFilter();
     // 分析布朗运动过滤器
     private static final FBMFilter fbmFilter = new FBMFilter();
-    // 对比度过滤器
-    private static final ContrastFilter contrastFilter = new ContrastFilter();
+    // 曝光过滤器
+    private static final ExposureFilter exposureFilter = new ExposureFilter();
+    // 饱和度过滤器
+    private static final SaturationFilter saturationFilter = new SaturationFilter();
     // 阴影过滤器
     private static final ShadowFilter shadowFilter = new ShadowFilter();
     // 边框阴影过滤器
@@ -49,6 +55,9 @@ public class ImageUtil {
     private static final int SHADOW_THICKNESS = 30;
 
     static {
+        rippleFilter.setWaveType(RippleFilter.NOISE);
+        rippleFilter.setEdgeAction(TransformFilter.ZERO);
+
         fbmFilter.setLacunarity(0.35f);
         fbmFilter.setH(5f);
         fbmFilter.setBasisType(FBMFilter.RIDGED);
@@ -252,27 +261,36 @@ public class ImageUtil {
      */
     public static int[] toPixels(BufferedImage img, int x, int y, int w, int h) {
         int[] pixels = new int[w * h];
-        for (int index = 0, i = x; i < w; i++)
-            for (int j = y; j < h; j++)
-                pixels[index++] = img.getRGB(i, j);
+        for (int idx = 0, i = x; i < h; i++)
+            for (int j = y; j < w; j++)
+                pixels[idx++] = img.getRGB(i, j);
         return pixels;
     }
 
     /**
-     * 创建透明图片
+     * 创建指定宽高的透明图片
+     *
+     * @param w
+     * @param h
+     * @return
      */
     public static BufferedImage createTransparentImage(int w, int h) {
         return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
     }
 
     /**
-     * Image 转为 BufferedImage
+     * 从指定 BufferedImage 创建透明图片
      *
-     * @param img
      * @return
      */
-    public static BufferedImage toBufferedImage(Image img) {
-        return ImgUtil.toBufferedImage(img, ImgUtil.IMAGE_TYPE_PNG);
+    public static BufferedImage createTransparentImage(BufferedImage img) {
+        if (img == null) return null;
+        int w = img.getWidth(), h = img.getHeight();
+        BufferedImage outputImg = createTransparentImage(w, h);
+        Graphics2D g2d = GraphicsUtil.setup(outputImg.createGraphics());
+        g2d.drawImage(img, 0, 0, null);
+        g2d.dispose();
+        return outputImg;
     }
 
     /**
@@ -573,7 +591,7 @@ public class ImageUtil {
      * @param img
      * @return
      */
-    public static double lightness(BufferedImage img) {
+    public static double luminance(BufferedImage img) {
         if (img == null) return 0;
         int w = img.getWidth(), h = img.getHeight();
         List<Float> dots = new LinkedList<>();
@@ -591,6 +609,40 @@ public class ImageUtil {
     }
 
     /**
+     * 按照 x 行 y 列宫格化图片
+     *
+     * @param img
+     * @return
+     */
+    public static List<BufferedImage> gridify(BufferedImage img, int x, int y) {
+        if (img == null) return null;
+        List<BufferedImage> res = new LinkedList<>();
+        int sw = img.getWidth() / y, sh = img.getHeight() / x;
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                BufferedImage subImg = img.getSubimage(j * sw, i * sh, sw, sh);
+                res.add(createTransparentImage(subImg));
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 使图像产生涟漪效果
+     *
+     * @param img
+     * @return
+     */
+    public static synchronized BufferedImage ripple(BufferedImage img) {
+        if (img == null) return null;
+        rippleFilter.setXAmplitude(RandomUtil.randomInt(15, 30));
+        rippleFilter.setYAmplitude(RandomUtil.randomInt(15, 30));
+        rippleFilter.setXWavelength(RandomUtil.randomInt(50, 80));
+        rippleFilter.setYWavelength(RandomUtil.randomInt(50, 80));
+        return rippleFilter.filter(img, null);
+    }
+
+    /**
      * 生成流体图
      *
      * @param img
@@ -598,9 +650,27 @@ public class ImageUtil {
      */
     public static BufferedImage fluid(BufferedImage img) {
         if (img == null) return null;
-        twirlFilter.setAngle((float) Math.toRadians(RandomUtil.randomInt(30, 330)));
-        twirlFilter.setRadius((float) img.getWidth() / 2);
-        return twirlFilter.filter(img, null);
+        int w = img.getWidth(), h = img.getHeight();
+        BufferedImage outputImg = createTransparentImage(img);
+        Graphics2D g2d = GraphicsUtil.setup(outputImg.createGraphics());
+        // 提取宫格图
+        List<BufferedImage> subImgList = gridify(img, 2, 2);
+        Collections.shuffle(subImgList);
+        float[][] p = {{0.5f, 0.25f}, {0.25f, 0.5f}, {0.75f, 0.5f}, {0.5f, 0.75f}};
+        for (int i = 0, s = subImgList.size(); i < s; i++) {
+            // 涟漪并旋转
+            BufferedImage subImg = ripple(subImgList.get(i));
+            AffineTransform transform = new AffineTransform();
+            transform.translate(w * p[i][0], h * p[i][1]);
+            transform.rotate(Math.toRadians(RandomUtil.randomInt(30, 330)));
+            transform.translate(-subImg.getWidth() / 2, -subImg.getHeight() / 2);
+            g2d.drawImage(subImg, transform, null);
+        }
+        g2d.dispose();
+        return outputImg;
+//        twirlFilter.setAngle((float) Math.toRadians(RandomUtil.randomInt(30, 330)));
+//        twirlFilter.setRadius((float) img.getWidth() / 2);
+//        return twirlFilter.filter(img, null);
     }
 
 
@@ -624,39 +694,31 @@ public class ImageUtil {
      */
     public static BufferedImage darker(BufferedImage img) {
         if (img == null) return null;
-        double ln = lightness(img);
-        float bn, param = BlurConstants.DARKER_FACTOR[BlurConstants.darkerFactorIndex];
-//        System.out.println(ln);
-        if (ln > 0.8) bn = param - 0.05f;
-        else if (ln > 0.5) bn = param;
-        else if (ln > 0.4) bn = param + 0.1f;
-        else if (ln > 0.3) bn = param + 0.15f;
-        else if (ln > 0.2) bn = param + 0.2f;
-        else if (ln > 0.1) bn = param + 0.25f;
-        else if (ln > 0.05) bn = param + 0.3f;
-        else bn = param + 0.6f;
-        // 自适应亮度
-        contrastFilter.setBrightness(bn);
-        return contrastFilter.filter(img, null);
+        double l = luminance(img);
+        float exp = 0.3f, param = BlurConstants.DARKER_FACTOR[BlurConstants.darkerFactorIndex];
+        if (l > 0.8) exp += param - 0.05f;
+        else if (l > 0.5) exp += param;
+        else if (l > 0.4) exp += param + 0.1f;
+        else if (l > 0.3) exp += param + 0.15f;
+        else if (l > 0.2) exp += param + 0.2f;
+        else if (l > 0.1) exp += param + 0.25f;
+        else if (l > 0.05) exp += param + 0.3f;
+        else exp += param + 0.6f;
+        // 自适应曝光度
+        exposureFilter.setExposure(exp);
+        return exposureFilter.filter(img, null);
     }
 
     /**
-     * 为图片添加遮罩
+     * 提升图像色彩活力度
      *
      * @param img
      * @return
      */
-    public static BufferedImage mask(BufferedImage img) {
+    public static BufferedImage vibrant(BufferedImage img) {
         if (img == null) return null;
-        int w = img.getWidth(), h = img.getHeight();
-        BufferedImage outputImg = createTransparentImage(w, h);
-        Graphics2D g2d = GraphicsUtil.setup(outputImg.createGraphics());
-        g2d.drawImage(img, 0, 0, null);
-        g2d.setColor(getBestAvgColor(img));
-        GraphicsUtil.srcOver(g2d, 0.95f);
-        g2d.fillRect(0, 0, w, h);
-        g2d.dispose();
-        return outputImg;
+        saturationFilter.setAmount(2.5f);
+        return saturationFilter.filter(img, null);
     }
 
     /**

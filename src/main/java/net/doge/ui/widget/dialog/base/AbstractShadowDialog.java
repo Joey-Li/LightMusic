@@ -77,7 +77,8 @@ public abstract class AbstractShadowDialog extends BaseDialog {
         img = ImageUtil.width(img, 256);
         // 流体图
         if (f.fluidOn) img = ImageUtil.fluid(img);
-        if (f.maskOn) img = ImageUtil.mask(img);
+        // 活力色彩
+        if (f.vibrantOn) img = ImageUtil.vibrant(img);
         // 高斯模糊
         if (f.gsOn) img = ImageUtil.gaussianBlur(img);
         // 缩放至窗口大小

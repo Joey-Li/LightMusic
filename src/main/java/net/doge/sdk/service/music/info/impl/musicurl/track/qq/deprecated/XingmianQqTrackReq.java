@@ -2,8 +2,8 @@
 //
 //import com.alibaba.fastjson2.JSONObject;
 //import net.doge.constant.core.media.AudioQuality;
+//import net.doge.util.core.RandomUtil;
 //import net.doge.util.core.StringUtil;
-//import net.doge.util.core.array.ArrayUtil;
 //import net.doge.util.core.crypto.CryptoUtil;
 //import net.doge.util.core.http.HttpRequest;
 //import net.doge.util.core.json.JsonUtil;
@@ -32,7 +32,7 @@
 //    private final String SONG_URL_QQ_API = "https://api.xingmian.bbroot.com/API/qqmusicparse.php?apikey=%s&id=%s&quality=%s";
 //
 //    private final String[] REQUEST_KEYS = {
-//            "MjI2Yzg3OTQ5MGQ1MDZhYTgzODQ4NjA3NWU4MGNlODEwNzU2NDU4NTFhODMzMTliYmQzZDcyMTVhOGZiNGJkYw=="
+//            "ZGM3NDc1MTFjYmYwOGVkNjQ3MzY0NmU3MGYyYWNmYjA1YWM0OWFmMDhiZTg2ZjRlYmYxNDJhZWJkNmNhMDk3Yw=="
 //    };
 //
 //    private Map<String, String> qualityMap = new HashMap<>();
@@ -71,7 +71,7 @@
 //     */
 //    public String getTrackUrl(String mid, String quality) {
 //        try {
-//            String key = decodeRequestKey(ArrayUtil.randomChoose(REQUEST_KEYS));
+//            String key = decodeRequestKey(RandomUtil.randomChoose(REQUEST_KEYS));
 //            String songBody = HttpRequest.get(String.format(SONG_URL_QQ_API, key, mid, qualityMap.get(quality)))
 //                    .executeAsStr();
 //            JSONObject songJson = JSONObject.parseObject(songBody);

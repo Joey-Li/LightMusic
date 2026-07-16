@@ -2,6 +2,7 @@ package net.doge.ui.widget.scrollpane.viewport;
 
 import lombok.Setter;
 import net.doge.constant.core.ui.Colors;
+import net.doge.util.core.img.ImageUtil;
 import net.doge.util.ui.ColorUtil;
 import net.doge.util.ui.GraphicsUtil;
 import net.doge.util.ui.ScaleUtil;
@@ -30,7 +31,7 @@ public class CustomViewport extends JViewport {
             int w = getWidth(), h = getHeight();
             // 创建临时图像用于合成
             if (maskImg == null || w != maskImg.getWidth() || h != maskImg.getHeight())
-                maskImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+                maskImg = ImageUtil.createTransparentImage(w, h);
             Graphics2D imgG2d = maskImg.createGraphics();
             // 清除图像
             imgG2d.setComposite(AlphaComposite.Clear);

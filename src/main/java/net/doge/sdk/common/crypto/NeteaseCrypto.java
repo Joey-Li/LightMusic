@@ -1,5 +1,6 @@
 package net.doge.sdk.common.crypto;
 
+import net.doge.util.core.RandomUtil;
 import net.doge.util.core.array.ArrayUtil;
 import net.doge.util.core.crypto.CryptoUtil;
 import net.doge.util.core.net.UrlUtil;
@@ -25,7 +26,7 @@ public class NeteaseCrypto {
     private final String EAPI_KEY = "e82ckenh8dichen8";
 
     public String weapi(String data) {
-        byte[] secretKey = ArrayUtil.randomBytes(16);
+        byte[] secretKey = RandomUtil.randomBytes(16);
         for (int i = 0, s = secretKey.length; i < s; i++)
             secretKey[i] = (byte) BASE62.charAt(secretKey[i] % 62);
         // params
