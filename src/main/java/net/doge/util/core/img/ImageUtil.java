@@ -11,6 +11,7 @@ import net.doge.util.core.RandomUtil;
 import net.doge.util.core.StringUtil;
 import net.doge.util.core.http.HttpRequest;
 import net.doge.util.core.log.LogUtil;
+import net.doge.util.core.math.MathUtil;
 import net.doge.util.ui.ColorUtil;
 import net.doge.util.ui.GraphicsUtil;
 import net.doge.util.ui.ScaleUtil;
@@ -39,8 +40,6 @@ public class ImageUtil {
     private static final GaussianFilter gaussianFilter = new GaussianFilter();
     // 涟漪过滤器
     private static final RippleFilter rippleFilter = new RippleFilter();
-    // 旋转过滤器
-//    private static final TwirlFilter twirlFilter = new TwirlFilter();
     // 分析布朗运动过滤器
     private static final FBMFilter fbmFilter = new FBMFilter();
     // 曝光过滤器
@@ -586,12 +585,12 @@ public class ImageUtil {
     }
 
     /**
-     * 获取图像亮度
+     * 获取图像平均亮度
      *
      * @param img
      * @return
      */
-    public static double luminance(BufferedImage img) {
+    public static double computeAverageLuminance(BufferedImage img) {
         if (img == null) return 0;
         int w = img.getWidth(), h = img.getHeight();
         List<Float> dots = new LinkedList<>();
@@ -600,7 +599,7 @@ public class ImageUtil {
         for (float dw : dots) {
             for (float dh : dots) {
                 int rgb = img.getRGB((int) (w * dw), (int) (h * dh));
-                t += ColorUtil.calculateLuminance(rgb);
+                t += ColorUtil.computeLuminance(rgb);
             }
         }
         int s = dots.size();
@@ -668,9 +667,6 @@ public class ImageUtil {
         }
         g2d.dispose();
         return outputImg;
-//        twirlFilter.setAngle((float) Math.toRadians(RandomUtil.randomInt(30, 330)));
-//        twirlFilter.setRadius((float) img.getWidth() / 2);
-//        return twirlFilter.filter(img, null);
     }
 
 
@@ -694,7 +690,7 @@ public class ImageUtil {
      */
     public static BufferedImage darker(BufferedImage img) {
         if (img == null) return null;
-        double l = luminance(img);
+        double l = computeAverageLuminance(img);
         float exp = 0.3f, param = BlurConstants.DARKER_FACTOR[BlurConstants.darkerFactorIndex];
         if (l > 0.8) exp += param - 0.05f;
         else if (l > 0.5) exp += param;
@@ -710,6 +706,48 @@ public class ImageUtil {
     }
 
     /**
+     * 计算图片平均饱和度
+     *
+     * @param img
+     * @return
+     */
+    public static float computeAverageSaturation(BufferedImage img) {
+        if (img == null) return 0f;
+        int w = img.getWidth();
+        int h = img.getHeight();
+        int[] pixels = new int[w * h];
+        img.getRGB(0, 0, w, h, pixels, 0, w);
+        float totalS = 0;
+        for (int pixel : pixels) {
+            int r = (pixel >> 16) & 0xFF, g = (pixel >> 8) & 0xFF, b = pixel & 0xFF;
+            // 转 HSV
+            float[] hsv = Color.RGBtoHSB(r, g, b, null);
+            totalS += hsv[1];  // Saturation
+        }
+        return totalS / (w * h);  // 范围 0~1
+    }
+
+    /**
+     * 根据平滑的函数计算 SaturationFilter 的 amount 值
+     *
+     * @param avgSaturation
+     * @return
+     */
+    private static float computeDynamicAmountSmooth(float avgSaturation) {
+        float minAmount = 1.0f;
+        float maxAmount = 2.5f;
+        // 归一化“灰度程度”：avgSaturation=0 时 ratio=1；=1 时 ratio=0
+        float ratio = 1.0f - avgSaturation;
+        // 使用 0.7 次幂：让低饱和度区域获得极大的增幅补偿
+        float factor = (float) Math.pow(ratio, 0.7);
+        // 计算最终 amount
+        float amount = minAmount + (maxAmount - minAmount) * factor;
+        // 严格限幅
+        amount = MathUtil.clamp(amount, minAmount, maxAmount);
+        return amount;
+    }
+
+    /**
      * 提升图像色彩活力度
      *
      * @param img
@@ -717,7 +755,9 @@ public class ImageUtil {
      */
     public static BufferedImage vibrant(BufferedImage img) {
         if (img == null) return null;
-        saturationFilter.setAmount(2.5f);
+        float avgSat = computeAverageSaturation(img);
+        float amount = computeDynamicAmountSmooth(avgSat);
+        saturationFilter.setAmount(amount);
         return saturationFilter.filter(img, null);
     }
 
@@ -787,7 +827,7 @@ public class ImageUtil {
      */
     public static BufferedImage gradientImage(BufferedImage img, int w, int h) {
         Color mc = ColorUtil.getBestColor(img);
-        double l = ColorUtil.calculateLuminance(mc.getRGB());
+        double l = ColorUtil.computeLuminance(mc.getRGB());
         if (l >= 0.25) {
             Color ca = ColorUtil.rotate(mc, -10), cb = ColorUtil.rotate(ColorUtil.hslDarken(mc, 0.3f), 10);
             return linearGradient(w, h, ca, cb);

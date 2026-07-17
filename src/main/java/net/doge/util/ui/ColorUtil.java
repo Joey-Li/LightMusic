@@ -113,18 +113,6 @@ public class ColorUtil {
         return Math.sqrt(hd * hd + sd * sd + ld * ld);
     }
 
-//    /**
-//     * 设置 RGB 数值颜色透明度(0-255)
-//     *
-//     * @param color
-//     * @param alpha
-//     * @return
-//     */
-//    public static int setAlphaComponent(int rgb, int alpha) {
-//        if (alpha >= 0 && alpha <= 255) return rgb & 16777215 | alpha << 24;
-//        else throw new IllegalArgumentException("alpha must be between 0 and 255.");
-//    }
-
     /**
      * 获取具有透明度的 Color
      *
@@ -153,7 +141,7 @@ public class ColorUtil {
      * @param rgb
      * @return
      */
-    public static double calculateLuminance(int rgb) {
+    public static double computeLuminance(int rgb) {
         double red = red(rgb) / 255d;
         red = red < 0.03928 ? red / 12.92 : Math.pow((red + 0.055) / 1.055, 2.4);
 
@@ -165,99 +153,6 @@ public class ColorUtil {
 
         return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
     }
-
-//    private static int compositeAlpha(int foregroundAlpha, int backgroundAlpha) {
-//        return 0xFF - (((0xFF - backgroundAlpha) * (0xFF - foregroundAlpha)) / 0xFF);
-//    }
-//
-//    private static int compositeComponent(int fgC, int fgA, int bgC, int bgA, int a) {
-//        if (a == 0) return 0;
-//        return ((0xFF * fgC * fgA) + (bgC * bgA * (0xFF - fgA))) / (a * 0xFF);
-//    }
-//
-//    /**
-//     * Composite two potentially translucent colors over each other and returns the result.
-//     */
-//    public static int compositeColors(int foreground, int background) {
-//        int bgAlpha = alpha(background), fgAlpha = alpha(foreground);
-//        int a = compositeAlpha(fgAlpha, bgAlpha);
-//
-//        int r = compositeComponent(red(foreground), fgAlpha, red(background), bgAlpha, a);
-//        int g = compositeComponent(green(foreground), fgAlpha, green(background), bgAlpha, a);
-//        int b = compositeComponent(blue(foreground), fgAlpha, blue(background), bgAlpha, a);
-//
-//        return merge(a, r, g, b);
-//    }
-//
-//    /**
-//     * Returns the contrast ratio between {@code foreground} and {@code background}.
-//     * {@code background} must be opaque.
-//     * <p>
-//     * Formula defined
-//     * <a href="http://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef">here</a>.
-//     */
-//    public static double calculateContrast(int foreground, int background) {
-//        if (alpha(background) != 255) {
-//            throw new IllegalArgumentException("background can not be translucent: #" + Integer.toHexString(background));
-//        }
-//        if (alpha(foreground) < 255) {
-//            // If the foreground is translucent, composite the foreground over the background
-//            foreground = compositeColors(foreground, background);
-//        }
-//
-//        final double luminance1 = calculateLuminance(foreground) + 0.05;
-//        final double luminance2 = calculateLuminance(background) + 0.05;
-//
-//        // Now return the lighter luminance divided by the darker luminance
-//        return Math.max(luminance1, luminance2) / Math.min(luminance1, luminance2);
-//    }
-//
-//    /**
-//     * Calculates the minimum alpha value which can be applied to {@code foreground} so that would
-//     * have a contrast value of at least {@code minContrastRatio} when compared to
-//     * {@code background}.
-//     *
-//     * @param foreground       the foreground color.
-//     * @param background       the background color. Should be opaque.
-//     * @param minContrastRatio the minimum contrast ratio.
-//     * @return the alpha value in the range 0-255, or -1 if no value could be calculated.
-//     */
-//    public static int calculateMinimumAlpha(int foreground, int background, float minContrastRatio) {
-//        if (alpha(background) != 255)
-//            throw new IllegalArgumentException("background can not be translucent: #" + Integer.toHexString(background));
-//
-//        // First lets check that a fully opaque foreground has sufficient contrast
-//        int testForeground = setAlphaComponent(foreground, 255);
-//        double testRatio = calculateContrast(testForeground, background);
-//        if (testRatio < minContrastRatio) {
-//            // Fully opaque foreground does not have sufficient contrast, return error
-//            return -1;
-//        }
-//
-//        // Binary search to find a value with the minimum value which provides sufficient contrast
-//        int numIterations = 0;
-//        int minAlpha = 0;
-//        int maxAlpha = 255;
-//
-//        while (numIterations <= 10 &&
-//                (maxAlpha - minAlpha) > 1) {
-//            final int testAlpha = (minAlpha + maxAlpha) / 2;
-//
-//            testForeground = setAlphaComponent(foreground, testAlpha);
-//            testRatio = calculateContrast(testForeground, background);
-//
-//            if (testRatio < minContrastRatio) {
-//                minAlpha = testAlpha;
-//            } else {
-//                maxAlpha = testAlpha;
-//            }
-//
-//            numIterations++;
-//        }
-//
-//        // Conservatively return the max of the range of possible alphas, which is known to pass.
-//        return maxAlpha;
-//    }
 
     /**
      * 合并 ARGB 四个值(0-255)
@@ -444,6 +339,12 @@ public class ColorUtil {
         return hslToColor(hsl);
     }
 
+    /**
+     * RGB 值转 HSL
+     *
+     * @param rgb
+     * @return
+     */
     public static HSL rgbValToHsl(int rgb) {
         return rgbValToHsl(red(rgb), green(rgb), blue(rgb));
     }
