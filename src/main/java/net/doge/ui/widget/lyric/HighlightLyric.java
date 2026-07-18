@@ -47,8 +47,13 @@ public class HighlightLyric {
     // 渐隐宽度
     private int fadeWidth;
 
+    // 输出的歌词图像
     private BufferedImage img;
+    // 走过的歌词图像
     private BufferedImage imgL;
+    // 歌词的光辉效果图像
+    private BufferedImage imgGlow;
+    // 未走过的歌词图像
     private BufferedImage imgR;
     private ImageIcon imgIcon;
 
@@ -67,6 +72,15 @@ public class HighlightLyric {
     public List<Integer> wordDropList = new LinkedList<>();
     public List<Integer> wordDropOriginList = new LinkedList<>();
     public List<Integer> wordDropGapList = new LinkedList<>();
+
+    // 光辉效果出现要求的字(段)最小持续时间
+    private final int glowOccurrenceDemand = 1000;
+    // 光辉效果透明度变化函数参数(在 x 点达到最大，然后在 y 点开始减小)
+    private final double glowX = 0.3;
+    private final double glowY = 0.8;
+    // 每个字(也有可能是一段)的光辉透明度
+    public List<Float> wordGlowOpacityList = new LinkedList<>();
+
     // 每个字(也有可能是一段)的宽度
     private List<Integer> wordWidthList = new LinkedList<>();
     // 字(也有可能是一段)宽度前缀和
@@ -83,8 +97,9 @@ public class HighlightLyric {
      * @param ratio          颜色1所占全部的比值
      * @param isDesktopLyric 是否是桌面歌词
      * @param widthThreshold 文字最大宽度
+     * @param glowRequired   是否生成光辉效果文字(此项防止歌词文字字体动画导致的性能损耗)
      */
-    public HighlightLyric(JLabel label, Statement stmt, Color c1, Color c2, double ratio, boolean isDesktopLyric, int widthThreshold) {
+    public HighlightLyric(JLabel label, Statement stmt, Color c1, Color c2, double ratio, boolean isDesktopLyric, int widthThreshold, boolean glowRequired) {
         if (stmt.isEmpty()) return;
 
         this.c1 = c1;
@@ -177,8 +192,10 @@ public class HighlightLyric {
                 break;
             }
         }
-        // 文字阴影
+        // 桌面歌词文字阴影
         if (isDesktopLyric) imgL = ImageUtil.shadow(imgL, c1);
+        // 初始化光辉效果的文字
+        if (glowRequired) imgGlow = ImageUtil.glowShadow(imgL, c1);
 
         g1.dispose();
         g2.dispose();
@@ -215,6 +232,8 @@ public class HighlightLyric {
             wordDropOriginList.add(startDrop);
             wordDropList.add(startDrop);
             wordDropGapList.add(0);
+            // 初始化每段文字光辉透明度
+            wordGlowOpacityList.add(0f);
         }
     }
 
@@ -243,8 +262,8 @@ public class HighlightLyric {
         return ratio;
     }
 
-    // 更新普通歌词 DropOriginList
-    public void updateNormalWordDropOriginList(double currTime, double lineStartTime, double lineEndTime) {
+    // 更新普通歌词特效参数
+    public void updateNormalWordEffects(double currTime, double lineStartTime, double lineEndTime) {
         // 如果每段起始/持续时间未初始化(针对非逐字歌词)
         if (wordStartList.isEmpty()) {
             int lineStartTimeMs = (int) (lineStartTime * 1000), lineEndTimeMs = (int) (lineEndTime * 1000);
@@ -259,35 +278,39 @@ public class HighlightLyric {
                 wordDurationList.add(wordDuration);
             }
         }
-        updateWordDropOriginList(currTime, lineStartTime);
+        updateWordEffects(currTime, lineStartTime);
     }
 
-    // 更新逐字歌词 DropOriginList
-    public void updateWordDropOriginList(double currTime, double lineStartTime) {
+    // 更新逐字歌词特效参数
+    public void updateWordEffects(double currTime, double lineStartTime) {
         int currTimeMs = (int) (currTime * 1000), lineStartTimeMs = (int) (lineStartTime * 1000);
         int lineCurrTimeMs = currTimeMs - lineStartTimeMs;
         for (int i = 0, len = wordStartList.size(); i < len; i++) {
             int wordStart = wordStartList.get(i);
             int wordDuration = wordDurationList.get(i);
             // Drop 动画进度，控制在 0-1 之间
-            double progress = MathUtil.clamp((double) (lineCurrTimeMs - wordStart) / Math.max(minDropDuration, wordDuration), 0, 1);
+            int wordElapsed = lineCurrTimeMs - wordStart;
+            double progress = MathUtil.clamp((double) wordElapsed / Math.max(minDropDuration, wordDuration), 0, 1);
             // 超出最大简单动画时间，使用曲线动画
             int wordDropOrigin = computeWordDrop(progress, wordDuration >= maxSimpleDropDuration);
             wordDropOriginList.set(i, wordDropOrigin);
             wordDropGapList.set(i, Math.abs(wordDropOrigin - wordDropList.get(i)));
+            // 更新光辉透明度
+            float glowOpacity = wordDuration < glowOccurrenceDemand ? 0f : computeGlowOpacity(progress);
+            wordGlowOpacityList.set(i, glowOpacity);
         }
     }
 
     // 根据进度计算 Drop
     private int computeWordDrop(double progress, boolean useCurve) {
         if (useCurve)
-            return (int) curve(progress, startDrop, interpolarX, topDrop, destDrop);
+            return (int) curveWordDrop(progress, startDrop, interpolarX, topDrop, destDrop);
         // 线性匀速
         return (int) (startDrop + (destDrop - startDrop) * progress);
     }
 
-    // 曲线：过 (0, a) 和 (1, b)，在中间插入 (t1, c) 的曲线，计算 t 处的值
-    private double curve(double t, double a, double t1, double c, double b) {
+    // 下坠高度计算曲线：过 (0, a) 和 (1, b)，在中间插入 (t1, c) 的曲线，计算 t 处的值
+    private double curveWordDrop(double t, double a, double t1, double c, double b) {
         // 使用正弦函数实现平滑的缓入缓出
         if (t <= t1) {
             // 第一段：正弦缓入
@@ -302,8 +325,23 @@ public class HighlightLyric {
         }
     }
 
-    // 画 imgL 作为左侧，带 Drop
-    private void paintImgLWithDrop(Graphics2D g2d, int t) {
+    // 根据进度计算光辉透明度
+    private float computeGlowOpacity(double progress) {
+        return (float) curveGlowOpacity(progress, glowX, glowY);
+    }
+
+    // 光辉透明度计算函数：过 (0, 0) 和 (1, 0)，在中间插入 (x, 1) 和 (y, 1) 的曲线，计算 t 处的值
+    private double curveGlowOpacity(double t, double x, double y) {
+        // 上升段：从 (0,0) 到 (x,1)，斜率为 1/x
+        if (t <= x) return t / x;
+            // 水平段：恒为 1
+        else if (t <= y) return 1;
+            // 下降段：从 (y,1) 到 (1,0)，斜率为 -1/(1-y)
+        else return (1 - t) / (1 - y);
+    }
+
+    // 画 imgL 作为左侧，带特效
+    private void paintImgLWithEffects(Graphics2D g2d, int t) {
         for (int i = 0, len = wordDropList.size(); i < len; i++) {
             int wordDrop = wordDropList.get(i);
             int wordWidth = wordWidthList.get(i);
@@ -312,11 +350,16 @@ public class HighlightLyric {
             if (dx1 > t + fadeWidth) break;
             int sx1 = dx1, sy1 = 0, sx2 = dx2, sy2 = height;
             g2d.drawImage(imgL, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+            // 绘制光辉效果
+            float glowOpacity = wordGlowOpacityList.get(i);
+            GraphicsUtil.srcOver(g2d, glowOpacity);
+            g2d.drawImage(imgGlow, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+            GraphicsUtil.srcOver(g2d);
         }
     }
 
-    // 画 ImgR 作为右侧，带 Drop
-    private void paintImgRWithDrop(Graphics2D g2d, int t) {
+    // 画 ImgR 作为右侧，带特效
+    private void paintImgRWithEffects(Graphics2D g2d, int t) {
         for (int i = wordDropList.size() - 1; i >= 0; i--) {
             int wordDrop = wordDropList.get(i);
             int wordWidth = wordWidthList.get(i);
@@ -336,7 +379,7 @@ public class HighlightLyric {
         Graphics2D g2d = GraphicsUtil.setup(img.createGraphics());
         if (ratio > 0) {
             // 将 img 的左半部分用 imgL 的左半部分替换
-            paintImgLWithDrop(g2d, t);
+            paintImgLWithEffects(g2d, t);
 //            g2d.drawImage(imgL, shadowHOffset, 0, t + fadeWidth, height, shadowHOffset, 0, t + fadeWidth, height, null);
             // 创建渐变覆盖层（使用黑色到透明的渐变，然后使用 DST_OUT）
             GradientPaint fadeOverlay = new GradientPaint(t, 0, Colors.TRANSPARENT, t + fadeWidth, 0, Colors.BLACK, false);
@@ -348,7 +391,7 @@ public class HighlightLyric {
             g2d.setComposite(AlphaComposite.DstOver);
         }
         // 将 img 的右半部分用 imgR 的右半部分替换
-        paintImgRWithDrop(g2d, t);
+        paintImgRWithEffects(g2d, t);
 //        g2d.drawImage(imgR, t, 0, width - shadowHOffset, height, t, 0, width - shadowHOffset, height, null);
         g2d.dispose();
 

@@ -120,7 +120,7 @@ public class DesktopLyricDialog extends BaseDialog {
                 || !highlightLyric.getC1().equals(foreColor)
                 || !highlightLyric.getC2().equals(bgColor)
                 || !highlightLyric.getLabelFont().equals(tempLabel.getFont()))
-            highlightLyric = new HighlightLyric(tempLabel, stmt, foreColor, bgColor, ratio, true, width);
+            highlightLyric = new HighlightLyric(tempLabel, stmt, foreColor, bgColor, ratio, true, width, true);
         else highlightLyric.setRatio(ratio);
         lyricLabel.setIcon(highlightLyric.getImgIcon());
         // Icon 对象可能不变，一定要手动重绘刷新！

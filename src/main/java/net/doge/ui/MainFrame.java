@@ -20464,8 +20464,8 @@ public class MainFrame extends JFrame {
         HighlightLyric rhl = ((LyricListRenderer) lyricList.getCellRenderer()).getHl();
         // 逐字歌词
         if (hl.isByWord()) {
-            hl.updateWordDropOriginList(t, lineStartTime - lyricOffset);
-            if (rhl != null) rhl.updateWordDropOriginList(t, lineStartTime - lyricOffset);
+            hl.updateWordEffects(t, lineStartTime - lyricOffset);
+            if (rhl != null) rhl.updateWordEffects(t, lineStartTime - lyricOffset);
         }
         // 非逐字歌词
         else {
@@ -20473,8 +20473,8 @@ public class MainFrame extends JFrame {
             double lineEndTime = ls.hasEndTime() ? ls.getEndTime() - lyricOffset
                     : ns != null ? ns.getTime() - lyricOffset
                       : player.getDurationSeconds();
-            hl.updateNormalWordDropOriginList(t, lineStartTime - lyricOffset, lineEndTime);
-            if (rhl != null) rhl.updateNormalWordDropOriginList(t, lineStartTime - lyricOffset, lineEndTime);
+            hl.updateNormalWordEffects(t, lineStartTime - lyricOffset, lineEndTime);
+            if (rhl != null) rhl.updateNormalWordEffects(t, lineStartTime - lyricOffset, lineEndTime);
         }
     }
 

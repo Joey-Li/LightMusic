@@ -138,7 +138,7 @@ public class LyricListRenderer extends CustomListCellRenderer {
                     || !hl.getPlainLyric().equals(plainLyric)
                     || !hl.getC1().equals(highlightColor)
                     || !hl.getC2().equals(bgColor))
-                hl = new HighlightLyric(label, statement, highlightColor, bgColor, ratio, false, maxWidth);
+                hl = new HighlightLyric(label, statement, highlightColor, bgColor, ratio, false, maxWidth, !fontTimer.isRunning());
             else hl.setRatio(ratio);
             label.setIcon(hl.getImgIcon());
             label.setText("");

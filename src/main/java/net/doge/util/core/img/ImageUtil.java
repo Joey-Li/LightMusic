@@ -48,6 +48,8 @@ public class ImageUtil {
     private static final SaturationFilter saturationFilter = new SaturationFilter();
     // 阴影过滤器
     private static final ShadowFilter shadowFilter = new ShadowFilter();
+    // 光辉阴影过滤器
+    private static final ShadowFilter glowShadowFilter = new ShadowFilter();
     // 边框阴影过滤器
     private static final ShadowFilter borderShadowFilter = new ShadowFilter();
     // 阴影厚度
@@ -64,6 +66,11 @@ public class ImageUtil {
         shadowFilter.setRadius(20f);
         shadowFilter.setDistance(0f);
         shadowFilter.setOpacity(0.65f);
+
+        glowShadowFilter.setRadius(8f);
+        glowShadowFilter.setDistance(0f);
+        glowShadowFilter.setOpacity(1f);
+        glowShadowFilter.setShadowOnly(true);
 
         borderShadowFilter.setRadius(SHADOW_THICKNESS);
         borderShadowFilter.setDistance(0f);
@@ -557,19 +564,32 @@ public class ImageUtil {
     }
 
     /**
-     * 图片添加阴影，带颜色
+     * 为图片添加光辉效果
+     *
+     * @param img
+     * @return
+     */
+    public static BufferedImage glowShadow(BufferedImage img, Color color) {
+        if (img == null) return null;
+        glowShadowFilter.setShadowColor(color.getRGB());
+        return glowShadowFilter.filter(img, null);
+    }
+
+    /**
+     * 为图片添加阴影，指定颜色
      *
      * @param img
      * @param color
      * @return
      */
     public static BufferedImage shadow(BufferedImage img, Color color) {
+        if (img == null) return null;
         shadowFilter.setShadowColor(color.getRGB());
         return shadowFilter.filter(img, null);
     }
 
     /**
-     * 图片添加边框阴影
+     * 为图片添加边框阴影
      *
      * @param img
      * @return
