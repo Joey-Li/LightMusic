@@ -95,7 +95,7 @@ public class MusicUrlReq {
             case NetResourceSource.FA:
                 return FaMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
             case NetResourceSource.LZ:
-                return LzMusicUrlReq.getInstance().fetchMusicUrl(musicInfo);
+                return LzMusicUrlReq.getInstance().fetchMusicUrl(musicInfo, forDownload);
             case NetResourceSource.QS:
                 return QsMusicUrlReq.getInstance().fetchMusicUrl(musicInfo, forDownload);
             default:

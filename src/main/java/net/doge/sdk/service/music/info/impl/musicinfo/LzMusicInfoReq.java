@@ -9,6 +9,9 @@ import net.doge.sdk.util.SdkUtil;
 import net.doge.util.core.http.HttpRequest;
 import net.doge.util.core.img.ImageUtil;
 import net.doge.util.core.io.FileUtil;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.awt.image.BufferedImage;
 
@@ -24,21 +27,25 @@ public class LzMusicInfoReq {
     }
 
     // 歌曲信息 API (李志)
-    private final String SONG_DETAIL_LZ_API = "https://www.lizhinb.com/?audioigniter_playlist_id=%s";
+    private final String SONG_DETAIL_LZ_API = "https://www.lizhinb.com/gequ/";
 
     /**
      * 补充 NetMusicInfo 歌曲信息(包括 时长、专辑名称、封面图片、歌词)
      */
     public void fillMusicInfo(NetMusicInfo musicInfo) {
         String id = musicInfo.getId();
-        String[] sp = id.split("_");
-        String albumSongBody = HttpRequest.get(String.format(SONG_DETAIL_LZ_API, sp[0]))
+        String albumId = musicInfo.getAlbumId();
+
+        String albumSongBody = HttpRequest.get(SONG_DETAIL_LZ_API)
                 .executeAsStr();
-        JSONArray songArray = JSONArray.parseArray(albumSongBody);
-        JSONObject songJson = songArray.getJSONObject(Integer.parseInt(sp[1]));
+        Document doc = Jsoup.parse(albumSongBody);
+        Elements article = doc.select(String.format(".oa-album-card[data-album-id=\"%s\"]", albumId));
+        String albumSongJsonStr = article.attr("data-tracks");
+        JSONArray songArray = JSONArray.parseArray(albumSongJsonStr);
+        JSONObject songJson = SdkUtil.findFeatureObj(songArray, "track_id", id);
         if (!musicInfo.hasAlbumImage()) {
             GlobalExecutors.imageExecutor.execute(() -> {
-                BufferedImage albumImage = SdkUtil.getImageFromUrl(songJson.getString("cover"));
+                BufferedImage albumImage = SdkUtil.getImageFromUrl(songJson.getString("cover_url"));
                 FileUtil.mkDir(SimplePath.IMG_CACHE_PATH);
                 ImageUtil.toFile(albumImage, SimplePath.IMG_CACHE_PATH + musicInfo.toAlbumImageFileName());
                 musicInfo.callback();
@@ -52,12 +59,18 @@ public class LzMusicInfoReq {
     public void fillLyric(NetMusicInfo musicInfo) {
         if (musicInfo.isLyricIntegrated()) return;
         String id = musicInfo.getId();
-        String[] sp = id.split("_");
-        String albumSongBody = HttpRequest.get(String.format(SONG_DETAIL_LZ_API, sp[0]))
+        String albumId = musicInfo.getAlbumId();
+        String albumSongBody = HttpRequest.get(SONG_DETAIL_LZ_API)
                 .executeAsStr();
-        JSONArray songArray = JSONArray.parseArray(albumSongBody);
-        JSONObject lyricJson = songArray.getJSONObject(Integer.parseInt(sp[1]));
-        String lyric = lyricJson.getString("lyrics").replace("\r\n", "\n");
+        Document doc = Jsoup.parse(albumSongBody);
+        Elements article = doc.select(String.format(".oa-album-card[data-album-id=\"%s\"]", albumId));
+        String albumSongJsonStr = article.attr("data-tracks");
+        JSONArray songArray = JSONArray.parseArray(albumSongJsonStr);
+        JSONObject songJson = SdkUtil.findFeatureObj(songArray, "track_id", id);
+        // 获取歌词 url
+        String lyricUrl = songJson.getString("lyrics_url");
+        String lyric = HttpRequest.get(lyricUrl)
+                .executeAsStr();
         musicInfo.setLyric(lyric);
         musicInfo.setTrans("");
         musicInfo.setRoma("");

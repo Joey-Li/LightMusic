@@ -6,7 +6,6 @@ import net.doge.entity.service.NetAlbumInfo;
 import net.doge.sdk.common.entity.CommonResult;
 import net.doge.sdk.util.SdkUtil;
 import net.doge.util.core.RegexUtil;
-import net.doge.util.core.StringUtil;
 import net.doge.util.core.http.HttpRequest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -41,29 +40,29 @@ public class LzNewAlbumReq {
         String albumInfoBody = HttpRequest.get(ALBUM_LZ_API)
                 .executeAsStr();
         Document doc = Jsoup.parse(albumInfoBody);
-        Elements albums = doc.select(".wp-block-image");
+        Elements albums = doc.select(".oa-album-card");
         t = albums.size();
         for (int i = (page - 1) * limit, len = Math.min(page * limit, albums.size()); i < len; i++) {
             Element album = albums.get(i);
-            Elements a = album.select("a");
-            Elements cap = album.select(".wp-element-caption");
-            Elements img = album.select("img");
+            Elements title = album.select(".oa-album-card-title");
+            Elements count = album.select(".oa-album-card-count");
+            Elements img = album.select(".oa-album-cover-img");
 
-            String albumId = RegexUtil.getGroup1("/(.*?)/", a.attr("href"));
-            String albumName = cap.text();
+            String albumId = album.attr("data-album-id");
+            String albumName = title.text();
             String artist = "李志";
-            String coverImgThumbUrl = img.attr("srcset").split(" ")[0];
-            if (StringUtil.isEmpty(coverImgThumbUrl)) coverImgThumbUrl = img.attr("data-src");
+            Integer songNum = Integer.parseInt(RegexUtil.getGroup1("(\\d+) 首歌", count.text()));
+            String coverImgThumbUrl = img.attr("src");
 
             NetAlbumInfo albumInfo = new NetAlbumInfo();
             albumInfo.setSource(NetResourceSource.LZ);
             albumInfo.setId(albumId);
             albumInfo.setName(albumName);
             albumInfo.setArtist(artist);
+            albumInfo.setSongNum(songNum);
             albumInfo.setCoverImgThumbUrl(coverImgThumbUrl);
-            String finalCoverImgThumbUrl = coverImgThumbUrl;
             GlobalExecutors.imageExecutor.execute(() -> {
-                BufferedImage coverImgThumb = SdkUtil.extractCover(finalCoverImgThumbUrl);
+                BufferedImage coverImgThumb = SdkUtil.extractCover(coverImgThumbUrl);
                 albumInfo.setCoverImgThumb(coverImgThumb);
             });
 

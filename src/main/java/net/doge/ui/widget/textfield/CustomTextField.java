@@ -48,6 +48,7 @@ public class CustomTextField extends JTextField implements ExtendedOpacitySuppor
         setFont(Fonts.NORMAL);
         setMaximumSize(new HDDimension(3000, 30));
         setBorder(BORDER);
+//        setHighlighter(new CustomHighlighter());
 
         addMouseListener(new MouseAdapter() {
             @Override

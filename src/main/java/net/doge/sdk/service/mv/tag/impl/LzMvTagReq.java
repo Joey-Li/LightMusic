@@ -2,7 +2,6 @@ package net.doge.sdk.service.mv.tag.impl;
 
 import net.doge.constant.service.tag.TagType;
 import net.doge.constant.service.tag.Tags;
-import net.doge.util.core.RegexUtil;
 import net.doge.util.core.http.HttpRequest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -33,14 +32,14 @@ public class LzMvTagReq {
         String mvTagBody = HttpRequest.get(VIDEO_TAG_LZ_API)
                 .executeAsStr();
         Document doc = Jsoup.parse(mvTagBody);
-        Elements tags = doc.select(".zaxu-friendly-link-content");
+        Elements tags = doc.select(".nbvp-wall-filter-btn");
         for (int i = 0, len = tags.size(); i < len; i++) {
-            Element content = tags.get(i);
-            Elements a = content.select("a");
-            Elements n = content.select(".zaxu-friendly-link-name");
+            Element tag = tags.get(i);
 
-            String id = RegexUtil.getGroup1("/live-category/(.*?)/", a.attr("href"));
-            String name = n.text();
+            String id = tag.attr("data-filter");
+            String name = tag.text();
+
+            if ("全部".equals(name)) continue;
 
             if (!Tags.mvTags.containsKey(name)) Tags.mvTags.put(name, new String[c]);
             Tags.mvTags.get(name)[TagType.VIDEO_LZ] = id;

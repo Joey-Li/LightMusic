@@ -31,52 +31,44 @@ public class LzRecommendMvReq {
     }
 
     // 视频 API (李志)
-    private final String VIDEO_LZ_API = "https://www.lizhinb.com/live-category/%s/";
+    private final String VIDEO_LZ_API = "https://www.lizhinb.com/ssp/";
 
     /**
      * 视频
      */
     public CommonResult<NetMvInfo> getVideo(String tag, int page, int limit) {
         List<NetMvInfo> r = new LinkedList<>();
-        int t = 0;
+        int t;
         String[] s = Tags.mvTags.get(tag);
 
         String param = s[TagType.VIDEO_LZ];
-        if (StringUtil.notEmpty(param)) {
-            String mvInfoBody = HttpRequest.get(String.format(VIDEO_LZ_API, param))
-                    .executeAsStr();
-            Document doc = Jsoup.parse(mvInfoBody);
-            Elements mvArray = doc.select(".tile-content");
-            t = mvArray.size();
-            for (int i = (page - 1) * limit, len = Math.min(mvArray.size(), page * limit); i < len; i++) {
-                Element mv = mvArray.get(i);
-                Elements a = mv.select(".tile-link.ajax-link");
-                Elements hl = mv.select(".tile-headline");
-                Elements img = mv.select("img");
-                Elements time = mv.select(".tile-date");
+        boolean isAll = StringUtil.isEmpty(param);
+        String mvInfoBody = HttpRequest.get(VIDEO_LZ_API)
+                .executeAsStr();
+        Document doc = Jsoup.parse(mvInfoBody);
+        Elements mvArray = doc.select(".nbvp-wall-card" + (isAll ? "" : String.format("[data-cats=\"%s\"]", param)));
+        t = mvArray.size();
+        for (int i = (page - 1) * limit, len = Math.min(mvArray.size(), page * limit); i < len; i++) {
+            Element mv = mvArray.get(i);
+            Elements title = mv.select(".nbvp-wall-title");
 
-                String id = RegexUtil.getGroup1("live/(.*?)/", a.attr("href"));
-                String mvName = hl.text();
-                String artistName = "李志";
-                String coverImgUrl = img.attr("srcset").split(" ")[0];
-                if (StringUtil.isEmpty(coverImgUrl)) coverImgUrl = img.attr("data-src");
-                String pubTime = time.text();
+            String id = RegexUtil.getGroup1("lz-video/(.*?)/", mv.attr("data-seo-url"));
+            String mvName = title.text();
+            String artistName = "李志";
+            String coverImgUrl = mv.attr("data-poster");
 
-                NetMvInfo mvInfo = new NetMvInfo();
-                mvInfo.setSource(NetResourceSource.LZ);
-                mvInfo.setId(id);
-                mvInfo.setName(mvName);
-                mvInfo.setArtist(artistName);
-                mvInfo.setCoverImgUrl(coverImgUrl);
-                mvInfo.setPubTime(pubTime);
-                String finalCoverImgUrl = coverImgUrl;
-                GlobalExecutors.imageExecutor.execute(() -> {
-                    BufferedImage coverImgThumb = SdkUtil.extractMvCover(finalCoverImgUrl);
-                    mvInfo.setCoverImgThumb(coverImgThumb);
-                });
+            NetMvInfo mvInfo = new NetMvInfo();
+            mvInfo.setSource(NetResourceSource.LZ);
+            mvInfo.setId(id);
+            mvInfo.setName(mvName);
+            mvInfo.setArtist(artistName);
+            mvInfo.setCoverImgUrl(coverImgUrl);
+            GlobalExecutors.imageExecutor.execute(() -> {
+                BufferedImage coverImgThumb = SdkUtil.extractMvCover(coverImgUrl);
+                mvInfo.setCoverImgThumb(coverImgThumb);
+            });
 
-                r.add(mvInfo);
-            }
+            r.add(mvInfo);
         }
         return new CommonResult<>(r, t);
     }

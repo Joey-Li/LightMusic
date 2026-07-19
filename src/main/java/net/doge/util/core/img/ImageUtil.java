@@ -67,7 +67,7 @@ public class ImageUtil {
         shadowFilter.setDistance(0f);
         shadowFilter.setOpacity(0.65f);
 
-        glowShadowFilter.setRadius(8f);
+        glowShadowFilter.setRadius(20f);
         glowShadowFilter.setDistance(0f);
         glowShadowFilter.setOpacity(1f);
         glowShadowFilter.setShadowOnly(true);
