@@ -27,6 +27,7 @@ public class NcTrackReq {
     }
 
     // 歌曲 URL 获取 API (网易云)
+    // https://github.com/CharlesPikachu/musicdl/blob/master/musicdl/modules/sources/netease.py
     private final String SONG_URL_NC_API = "https://interface.music.163.com/eapi/song/enhance/player/url/v1";
 
     private Map<String, String> qualityMap = new HashMap<>();

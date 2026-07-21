@@ -30,6 +30,7 @@ public class ZnnuNcTrackReq {
     // 认证参数获取 API
     private final String AUTH_API = "https://music.znnu.com/api/key";
     // 歌曲 URL 获取 API
+    // https://github.com/CharlesPikachu/musicdl/blob/master/musicdl/modules/sources/netease.py
     private final String SONG_URL_API = "https://music.znnu.com/api/song";
 
     private Map<String, String> qualityMap = new HashMap<>();

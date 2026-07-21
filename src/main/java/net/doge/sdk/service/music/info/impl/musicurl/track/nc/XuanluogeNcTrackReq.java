@@ -22,6 +22,7 @@ public class XuanluogeNcTrackReq {
     }
 
     // 歌曲 URL 获取 API (网易云)
+    // https://github.com/CharlesPikachu/musicdl/blob/master/musicdl/modules/sources/netease.py
     private final String SONG_URL_NC_API = "http://118.24.104.108:3456/api.php?miss=getMusicUrl&id=%s&level=%s";
 
     private Map<String, String> qualityMap = new HashMap<>();

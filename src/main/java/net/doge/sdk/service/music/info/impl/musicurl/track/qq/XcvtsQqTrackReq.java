@@ -32,7 +32,8 @@ public class XcvtsQqTrackReq {
 
     private final String[] REQUEST_KEYS = {
             "Nzg5OTMzNDRiOWJmMTEwNTY1NTU5OTAwOWNkYmEzZDI=",
-            "Y2U3NzhlYjBkMTg1OGVkZmI0YjIwNzFhMTE1ZjFlZGY="
+            "Y2U3NzhlYjBkMTg1OGVkZmI0YjIwNzFhMTE1ZjFlZGY=",
+            "NzRhNjdhZjM3ZjUyODg4MjYxNmRkMzU1OTdlYTc0MGQ="
     };
 
     private Map<String, String> qualityMap = new HashMap<>();
